@@ -39,3 +39,20 @@ type      Plus Jakarta Sans 500–800 (Arabic: IBM Plex Sans Arabic)
 - Nav active pill inverts: cream pill, dark text.
 
 Re-render: `cd mockups && node redesign/expressive/render.js`
+
+## Interactive prototype (test it with fake data)
+
+`mockups/redesign/expressive/prototype/index.html` is a **self-contained, clickable prototype** —
+all screens wired together with transitions, fake data baked in, no build and no server needed.
+
+- **Open it anywhere:** double-click the file, or open it in any mobile/desktop browser.
+  Works fully offline (Google Fonts degrade to system fonts).
+- **On your phone:** AirDrop/send the file to yourself, or from the repo folder run
+  `npx serve mockups/redesign/expressive/prototype` and open the LAN URL on your phone.
+- **What's wired:** sign-in → staggered home entrance with readiness count-up · direction-aware
+  tab transitions with a sliding nav pill · sleep stage/week bars that grow in · FAB → camera
+  with scanning beam and live dish recognition → result sheet → logs the meal, animates the
+  kcal budget, checks off the plan (synced between Today and Coach) · coach chat with typing
+  indicator and canned replies · 🌙 toggle cross-fades the whole app into dark mode.
+- `prototype/test.js` drives the full flow headlessly and saves `state-*.png`;
+  `prototype/gif.js` records `walkthrough.gif`.
