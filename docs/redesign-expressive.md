@@ -56,3 +56,16 @@ all screens wired together with transitions, fake data baked in, no build and no
   indicator and canned replies · 🌙 toggle cross-fades the whole app into dark mode.
 - `prototype/test.js` drives the full flow headlessly and saves `state-*.png`;
   `prototype/gif.js` records `walkthrough.gif`.
+
+### v2 additions (market-study pass)
+
+Sleep switched to **option B** (score hero + stage rows). After comparing Oura, Whoop,
+Apple Health, and MyFitnessPal/RISE, these missing patterns were added:
+
+- **Tappable metric tiles** → detail bottom sheets with animated 7-day/30-day charts against
+  the 28-day baseline (Apple Health-style trends), per-metric secondary stats, and a
+  habit-correlation insight (Whoop journal-style, e.g. "heavy dinners after 9 PM cost you +3 bpm").
+- **Readiness contributors** (tap the green hero) — Oura-style breakdown of what's helping
+  and hurting the score, plus a 1-minute recovery-breath CTA.
+- **Sleep debt & bedtime consistency** tiles (Whoop/RISE) on the Sleep screen.
+- **Water tracking** with tap-to-fill glasses, and a **logging streak** (MyFitnessPal) on Food.
