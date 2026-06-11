@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#080B10;--s1:#141A21;--bd:#232C36;--t1:#FFFFFF;--t2:#9AA7B3;--t3:#5A6675;--mint:#36E2B4;--ink:#04140F}
+html,body{width:412px;height:940px;background:var(--bg);color:var(--t1);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.status{display:flex;justify-content:space-between;align-items:center;padding:16px 26px 0;font-size:13px;font-weight:600}
+.status .r{display:flex;align-items:center;gap:6px;color:var(--t2);font-size:11px}
+.bat{width:20px;height:11px;border:1.5px solid var(--t2);border-radius:3px;display:inline-block;position:relative}.bat::after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:11px;background:var(--mint);border-radius:1px}
+.wrap{padding:14px 20px 100px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.nm{font-size:23px;font-weight:800;letter-spacing:-.5px}.nm span{color:var(--mint)}
+.ava{width:40px;height:40px;border-radius:14px;background:var(--s1);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-weight:700}
+.hero{background:linear-gradient(140deg,#36E2B4,#16B894 70%);border-radius:26px;padding:24px;color:var(--ink);margin-bottom:13px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-30px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18)}
+.hk{font-size:13px;font-weight:700;letter-spacing:1px;opacity:.7}
+.hn{font-size:96px;font-weight:800;letter-spacing:-5px;line-height:.95;margin-top:2px}
+.hs{font-size:15px;font-weight:600;opacity:.8;margin-top:2px}
+.row2{display:flex;gap:13px;margin-bottom:13px}
+.card2{flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:22px;padding:18px}
+.c2k{font-size:12px;color:var(--t3);margin-bottom:10px;font-weight:600;letter-spacing:.5px}
+.rings3{display:flex;gap:8px;align-items:center}
+.rings3 .mini{font-size:13px;color:var(--t2)}.rings3 .mini b{color:var(--t1);font-weight:700}
+.energy{font-size:30px;font-weight:800;letter-spacing:-1px}.energy small{font-size:13px;color:var(--t3);font-weight:500}
+.boxes{display:flex;gap:13px}
+.box{flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:22px;padding:16px}
+.box .bl{font-size:11px;color:var(--t3);margin-bottom:7px;font-weight:600;letter-spacing:.5px}.box .bv{font-size:24px;font-weight:800;letter-spacing:-1px}.box .bv small{font-size:11px;color:var(--t3);font-weight:500}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;background:rgba(8,11,16,.96);border-top:1px solid var(--bd);padding-bottom:18px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--t3);font-size:10.5px}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{color:var(--mint)}
+</style></head><body>
+<div class="status"><span>9:41</span><span class="r">5G<span class="bat"></span></span></div>
+<div class="wrap">
+ <div class="head"><div class="nm">Nabdh<span>.</span></div><div class="ava">A</div></div>
+ <div class="hero"><div class="hk">READINESS</div><div class="hn">78</div><div class="hs">Ready to push · ▲ 6 today</div></div>
+ <div class="row2">
+  <div class="card2"><div class="c2k">RINGS</div><svg width="74" height="74" viewBox="0 0 74 74"><g transform="rotate(-90 37 37)" fill="none" stroke-linecap="round"><circle cx="37" cy="37" r="30" stroke="#13251F" stroke-width="7"/><circle cx="37" cy="37" r="30" stroke="#36E2B4" stroke-width="7" stroke-dasharray="188" stroke-dashoffset="30"/><circle cx="37" cy="37" r="21" stroke="#10242B" stroke-width="7"/><circle cx="37" cy="37" r="21" stroke="#21C7E8" stroke-width="7" stroke-dasharray="132" stroke-dashoffset="33"/><circle cx="37" cy="37" r="12" stroke="#1C1A2E" stroke-width="7"/><circle cx="37" cy="37" r="12" stroke="#A78BFA" stroke-width="7" stroke-dasharray="75" stroke-dashoffset="8"/></g></svg></div>
+  <div class="card2"><div class="c2k">ACTIVE ENERGY</div><div class="energy">612<small> / 750 kcal</small></div><div class="c2k" style="margin:14px 0 0;color:var(--mint)">82% of goal</div></div>
+ </div>
+ <div class="boxes">
+  <div class="box"><div class="bl">SLEEP</div><div class="bv">7.3<small>h</small></div></div>
+  <div class="box"><div class="bl">STEPS</div><div class="bv">8.4<small>k</small></div></div>
+  <div class="box"><div class="bl">HRV</div><div class="bv">48<small>ms</small></div></div>
+ </div>
+</div>
+<nav class="tabs">
+ <a class="tab active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-4.3A8 8 0 1 1 21 11.5Z"/></svg><span>Coach</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Log</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Me</span></a>
+</nav>
+</body></html>

@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "Nabdh"
+  },
+  "auth": {
+    "tagline": "Your AI health coach, built for life in Saudi Arabia.",
+    "apple": "Continue with Apple",
+    "google": "Continue with Google",
+    "phone": "Continue with phone number",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "or": "or",
+    "disclaimer": "By continuing you agree to our Privacy Policy. Your health data stays private.",
+    "configMissing": "Firebase is not configured yet. Add your config to app.json (expo.extra.firebase) to enable sign-in."
+  },
+  "phone": {
+    "label": "Phone number",
+    "note": "Phone OTP is finalized during on-device setup (it needs a reCAPTCHA or native verifier). Use Apple or Google for now.",
+    "send": "Send code"
+  },
+  "consent": {
+    "allow": "Allow",
+    "decline": "Not now",
+    "pdpl": {
+      "title": "Your data, your control",
+      "body": "Nabdh processes your health and activity data to power your dashboard and coaching. Under Saudi PDPL we ask for your explicit consent, and you can view, export, or delete your data anytime."
+    },
+    "healthkit": {
+      "title": "Connect Apple Health",
+      "body": "Allow Nabdh to read steps, heart rate, resting heart rate, HRV, blood oxygen, sleep, and energy from Apple Health. This data stays on your device and in your private account."
+    },
+    "ai": {
+      "title": "AI coaching",
+      "body": "Your coach uses an AI model. The default model runs inside the region. If you later add your own provider key (Claude, GPT, or Gemini), a minimized summary of your data is sent to that provider abroad. We ask separate consent before that ever happens."
+    }
+  },
+  "onboarding": {
+    "title": "Welcome to Nabdh",
+    "goalsTitle": "What are you working on?",
+    "consentsTitle": "Permissions",
+    "finish": "Finish setup",
+    "needPdpl": "Please allow data processing to continue."
+  },
+  "goal": {
+    "lose_weight": "Lose weight",
+    "build_muscle": "Build muscle",
+    "improve_sleep": "Sleep better",
+    "more_active": "Move more",
+    "maintain": "Stay healthy"
+  },
+  "home": {
+    "greeting": "Good morning, here is your day at a glance",
+    "steps": "Steps today",
+    "connected": "Connected to Apple Health",
+    "notConnected": "Apple Health not connected",
+    "sync": "Sync Apple Health",
+    "syncing": "Syncing...",
+    "disclaimer": "This is not medical advice and is not a substitute for a doctor.",
+    "toggleLang": "العربية"
+  },
+  "metric": {
+    "restingHr": "Resting HR",
+    "sleep": "Sleep",
+    "hrv": "HRV",
+    "energy": "Active energy"
+  },
+  "unit": {
+    "bpm": "bpm",
+    "hours": "h",
+    "ms": "ms",
+    "kcal": "kcal"
+  },
+  "device": {
+    "connectTitle": "Connect a device",
+    "connectFitbit": "Connect Fitbit",
+    "connectApple": "Connect Apple Health",
+    "fitbit": "Fitbit",
+    "appleHealth": "Apple Health",
+    "connectedTo": "Connected to {{name}}",
+    "none": "No device connected",
+    "demoBadge": "Showing sample data",
+    "fitbitSetup": "Add your Fitbit Client ID to app.json (expo.extra.fitbit.clientId) to enable this."
+  }
+}

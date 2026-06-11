@@ -1,0 +1,47 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Nabdh — motion drafts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#06090D;color:#F3F6F8;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:46px 40px 60px;min-height:100vh}
+h1{font-size:30px;font-weight:800;letter-spacing:-.5px}h1 b{color:#36E2B4}
+.sub{color:#9AA7B3;font-size:15px;margin:8px 0 6px}
+.hint{color:#5A6675;font-size:13px;margin-bottom:34px}
+.hint b{color:#36E2B4;cursor:pointer}
+.row{display:flex;gap:34px;flex-wrap:wrap;justify-content:center}
+.col{display:flex;flex-direction:column;align-items:center;width:330px}
+.frame{width:330px;border-radius:34px;overflow:hidden;border:1px solid #1E2730;box-shadow:0 30px 70px -30px rgba(0,0,0,.8)}
+.frame img{width:330px;display:block}
+.name{margin-top:18px;font-size:19px;font-weight:700}
+.name span{color:#36E2B4}
+.desc{margin-top:6px;color:#9AA7B3;font-size:13.5px;line-height:1.5;text-align:center;max-width:300px}
+.tag{margin-top:10px;font-size:11px;letter-spacing:1.5px;color:#5A6675;border:1px solid #1E2730;border-radius:999px;padding:4px 12px}
+</style></head><body>
+<h1>Nabdh<b>.</b> &nbsp;motion drafts</h1>
+<div class="sub">Three directions for the dashboard, captured as real-time load animations.</div>
+<div class="hint">They loop automatically. <b id="replay">↻ Replay all in sync</b></div>
+<div class="row">
+ <div class="col">
+  <div class="frame"><img class="g" data-src="flagship.gif" src="flagship.gif"></div>
+  <div class="name">1 · <span>Pulse</span></div>
+  <div class="desc">Readiness ring hero + vitals with live sparklines. The serious recovery-coach feel.</div>
+  <div class="tag">WHOOP-INSPIRED</div>
+ </div>
+ <div class="col">
+  <div class="frame"><img class="g" data-src="aurora-anim.gif" src="aurora-anim.gif"></div>
+  <div class="name">2 · <span>Aurora</span></div>
+  <div class="desc">Gradient glass hero with a flowing sheen. The modern, consumer-ready look.</div>
+  <div class="tag">GRADIENT / GLASS</div>
+ </div>
+ <div class="col">
+  <div class="frame"><img class="g" data-src="rings-anim.gif" src="rings-anim.gif"></div>
+  <div class="name">3 · <span>Rings</span></div>
+  <div class="desc">Triple activity rings drawing on in sequence. Bold and goal-oriented.</div>
+  <div class="tag">APPLE-INSPIRED</div>
+ </div>
+</div>
+<script>
+document.getElementById('replay').onclick=function(){
+ document.querySelectorAll('.g').forEach(function(img){var s=img.getAttribute('data-src');img.src='';img.src=s+'?t='+(performance.now()|0);});
+};
+</script>
+</body></html>

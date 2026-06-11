@@ -1,0 +1,65 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#070A0E;--s1:#13191F;--bd:#222B33;--t1:#FFFFFF;--t2:#9AA7B3;--t3:#5A6675;--a1:#36E2B4}
+html,body{width:412px;height:940px;background:var(--bg);color:var(--t1);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.wrap{padding:56px 24px 0}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes drawO{from{stroke-dashoffset:616}to{stroke-dashoffset:99}}
+@keyframes drawM{from{stroke-dashoffset:452}to{stroke-dashoffset:113}}
+@keyframes drawI{from{stroke-dashoffset:289}to{stroke-dashoffset:29}}
+.top,.h,.sub,.lr,.coach{opacity:0}
+.ro{stroke-dashoffset:616}.rm{stroke-dashoffset:452}.ri{stroke-dashoffset:289}
+body.go .top{animation:fadeDown .6s ease-out forwards}
+body.go .h{animation:fadeDown .6s .1s ease-out forwards}
+body.go .sub{animation:fadeDown .6s .2s ease-out forwards}
+body.go .ro{animation:drawO 1.15s .35s cubic-bezier(.22,1,.36,1) forwards}
+body.go .rm{animation:drawM 1.15s .5s cubic-bezier(.22,1,.36,1) forwards}
+body.go .ri{animation:drawI 1.15s .65s cubic-bezier(.22,1,.36,1) forwards}
+body.go .lr{animation:fadeUp .55s ease-out forwards}
+body.go .lr:nth-child(1){animation-delay:1.0s}body.go .lr:nth-child(2){animation-delay:1.12s}body.go .lr:nth-child(3){animation-delay:1.24s}
+body.go .coach{animation:fadeUp .6s 1.45s ease-out forwards}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.logo{font-weight:800;font-size:22px}.logo b{color:var(--a1)}
+.date{color:var(--t3);font-size:12px;font-weight:600;letter-spacing:1px}
+.h{font-size:28px;font-weight:700;letter-spacing:-.5px;margin:18px 0 4px}
+.sub{color:var(--t2);font-size:14px;margin-bottom:24px}
+.ringwrap{display:flex;justify-content:center;margin-bottom:26px}
+.glow{filter:drop-shadow(0 0 6px rgba(54,226,180,.35))}
+.legend{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.lr{display:flex;align-items:center;gap:14px;background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:14px 16px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.ln{flex:1;font-size:14px;color:var(--t2)}
+.lv{font-size:18px;font-weight:700}.lv small{font-size:12px;color:var(--t3);font-weight:400}
+.coach{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:15px 16px;font-size:13.5px;color:var(--t2);line-height:1.5}
+.coach b{color:var(--a1)}
+</style></head><body>
+<div class="wrap">
+<div class="top"><div class="logo">Nabdh<b>.</b></div><div class="date">MON · 11 JUN</div></div>
+<div class="h">Today</div><div class="sub">2 of 3 goals on track</div>
+<div class="ringwrap"><svg width="240" height="240" viewBox="0 0 240 240">
+ <g transform="rotate(-90 120 120)" fill="none" stroke-linecap="round">
+  <circle cx="120" cy="120" r="98" stroke="#13251F" stroke-width="20"/>
+  <circle class="ro glow" cx="120" cy="120" r="98" stroke="#36E2B4" stroke-width="20" stroke-dasharray="616"/>
+  <circle cx="120" cy="120" r="72" stroke="#10242B" stroke-width="20"/>
+  <circle class="rm" cx="120" cy="120" r="72" stroke="#21C7E8" stroke-width="20" stroke-dasharray="452"/>
+  <circle cx="120" cy="120" r="46" stroke="#1C1A2E" stroke-width="20"/>
+  <circle class="ri" cx="120" cy="120" r="46" stroke="#A78BFA" stroke-width="20" stroke-dasharray="289"/>
+ </g></svg></div>
+<div class="legend">
+ <div class="lr"><span class="dot" style="background:#36E2B4"></span><span class="ln">Steps</span><span class="lv">8,432<small> / 10k</small></span></div>
+ <div class="lr"><span class="dot" style="background:#21C7E8"></span><span class="ln">Active energy</span><span class="lv">612<small> / 750 kcal</small></span></div>
+ <div class="lr"><span class="dot" style="background:#A78BFA"></span><span class="ln">Sleep</span><span class="lv">7.3<small> / 8 h</small></span></div>
+</div>
+<div class="coach"><b>Almost there —</b> a 20-min evening walk closes your steps ring before iftar.</div>
+</div>
+<script>
+window.NABDH=(function(){
+ function play(){var b=document.body;b.classList.remove('go');void b.offsetWidth;b.classList.add('go');}
+ return {play:play};})();
+(document.fonts&&document.fonts.ready)?document.fonts.ready.then(window.NABDH.play):window.addEventListener('load',window.NABDH.play);
+</script>
+</body></html>

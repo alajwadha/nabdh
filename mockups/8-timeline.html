@@ -1,0 +1,59 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0B0F14;--s1:#141A21;--s2:#1A222C;--bd:#232C36;--t1:#F3F6F8;--t2:#9AA7B3;--t3:#5A6675;--mint:#36E2B4;--amber:#F2B544}
+html,body{width:412px;height:940px;background:var(--bg);color:var(--t1);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.status{display:flex;justify-content:space-between;align-items:center;padding:16px 26px 0;font-size:13px;font-weight:600}
+.status .r{display:flex;align-items:center;gap:6px;color:var(--t2);font-size:11px}
+.bat{width:20px;height:11px;border:1.5px solid var(--t2);border-radius:3px;display:inline-block;position:relative}.bat::after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:11px;background:var(--mint);border-radius:1px}
+.wrap{padding:16px 24px 100px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.today{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.hijri{text-align:right}.hijri .h1{font-size:14px;color:var(--mint);font-weight:600}.hijri .h2{font-size:12px;color:var(--t3);margin-top:2px}
+.readline{display:flex;align-items:baseline;gap:8px;margin-bottom:20px}
+.readline .rs{font-size:15px;color:var(--t2)}.readline .rn{font-size:15px;color:var(--mint);font-weight:700}
+.tl{position:relative;margin-left:6px;padding-left:26px}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:10px;width:2px;background:var(--bd)}
+.ev{position:relative;margin-bottom:18px}
+.ev::before{content:"";position:absolute;left:-26px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--s2);border:2px solid var(--t3)}
+.ev.done::before{background:var(--mint);border-color:var(--mint)}
+.ev.now::before{background:var(--amber);border-color:var(--amber);box-shadow:0 0 0 4px rgba(242,181,68,.18)}
+.ev .t{font-size:11px;color:var(--t3);letter-spacing:.5px}
+.ev .ti{font-size:15px;font-weight:600;margin-top:2px}
+.ev .tx{font-size:12.5px;color:var(--t2);margin-top:3px}
+.ev.now .ti{color:var(--amber)}
+.boxlabel{font-size:12px;color:var(--t3);letter-spacing:.5px;margin:6px 0 10px}
+.boxes{display:flex;gap:11px}
+.box{flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:14px}
+.box .bl{font-size:11px;color:var(--t3);margin-bottom:6px}.box .bv{font-size:20px;font-weight:700;letter-spacing:-.5px}.box .bv small{font-size:10px;color:var(--t3);font-weight:400}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;background:rgba(11,15,20,.95);border-top:1px solid var(--bd);padding-bottom:18px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--t3);font-size:10.5px}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{color:var(--mint)}
+</style></head><body>
+<div class="status"><span>9:41</span><span class="r">5G<span class="bat"></span></span></div>
+<div class="wrap">
+ <div class="head"><div class="today">Today</div><div class="hijri"><div class="h1">Ramadan 14</div><div class="h2">Thu · 11 Jun</div></div></div>
+ <div class="readline"><span class="rs">Readiness</span><span class="rn">78 · Ready to push</span></div>
+ <div class="tl">
+  <div class="ev done"><div class="t">04:18 · FAJR</div><div class="ti">Suhoor logged</div><div class="tx">320 kcal · 600ml water — good hydration</div></div>
+  <div class="ev done"><div class="t">MORNING</div><div class="ti">6,200 steps so far</div><div class="tx">62% of today's goal</div></div>
+  <div class="ev now"><div class="t">NOW · 5:30 PM</div><div class="ti">Light workout window</div><div class="tx">Heat easing — 25-min walk before iftar</div></div>
+  <div class="ev"><div class="t">18:42 · MAGHRIB</div><div class="ti">Iftar</div><div class="tx">Coach will suggest a balanced plate</div></div>
+  <div class="ev"><div class="t">21:30</div><div class="ti">Wind-down</div><div class="tx">Aim for bed by 23:00 to recover sleep</div></div>
+ </div>
+ <div class="boxlabel">TODAY'S VITALS</div>
+ <div class="boxes">
+  <div class="box"><div class="bl">Sleep</div><div class="bv">7.3<small>h</small></div></div>
+  <div class="box"><div class="bl">Water</div><div class="bv">1.2<small>L</small></div></div>
+  <div class="box"><div class="bl">Resting HR</div><div class="bv">58<small>bpm</small></div></div>
+ </div>
+</div>
+<nav class="tabs">
+ <a class="tab active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-4.3A8 8 0 1 1 21 11.5Z"/></svg><span>Coach</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Log</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Me</span></a>
+</nav>
+</body></html>

@@ -1,0 +1,49 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start --dev-client",
+    "ios": "expo run:ios",
+    "typecheck": "tsc --noEmit",
+    "lint": "expo lint"
+  },
+  "//": "Expo-managed libs use '*' to guarantee a clean npm install; run `npx expo install --fix` right after to pin every one to the exact SDK 55 version.",
+  "dependencies": {
+    "@kingstinct/react-native-healthkit": "*",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@shopify/react-native-skia": "2.4.18",
+    "expo": "~55.0.0",
+    "expo-apple-authentication": "~55.0.13",
+    "expo-auth-session": "~55.0.16",
+    "expo-constants": "~55.0.16",
+    "expo-crypto": "~55.0.15",
+    "expo-dev-client": "~55.0.35",
+    "expo-linking": "~55.0.15",
+    "expo-localization": "~55.0.15",
+    "expo-router": "~55.0.16",
+    "expo-secure-store": "~55.0.14",
+    "expo-status-bar": "~55.0.6",
+    "expo-system-ui": "~55.0.18",
+    "expo-web-browser": "~55.0.16",
+    "firebase": "^11.3.0",
+    "i18next": "^24.2.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-i18next": "^15.4.0",
+    "react-native": "0.83.6",
+    "react-native-gesture-handler": "~2.30.0",
+    "react-native-nitro-modules": "*",
+    "react-native-reanimated": "4.2.1",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.23.0",
+    "react-native-worklets": "0.7.4",
+    "victory-native": "^41.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@types/react": "~19.2.0",
+    "typescript": "~5.9.0"
+  }
+}

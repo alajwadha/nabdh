@@ -1,0 +1,11 @@
+{
+  "name": "nabdh-mockups",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Headless capture pipeline for Nabdh dashboard motion mockups",
+  "dependencies": {
+    "gif-encoder": "^0.7.2",
+    "pngjs": "^7.0.0",
+    "puppeteer-core": "^25.1.0"
+  }
+}

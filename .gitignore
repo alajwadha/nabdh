@@ -1,0 +1,45 @@
+# dependencies
+node_modules/
+.pnp/
+
+# expo / native
+.expo/
+dist/
+web-build/
+ios/
+android/
+*.orig.*
+expo-env.d.ts
+
+# build output
+build/
+lib/
+*.tsbuildinfo
+
+# secrets & env
+.env
+.env.*
+!.env.example
+google-services.json
+GoogleService-Info.plist
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+
+# logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# scratch / root screenshots
+_commitmsg.txt
+/*.png

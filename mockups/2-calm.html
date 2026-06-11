@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0C1116;--s1:#161D25;--bd:#232C36;--t1:#EEF2F5;--t2:#9AA7B3;--t3:#5A6675;--mint:#48E0BE}
+html,body{width:412px;height:940px;background:radial-gradient(120% 60% at 50% 0%,#13202A 0%,#0C1116 55%);color:var(--t1);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{padding:58px 26px 0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.logo{font-weight:600;font-size:20px;letter-spacing:.3px}.logo b{color:var(--mint)}
+.date{color:var(--t3);font-size:12px;font-weight:500}
+.gauge{display:flex;flex-direction:column;align-items:center;margin-bottom:34px}
+.g{position:relative;width:250px;height:170px}
+.score{position:absolute;inset:0;top:34px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.num{font-size:78px;font-weight:200;letter-spacing:-3px;line-height:.9}
+.lbl{font-size:12px;letter-spacing:2px;color:var(--t2);margin-top:10px;font-weight:500}
+.sub{margin-top:8px;font-size:14px;color:var(--mint);font-weight:500}
+.list{display:flex;flex-direction:column;gap:14px}
+.row{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:18px 20px}
+.rt{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.rl{font-size:14px;color:var(--t2)}.rv{font-size:19px;font-weight:600}.rv small{font-size:12px;color:var(--t3);font-weight:400}
+.bar{height:6px;border-radius:6px;background:#222C36;overflow:hidden}
+.fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#48E0BE,#2BB89C)}
+.note{margin-top:26px;text-align:center;color:var(--t2);font-size:13.5px;line-height:1.5}
+</style></head><body><div class="wrap">
+<div class="top"><div class="logo">Nabdh<b>.</b></div><div class="date">Monday, 11 June</div></div>
+<div class="gauge">
+ <div class="g"><svg width="250" height="170" viewBox="0 0 250 170">
+   <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2BB89C"/><stop offset="1" stop-color="#48E0BE"/></linearGradient></defs>
+   <path d="M25 150 A100 100 0 1 1 225 150" fill="none" stroke="#1B2530" stroke-width="12" stroke-linecap="round"/>
+   <path d="M25 150 A100 100 0 1 1 225 150" fill="none" stroke="url(#gg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="471" stroke-dashoffset="104"/>
+ </svg><div class="score"><div class="num">78</div><div class="lbl">READINESS</div><div class="sub">Balanced · well rested</div></div></div>
+</div>
+<div class="list">
+ <div class="row"><div class="rt"><div class="rl">Sleep</div><div class="rv">7.3<small> h</small> · 86%</div></div><div class="bar"><div class="fill" style="width:86%"></div></div></div>
+ <div class="row"><div class="rt"><div class="rl">Activity</div><div class="rv">8,432<small> steps</small></div></div><div class="bar"><div class="fill" style="width:84%"></div></div></div>
+ <div class="row"><div class="rt"><div class="rl">Heart · HRV 48ms</div><div class="rv">58<small> bpm rest</small></div></div><div class="bar"><div class="fill" style="width:72%"></div></div></div>
+</div>
+<div class="note">You're well recovered. A good day for a harder session — just keep hydration up in the heat.</div>
+</div></body></html>

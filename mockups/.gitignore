@@ -1,0 +1,10 @@
+# capture pipeline deps
+node_modules/
+
+# temp verification screenshots + keyframe scratch
+_verify.png
+_mid.png
+kf*.png
+
+# redundant drag-to-host copy (index.html == nabdh-artifact.html)
+publish/

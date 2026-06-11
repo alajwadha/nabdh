@@ -1,0 +1,24 @@
+import express from 'express';
+import { DISHES } from './saudi-context/dishes';
+
+// In-region (Doha/Dammam) Node service. Holds provider keys, the Google Health
+// OAuth token exchange, the Saudi-context layer, data minimization, and the
+// AI proxy to Vertex AI. Real routes land in Phases 2-4.
+const app = express();
+app.use(express.json());
+
+app.get('/health', (_req, res) => {
+  res.json({ ok: true, service: 'nabdh-backend', dishes: DISHES.length });
+});
+
+// Phase 2: app.use('/fitbit', fitbitRouter)   Google Health API OAuth + sync
+// Phase 3: app.use('/ai', aiRouter)           Vertex AI proxy + Saudi context
+// Phase 4: app.use('/nutrition', nutritionRouter)
+
+const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+app.listen(port, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Nabdh backend listening on :${port}`);
+});
+
+export default app;

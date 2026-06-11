@@ -1,0 +1,63 @@
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { colors } from '../src/design-system';
+import { AuthProvider, useAuth } from '../src/auth/AuthProvider';
+import { HealthProvider } from '../src/store/health';
+import '../src/i18n';
+
+const AUTH_ROUTES = ['sign-in', 'phone'];
+
+function useProtectedRoute() {
+  const { user, loading, configError } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading || configError) return;
+    const inAuthArea = AUTH_ROUTES.includes(segments[0] as string);
+    if (!user && !inAuthArea) router.replace('/sign-in');
+    else if (user && inAuthArea) router.replace('/');
+  }, [user, loading, configError, segments]);
+}
+
+function RootNavigator() {
+  const { loading } = useAuth();
+  useProtectedRoute();
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg }}>
+        <ActivityIndicator color={colors.accent} />
+      </View>
+    );
+  }
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.bg },
+        animation: 'fade',
+      }}
+    />
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaProvider>
+        <StatusBar style="light" />
+        <AuthProvider>
+          <HealthProvider>
+            <RootNavigator />
+          </HealthProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
+  );
+}

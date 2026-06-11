@@ -1,0 +1,63 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0B0F14;--s1:#141A21;--s2:#1A222C;--bd:#232C36;--t1:#F3F6F8;--t2:#9AA7B3;--t3:#5A6675;--mint:#36E2B4}
+html,body{width:412px;height:940px;background:var(--bg);color:var(--t1);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.status{display:flex;justify-content:space-between;align-items:center;padding:16px 26px 0;font-size:13px;font-weight:600;color:var(--t1)}
+.status .r{display:flex;align-items:center;gap:6px;color:var(--t2);font-size:11px}
+.bat{width:20px;height:11px;border:1.5px solid var(--t2);border-radius:3px;display:inline-block;position:relative}.bat::after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:11px;background:var(--mint);border-radius:1px}
+.wrap{padding:14px 22px 100px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.hello{font-size:13px;color:var(--t2)}.nm{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.ava{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#36E2B4,#1F9E86);display:flex;align-items:center;justify-content:center;font-weight:700;color:#04140F}
+.bento{display:grid;grid-template-columns:1.32fr 1fr;gap:11px;margin-bottom:11px}
+.tile{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bd);border-radius:20px;padding:16px}
+.ring-tile{grid-row:span 2;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring{position:relative;width:150px;height:150px}
+.ring .n{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .nn{font-size:44px;font-weight:300;letter-spacing:-2px}.ring .nl{font-size:9px;letter-spacing:2px;color:var(--t2);margin-top:2px}
+.rt-state{margin-top:12px;font-size:12px;color:var(--mint);font-weight:600}
+.mini .ml{font-size:11px;color:var(--t3);margin-bottom:6px}
+.mini .mv{font-size:24px;font-weight:700;letter-spacing:-.5px}.mini .mv small{font-size:11px;color:var(--t3);font-weight:400}
+.wide{grid-column:1 / -1}
+.wide .wl{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:12px}.wide .wl b{color:var(--t2)}
+.bars{display:flex;align-items:flex-end;gap:9px;height:46px}
+.bars i{flex:1;background:#243140;border-radius:4px}.bars i.on{background:linear-gradient(180deg,#36E2B4,#1F9E86)}
+.boxes{display:flex;gap:11px;margin-bottom:11px}
+.box{flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:13px 14px}
+.box .bl{font-size:11px;color:var(--t3);margin-bottom:5px}.box .bv{font-size:19px;font-weight:700;letter-spacing:-.5px}.box .bv small{font-size:10px;color:var(--t3);font-weight:400}
+.box svg{margin-top:6px;display:block}
+.coach{background:linear-gradient(135deg,rgba(54,226,180,.13),rgba(31,158,134,.03));border:1px solid rgba(54,226,180,.2);border-radius:18px;padding:13px 15px;display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--t1)}
+.coach b{color:var(--mint)}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;background:rgba(11,15,20,.95);border-top:1px solid var(--bd);padding-bottom:18px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--t3);font-size:10.5px}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{color:var(--mint)}
+</style></head><body>
+<div class="status"><span>9:41</span><span class="r">5G<span class="bat"></span></span></div>
+<div class="wrap">
+ <div class="head"><div><div class="hello">Good morning</div><div class="nm">Ali</div></div><div class="ava">A</div></div>
+ <div class="bento">
+  <div class="tile ring-tile">
+   <div class="ring"><svg width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="58" fill="none" stroke="#1A222C" stroke-width="11"/><circle cx="75" cy="75" r="58" fill="none" stroke="#36E2B4" stroke-width="11" stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="80" transform="rotate(-90 75 75)"/></svg><div class="n"><div class="nn">78</div><div class="nl">READINESS</div></div></div>
+   <div class="rt-state">Ready to push</div>
+  </div>
+  <div class="tile mini"><div class="ml">Active energy</div><div class="mv">612<small> kcal</small></div></div>
+  <div class="tile mini"><div class="ml">HRV</div><div class="mv">48<small> ms</small></div></div>
+  <div class="tile wide"><div class="wl"><b>This week</b><span>avg 7,940 steps</span></div><div class="bars"><i style="height:55%"></i><i style="height:72%"></i><i style="height:48%"></i><i style="height:83%"></i><i style="height:64%"></i><i class="on" style="height:90%"></i><i style="height:40%"></i></div></div>
+ </div>
+ <div class="boxes">
+  <div class="box"><div class="bl">Sleep</div><div class="bv">7.3<small>h</small></div><svg width="90" height="20" viewBox="0 0 90 20"><polyline points="0,14 18,11 36,13 54,7 72,9 90,6" fill="none" stroke="#7C8CFF" stroke-width="2" stroke-linecap="round"/></svg></div>
+  <div class="box"><div class="bl">Steps</div><div class="bv">8,432</div><svg width="90" height="20" viewBox="0 0 90 20"><polyline points="0,15 18,12 36,13 54,9 72,10 90,5" fill="none" stroke="#36E2B4" stroke-width="2" stroke-linecap="round"/></svg></div>
+  <div class="box"><div class="bl">Resting HR</div><div class="bv">58<small>bpm</small></div><svg width="90" height="20" viewBox="0 0 90 20"><polyline points="0,12 18,9 36,11 54,7 72,10 90,8" fill="none" stroke="#F26D6D" stroke-width="2" stroke-linecap="round"/></svg></div>
+ </div>
+ <div class="coach"><span>💡</span><div><b>Heads up —</b> sleep dipped 3 nights. Go lighter today.</div></div>
+</div>
+<nav class="tabs">
+ <a class="tab active"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><path d="M21 11.5a8 8 0 0 1-11.5 7.2L4 20l1.3-4.3A8 8 0 1 1 21 11.5Z"/></svg><span>Coach</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Log</span></a>
+ <a class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Me</span></a>
+</nav>
+</body></html>

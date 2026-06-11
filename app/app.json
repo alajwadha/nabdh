@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "Nabdh",
+    "slug": "nabdh",
+    "scheme": "nabdh",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "backgroundColor": "#0B0F14",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nabdh.app",
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.nabdh.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-secure-store",
+      "expo-apple-authentication",
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Nabdh reads your steps, heart rate, sleep, and energy from Apple Health to show your dashboard and personalize coaching. Your health data stays on your device unless you explicitly consent to AI coaching.",
+          "NSHealthUpdateUsageDescription": "Nabdh can write workouts and nutrition you log back to Apple Health.",
+          "background": true
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "firebase": {
+        "apiKey": "AIzaSyCJxDJ6map8GgXEQjJeeHMQP1nYFlUugt8",
+        "authDomain": "nabdh-44915.firebaseapp.com",
+        "projectId": "nabdh-44915",
+        "storageBucket": "nabdh-44915.firebasestorage.app",
+        "messagingSenderId": "517247723861",
+        "appId": "1:517247723861:web:6f8422e08fbeb5d44d67dc"
+      },
+      "google": {
+        "iosClientId": "",
+        "androidClientId": "",
+        "webClientId": ""
+      },
+      "fitbit": {
+        "clientId": ""
+      },
+      "router": {},
+      "eas": {
+        "projectId": "041b33c1-3cbb-489f-a5c7-e7af047a0974"
+      }
+    },
+    "owner": "alajwad"
+  }
+}
