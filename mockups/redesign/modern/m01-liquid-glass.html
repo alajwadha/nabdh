@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1A1626;font-family:Inter,system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#9D93B8;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#fff}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12);
+ background:#120F1E}
+.mesh{position:absolute;inset:0;background:
+ radial-gradient(320px 280px at 85% 8%,#FF4FA0 0%,transparent 60%),
+ radial-gradient(420px 360px at 0% 38%,#4F46E5 0%,transparent 65%),
+ radial-gradient(380px 320px at 90% 78%,#06B6D4 0%,transparent 60%),
+ radial-gradient(300px 300px at 30% 100%,#7C3AED 0%,transparent 65%),#120F1E;filter:saturate(1.15)}
+.in{position:absolute;inset:0;padding:56px 20px 0;display:flex;flex-direction:column;color:#fff}
+.glass{background:rgba(255,255,255,.10);backdrop-filter:blur(26px) saturate(1.4);-webkit-backdrop-filter:blur(26px) saturate(1.4);
+ border-radius:28px;border:1px solid rgba(255,255,255,.16);position:relative;overflow:hidden}
+.glass::before{content:'';position:absolute;inset:0;border-radius:28px;padding:1px;
+ background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 35%,rgba(255,255,255,0) 70%,rgba(255,255,255,.25));
+ -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.pillg{display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;font-size:13px;font-weight:600;
+ background:rgba(255,255,255,.12);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.2)}
+.hero{padding:24px;margin-bottom:14px}
+.hl{font-size:11px;letter-spacing:2.4px;font-weight:600;color:rgba(255,255,255,.65);margin-bottom:10px}
+.hrow{display:flex;align-items:center;gap:20px}
+.hnum{font-size:88px;font-weight:300;letter-spacing:-4px;line-height:.9}
+.hbarw{flex:1}
+.hbar{height:14px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.25)}
+.hbar i{display:block;height:100%;width:64%;border-radius:99px;background:linear-gradient(90deg,#67E8F9,#A78BFA,#F472B6);box-shadow:0 0 16px rgba(167,139,250,.7)}
+.hbarw span{display:block;margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.75)}
+.hstate{margin-top:16px;font-size:13.5px;font-weight:500;color:#fff}
+.hstate b{color:#67E8F9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.card{padding:17px 18px}
+.cl{font-size:10.5px;letter-spacing:1.8px;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:8px}
+.cv{font-size:28px;font-weight:600;letter-spacing:-1px}
+.cv small{font-size:12px;font-weight:400;color:rgba(255,255,255,.6);margin-left:2px}
+.cd{margin-top:5px;font-size:11.5px;font-weight:500}
+.coach{padding:17px 18px;display:flex;gap:12px;align-items:flex-start}
+.orb{width:34px;height:34px;border-radius:50%;flex:none;background:conic-gradient(from 200deg,#67E8F9,#A78BFA,#F472B6,#67E8F9);filter:blur(.4px);box-shadow:0 0 18px rgba(167,139,250,.8)}
+.coach p{font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+.coach b{color:#F0ABFC}
+.tab{margin-top:auto;margin-bottom:18px;align-self:center;display:flex;gap:4px;padding:7px;border-radius:999px;
+ background:rgba(255,255,255,.12);backdrop-filter:blur(26px);border:1px solid rgba(255,255,255,.2);box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.tab div{padding:11px 20px;border-radius:999px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7)}
+.tab div.on{background:rgba(255,255,255,.92);color:#1B1430;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+</style></head><body>
+<div class="meta">OPTION 1 · <b>LIQUID GLASS</b> · inspired by Apple iOS 26 “Liquid Glass”</div>
+<div class="ph"><div class="mesh"></div><div class="in">
+ <div class="top"><div class="pillg">نبض <span style="opacity:.6">·</span> Nabdh</div><div class="pillg">THU 11</div></div>
+ <div class="glass hero">
+  <div class="hl">READINESS</div>
+  <div class="hrow"><div class="hnum">64</div>
+   <div class="hbarw"><div class="hbar"><i></i></div><span>below your weekly average of 74</span></div></div>
+  <div class="hstate"><b>Recovery day</b> — HRV down a third straight night.</div>
+ </div>
+ <div class="g2">
+  <div class="glass card"><div class="cl">REST HR</div><div class="cv">58<small>bpm</small></div><div class="cd" style="color:#F9A8D4">▲ 4 vs baseline</div></div>
+  <div class="glass card"><div class="cl">HRV</div><div class="cv">48<small>ms</small></div><div class="cd" style="color:#F9A8D4">▼ 6 overnight</div></div>
+  <div class="glass card"><div class="cl">SLEEP</div><div class="cv">7:18<small>h</small></div><div class="cd" style="color:#6EE7B7">▲ 22m vs avg</div></div>
+  <div class="glass card"><div class="cl">STEPS</div><div class="cv">8,432</div><div class="cd" style="color:#67E8F9">84% of goal</div></div>
+ </div>
+ <div class="glass coach"><div class="orb"></div><p><b>Coach —</b> kabsa covered your lunch protein. Keep dinner under <b>500 kcal</b> and take the walk after Asr.</p></div>
+ <div class="tab"><div class="on">Today</div><div>Sleep</div><div>Food</div><div>Coach</div></div>
+</div></div>
+</body></html>

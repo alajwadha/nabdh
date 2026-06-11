@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+ --paper:#F6F1E7;--paper2:#EFE8D9;--ink:#211D17;--ink2:#6E6557;--ink3:#A39A88;
+ --rule:#DDD3BF;--green:#2C6E49;--terra:#C4502B;--gold:#B98A2F;
+}
+body{background:#E9E2D2;font-family:Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;padding:44px 48px 40px}
+.head{display:flex;align-items:baseline;gap:18px;margin-bottom:8px}
+.head h1{font-family:Fraunces,serif;font-weight:500;font-size:30px;letter-spacing:-.5px}
+.head .ar{font-family:Amiri,serif;font-size:24px;color:var(--terra)}
+.head p{font-size:13.5px;color:#7d7461;max-width:640px}
+.tag{font-size:11px;letter-spacing:2.5px;color:var(--green);font-weight:600;margin-bottom:6px}
+.row{display:flex;gap:36px;margin-top:26px}
+.col{display:flex;flex-direction:column;gap:12px}
+.cap{font-size:11px;letter-spacing:2px;color:#8d8470;font-weight:600;text-align:center}
+.ph{width:390px;height:844px;background:var(--paper);border-radius:42px;box-shadow:0 24px 60px rgba(60,48,20,.22),0 0 0 1px rgba(60,48,20,.08);overflow:hidden;position:relative}
+.in{padding:58px 28px 0;height:100%;display:flex;flex-direction:column}
+.serif{font-family:Fraunces,serif}
+.smallcaps{font-size:10.5px;letter-spacing:2.6px;font-weight:600;color:var(--ink2)}
+hr{border:0;border-top:1px solid var(--rule)}
+/* ---------- screen 1 : morning brief ---------- */
+.mast{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.mast .logo{font-family:Amiri,serif;font-size:26px;line-height:1;color:var(--ink)}
+.mast .logo span{color:var(--terra)}
+.kick{margin:20px 0 12px;color:var(--terra);font-size:10.5px;letter-spacing:2.6px;font-weight:700}
+.headline{font-family:Fraunces,serif;font-size:40px;line-height:1.08;font-weight:500;letter-spacing:-1px;margin-bottom:16px}
+.deck{font-size:15px;line-height:1.65;color:var(--ink2);margin-bottom:20px}
+.deck b{color:var(--ink);font-weight:600}
+.dropline{display:flex;gap:14px;align-items:flex-start;margin:18px 0 6px}
+.bignum{font-family:Fraunces,serif;font-size:84px;line-height:.85;font-weight:300;letter-spacing:-3px;color:var(--green)}
+.margin{font-size:12.5px;line-height:1.55;color:var(--ink2);padding-top:8px}
+.margin em{font-family:Fraunces,serif;font-style:italic;color:var(--ink)}
+.dots{display:flex;gap:5px;margin-top:9px}
+.dots i{width:22px;height:5px;border-radius:3px;background:var(--rule)}
+.dots i.on{background:var(--green)}
+.toc{margin-top:auto;padding-bottom:26px}
+.toc .it{display:flex;align-items:baseline;gap:14px;padding:13px 0;border-top:1px solid var(--rule)}
+.toc .n{font-family:Fraunces,serif;font-style:italic;font-size:14px;color:var(--ink3);width:18px}
+.toc .t{font-family:Fraunces,serif;font-size:18px;font-weight:500}
+.toc .d{margin-left:auto;font-size:12px;color:var(--ink2)}
+.toc .d b{color:var(--green);font-weight:600}
+.cta{margin-top:14px;background:var(--ink);color:var(--paper);text-align:center;border-radius:999px;padding:15px;font-size:13.5px;font-weight:600;letter-spacing:.3px}
+/* ---------- screen 2 : food journal ---------- */
+.datebar{display:flex;justify-content:space-between;align-items:baseline}
+.j-title{font-family:Fraunces,serif;font-size:30px;font-weight:500;letter-spacing:-.5px;margin:16px 0 4px}
+.j-sub{font-size:12.5px;color:var(--ink2);margin-bottom:18px}
+.photo{height:200px;border-radius:18px;position:relative;overflow:hidden;background:
+ radial-gradient(120px 70px at 30% 45%,#E8B86B,transparent 70%),
+ radial-gradient(150px 90px at 62% 60%,#C97B3A,transparent 70%),
+ radial-gradient(200px 130px at 50% 50%,#8A4A22,#5C2F14)}
+.photo .chip{position:absolute;left:14px;bottom:12px;background:rgba(33,29,23,.78);color:#F6F1E7;font-size:11px;font-weight:600;letter-spacing:1px;padding:6px 12px;border-radius:999px}
+.entry{display:flex;gap:16px;margin-top:18px}
+.entry .body{flex:1}
+.entry h3{font-family:Fraunces,serif;font-size:21px;font-weight:500;margin-bottom:4px}
+.entry .meta{font-size:12px;color:var(--ink2);margin-bottom:10px}
+.facts{border-left:2px solid var(--rule);padding-left:14px;display:flex;flex-direction:column;gap:7px;min-width:118px}
+.facts .f{font-size:11px;color:var(--ink2);letter-spacing:.4px}
+.facts .f b{display:block;font-family:Fraunces,serif;font-size:18px;font-weight:500;color:var(--ink);letter-spacing:0}
+.note{margin-top:16px;padding:14px 16px;background:#F0E6D2;border-radius:4px 18px 18px 18px;font-family:Fraunces,serif;font-style:italic;font-size:14.5px;line-height:1.55;color:#7A3A1E}
+.note b{font-style:normal;font-weight:600}
+.prev{margin-top:auto;padding-bottom:24px}
+.prev .p{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-top:1px solid var(--rule);font-size:13.5px}
+.prev .p .w{font-family:Fraunces,serif;font-size:15px}
+.prev .p .k{color:var(--ink2);font-size:12px}
+.addbtn{margin-top:12px;border:1.5px dashed var(--ink3);border-radius:999px;text-align:center;padding:13px;font-size:13px;font-weight:600;color:var(--ink2)}
+/* ---------- screen 3 : weekly review ---------- */
+.cover{background:var(--green);color:#F2EEDF;height:100%;padding:58px 28px 28px;display:flex;flex-direction:column}
+.cover .smallcaps{color:#BFD6C4}
+.cover hr{border-color:rgba(242,238,223,.25)}
+.wk{font-family:Fraunces,serif;font-size:120px;font-weight:300;letter-spacing:-5px;line-height:.9;margin:18px 0 2px}
+.wk small{font-size:30px;letter-spacing:0;font-weight:400}
+.quote{font-family:Fraunces,serif;font-style:italic;font-size:21px;line-height:1.4;margin:22px 0 26px}
+.quote span{color:#EFC75E}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(242,238,223,.25)}
+.stats .s{padding:16px 4px 14px;border-bottom:1px solid rgba(242,238,223,.25)}
+.stats .s:nth-child(odd){border-right:1px solid rgba(242,238,223,.25);padding-right:16px}
+.stats .s:nth-child(even){padding-left:16px}
+.stats .l{font-size:10px;letter-spacing:2px;color:#BFD6C4;font-weight:600;margin-bottom:6px}
+.stats .v{font-family:Fraunces,serif;font-size:30px;font-weight:400;letter-spacing:-.5px}
+.stats .v small{font-size:13px;color:#BFD6C4;font-weight:400}
+.stats .ch{font-size:11px;margin-top:4px;color:#EFC75E;font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:7px;height:64px;margin-top:auto;margin-bottom:10px}
+.bars i{flex:1;background:rgba(242,238,223,.28);border-radius:3px 3px 0 0}
+.bars i.hi{background:#EFC75E}
+.bl{display:flex;gap:7px;font-size:9.5px;letter-spacing:1px;color:#BFD6C4;margin-bottom:18px}
+.bl span{flex:1;text-align:center}
+.cover .cta{background:#F2EEDF;color:var(--green)}
+.ar-q{font-family:Amiri,serif;font-size:17px;direction:rtl;color:#BFD6C4;margin-top:10px}
+</style></head><body>
+<div class="tag">OPTION A</div>
+<div class="head"><h1>Sahifa — The Daily Brief</h1><div class="ar">الصحيفة</div>
+<p>Narrative-first. No dashboard: the coach <i>writes</i> your health to you each morning as a short editorial. Warm paper, serif type, data woven into sentences. Calm, literary, premium print.</p></div>
+<div class="row">
+
+<!-- S1 morning brief -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="mast"><div class="logo">نبض<span>.</span></div><div class="smallcaps">THURSDAY · JUNE 11</div></div>
+ <hr>
+ <div class="kick">THE MORNING BRIEF</div>
+ <div class="headline">Go easy today, Ali.</div>
+ <div class="deck">You slept <b>7h 20m</b> — solid — but your overnight HRV dipped for a <b>third straight night</b>, and your resting heart rate is running 4 beats above your monthly baseline. Your body is asking for a lighter day.</div>
+ <div class="dropline">
+   <div class="bignum">64</div>
+   <div class="margin"><em>Readiness</em> — below your weekly average of 74.<div class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+ </div>
+ <div class="toc">
+  <div class="it"><div class="n">i</div><div class="t">Sleep</div><div class="d">7h 20m · deep sleep <b>improved</b></div></div>
+  <div class="it"><div class="n">ii</div><div class="t">Movement</div><div class="d">a 30-min walk, <b>after Asr</b></div></div>
+  <div class="it"><div class="n">iii</div><div class="t">Food</div><div class="d">aim lighter — <b>1,900 kcal</b></div></div>
+  <div class="cta">Read today’s brief — 2 min</div>
+ </div>
+</div></div><div class="cap">MORNING BRIEF — HOME</div></div>
+
+<!-- S2 food journal -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="datebar"><div class="smallcaps">CHAPTER III — FOOD</div><div class="smallcaps" style="color:var(--terra)">1,412 / 1,900 KCAL</div></div>
+ <div class="j-title">The food journal</div>
+ <div class="j-sub">Photograph it. The kitchen does the arithmetic.</div>
+ <div class="photo"><div class="chip">LUNCH · 1:42 PM</div></div>
+ <div class="entry">
+  <div class="body">
+   <h3>Kabsa with chicken</h3>
+   <div class="meta">Recognized from photo · Saudi dish nº 12</div>
+  </div>
+  <div class="facts">
+   <div class="f"><b>642</b>kcal</div>
+   <div class="f"><b>38g</b>protein</div>
+   <div class="f"><b>71g</b>carbs</div>
+  </div>
+ </div>
+ <div class="note"><b>Coach’s note —</b> good protein for recovery. The rice was generous; keep dinner light and you’re perfectly on plan.</div>
+ <div class="prev">
+  <div class="p"><span class="w">Breakfast — dates &amp; laban</span><span class="k">310 kcal</span></div>
+  <div class="p"><span class="w">Morning — Arabic coffee</span><span class="k">12 kcal</span></div>
+  <div class="addbtn">＋ Photograph a meal</div>
+ </div>
+</div></div><div class="cap">FOOD — JOURNAL ENTRY</div></div>
+
+<!-- S3 weekly review -->
+<div class="col"><div class="ph"><div class="cover">
+ <div class="mast"><div class="logo" style="color:#F2EEDF">نبض<span style="color:#EFC75E">.</span></div><div class="smallcaps">THE FRIDAY REVIEW</div></div>
+ <hr>
+ <div class="wk">W24<small> / 2026</small></div>
+ <div class="quote">“Your most consistent sleep <span>in nine weeks</span> — and it shows everywhere else.”</div>
+ <div class="stats">
+  <div class="s"><div class="l">AVG READINESS</div><div class="v">74</div><div class="ch">▲ 6 vs last week</div></div>
+  <div class="s"><div class="l">AVG SLEEP</div><div class="v">7.4<small>h</small></div><div class="ch">▲ 22 min</div></div>
+  <div class="s"><div class="l">RESTING HR</div><div class="v">57<small>bpm</small></div><div class="ch">▼ 2 bpm</div></div>
+  <div class="s"><div class="l">ACTIVE DAYS</div><div class="v">5<small>/7</small></div><div class="ch">goal met</div></div>
+ </div>
+ <div class="bars"><i style="height:46%"></i><i style="height:58%"></i><i style="height:40%"></i><i style="height:72%"></i><i class="hi" style="height:92%"></i><i style="height:66%"></i><i style="height:78%"></i></div>
+ <div class="bl"><span>SAT</span><span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span></div>
+ <div class="ar-q">أفضل أسبوع لك منذ شهرين — استمر.</div>
+ <div class="cta" style="margin-top:14px">Read the full review</div>
+</div></div><div class="cap">WEEKLY — THE FRIDAY REVIEW</div></div>
+
+</div>
+</body></html>

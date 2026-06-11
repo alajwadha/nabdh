@@ -1,0 +1,90 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#04070A;font-family:'Chakra Petch',system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#5F7A8A;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#fff}
+.mono{font-family:'IBM Plex Mono',monospace}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;background:#060B10;box-shadow:0 30px 70px rgba(0,0,0,.8),0 0 0 1px #14222C}
+.scan{position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(56,255,255,.012) 3px 6px);pointer-events:none}
+.in{position:absolute;inset:0;padding:54px 18px 0;display:flex;flex-direction:column;color:#D9F2F2}
+.top{display:flex;justify-content:space-between;align-items:center;border:1px solid #14323C;background:rgba(8,24,30,.7);border-radius:8px;padding:9px 13px;margin-bottom:12px}
+.top .l{font-weight:700;font-size:13px;letter-spacing:2px}.top .l b{color:#38FFDC}
+.top .r{font-family:'IBM Plex Mono';font-size:10.5px;color:#5F7A8A;letter-spacing:1px}
+.top .r i{color:#38FFDC;font-style:normal}
+.radarw{position:relative;border:1px solid #14323C;background:rgba(8,24,30,.5);border-radius:12px;padding:12px 12px 8px;margin-bottom:12px;display:flex;gap:8px}
+.corner{position:absolute;width:10px;height:10px;border-color:#38FFDC!important}
+.c1{left:-1px;top:-1px;border-left:2px solid;border-top:2px solid}
+.c2{right:-1px;top:-1px;border-right:2px solid;border-top:2px solid}
+.c3{left:-1px;bottom:-1px;border-left:2px solid;border-bottom:2px solid}
+.c4{right:-1px;bottom:-1px;border-right:2px solid;border-bottom:2px solid}
+.rlab{font-size:9.5px;letter-spacing:2px;color:#5F7A8A;font-weight:600;margin-bottom:4px}
+.rl-side{flex:1;display:flex;flex-direction:column;justify-content:center;gap:9px}
+.kv{display:flex;justify-content:space-between;border-bottom:1px dashed #14323C;padding-bottom:7px}
+.kv .k{font-size:9.5px;letter-spacing:1.6px;color:#5F7A8A;font-weight:600}
+.kv .v{font-family:'IBM Plex Mono';font-size:12.5px;font-weight:600}
+.kv .v.warn{color:#FFB838}.kv .v.crit{color:#FF5D5D}.kv .v.ok{color:#38FFDC}
+.bignum{text-align:center}
+.bignum .n{font-family:'IBM Plex Mono';font-size:58px;font-weight:600;letter-spacing:-2px;color:#38FFDC;text-shadow:0 0 18px rgba(56,255,220,.45);line-height:1}
+.bignum .t{font-size:9px;letter-spacing:2.4px;color:#5F7A8A;font-weight:700;margin-top:3px}
+.mode{margin:8px auto 0;display:inline-block;border:1px solid #FFB838;color:#FFB838;font-size:10px;letter-spacing:2px;font-weight:700;padding:5px 12px;border-radius:4px;background:rgba(255,184,56,.07)}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.cell{border:1px solid #14323C;background:rgba(8,24,30,.5);border-radius:8px;padding:10px 11px}
+.cell .k{font-size:8.5px;letter-spacing:1.6px;color:#5F7A8A;font-weight:700;margin-bottom:4px}
+.cell .v{font-family:'IBM Plex Mono';font-size:16px;font-weight:600}
+.cell .d{font-size:9px;font-weight:700;margin-top:2px}
+.gph{border:1px solid #14323C;background:rgba(8,24,30,.5);border-radius:12px;padding:12px;margin-bottom:12px}
+.gph .hd{display:flex;justify-content:space-between;margin-bottom:6px}
+.comms{border:1px solid #14323C;border-left:3px solid #38FFDC;background:rgba(8,24,30,.7);border-radius:8px;padding:12px 14px;font-family:'IBM Plex Mono';font-size:11.5px;line-height:1.6;color:#A8CFCB}
+.comms b{color:#38FFDC;font-weight:600}
+.comms .tag{color:#FFB838}
+.nav{margin-top:auto;margin-bottom:16px;display:flex;gap:8px}
+.nav div{flex:1;text-align:center;border:1px solid #14323C;border-radius:8px;padding:12px 0;font-size:10.5px;letter-spacing:2px;font-weight:700;color:#5F7A8A}
+.nav div.on{border-color:#38FFDC;color:#06231E;background:#38FFDC}
+</style></head><body>
+<div class="meta">OPTION 13 · <b>TELEMETRY</b> · inspired by F1 race-engineer HUDs / sci-fi FUI</div>
+<div class="ph"><div class="scan"></div><div class="in">
+ <div class="top"><div class="l">NABDH <b>// BIO-TELEMETRY</b></div><div class="r">THU 06.11 <i>● LIVE</i></div></div>
+ <div class="radarw">
+  <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+  <div>
+   <div class="rlab">SYSTEMS RADAR</div>
+   <svg width="170" height="170" viewBox="0 0 170 170">
+    <polygon points="85,13 153,53 153,117 85,157 17,117 17,53" fill="none" stroke="#14323C"/>
+    <polygon points="85,37 132,65 132,105 85,133 38,105 38,65" fill="none" stroke="#14323C"/>
+    <polygon points="85,61 111,77 111,93 85,109 59,93 59,77" fill="none" stroke="#14323C"/>
+    <line x1="85" y1="13" x2="85" y2="157" stroke="#14323C"/><line x1="17" y1="53" x2="153" y2="117" stroke="#14323C"/><line x1="153" y1="53" x2="17" y2="117" stroke="#14323C"/>
+    <polygon points="85,49 124,69 118,109 85,121 47,101 53,69" fill="rgba(56,255,220,.14)" stroke="#38FFDC" stroke-width="1.6"/>
+    <circle cx="85" cy="49" r="3" fill="#FFB838"/><circle cx="47" cy="101" r="3" fill="#FF5D5D"/>
+    <text x="85" y="8" fill="#5F7A8A" font-size="8" text-anchor="middle" letter-spacing="1">SLEEP</text>
+    <text x="162" y="52" fill="#5F7A8A" font-size="8" text-anchor="end">LOAD</text>
+    <text x="162" y="124" fill="#5F7A8A" font-size="8" text-anchor="end">FUEL</text>
+    <text x="85" y="168" fill="#5F7A8A" font-size="8" text-anchor="middle" letter-spacing="1">STRESS</text>
+    <text x="8" y="124" fill="#5F7A8A" font-size="8">HRV</text>
+    <text x="8" y="52" fill="#5F7A8A" font-size="8">CARDIO</text>
+   </svg>
+  </div>
+  <div class="rl-side">
+   <div class="bignum"><div class="n">64</div><div class="t">READINESS</div><div class="mode">MODE: RECOVERY</div></div>
+   <div class="kv"><span class="k">HRV</span><span class="v crit">48ms ▼3N</span></div>
+   <div class="kv"><span class="k">REST HR</span><span class="v warn">58 +4</span></div>
+  </div>
+ </div>
+ <div class="strip">
+  <div class="cell"><div class="k">SLEEP</div><div class="v">7:18</div><div class="d" style="color:#38FFDC">+22M</div></div>
+  <div class="cell"><div class="k">STEPS</div><div class="v">8432</div><div class="d" style="color:#38FFDC">84%</div></div>
+  <div class="cell"><div class="k">KCAL IN</div><div class="v">1412</div><div class="d" style="color:#5F7A8A">/1900</div></div>
+  <div class="cell"><div class="k">SPO₂</div><div class="v">97%</div><div class="d" style="color:#38FFDC">NOM</div></div>
+ </div>
+ <div class="gph">
+  <div class="hd"><span class="rlab">HRV — 7 NIGHT TREND</span><span class="rlab" style="color:#FF5D5D">BASELINE 54MS</span></div>
+  <svg width="330" height="64" viewBox="0 0 330 64">
+   <line x1="0" y1="26" x2="330" y2="26" stroke="#FF5D5D" stroke-dasharray="4 5" opacity=".5"/>
+   <path d="M0,22 L55,18 L110,24 L165,20 L220,32 L275,40 L330,46" fill="none" stroke="#38FFDC" stroke-width="2"/>
+   <circle cx="330" cy="46" r="3.5" fill="#060B10" stroke="#38FFDC" stroke-width="2"/>
+  </svg>
+ </div>
+ <div class="comms"><span class="tag">[ENGINEER]</span> Protein target hit at 13:42 (kabsa). <b>Box tonight:</b> dinner ≤ 500 kcal · lights out 23:15 · easy walk after Asr.</div>
+ <div class="nav"><div class="on">TELEMETRY</div><div>SLEEP</div><div>FUEL</div><div>RADIO</div></div>
+</div></div>
+</body></html>

@@ -1,0 +1,140 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+ --bg:#120D1A;--bg2:#191226;--bub:#211736;--bub2:#2A1E44;--line:#332550;
+ --t1:#F6F2FC;--t2:#A99DC4;--t3:#6F6390;
+ --coral:#FF6B5E;--coral2:#FF8E7A;--lav:#B9A8FF;--mintb:#5EE6C8;
+}
+body{background:#0B0812;font-family:Rubik,system-ui,'Noto Color Emoji',sans-serif;color:var(--t1);-webkit-font-smoothing:antialiased;padding:44px 48px 40px}
+.tag{font-size:11px;letter-spacing:2.5px;color:var(--coral);font-weight:600;margin-bottom:6px}
+.head{display:flex;align-items:baseline;gap:18px;margin-bottom:8px}
+.head h1{font-weight:600;font-size:30px;letter-spacing:-.5px}
+.head .ar{font-family:'IBM Plex Sans Arabic',sans-serif;font-size:22px;color:var(--lav)}
+.head p{font-size:13.5px;color:var(--t2);max-width:660px;line-height:1.5}
+.row{display:flex;gap:36px;margin-top:26px}
+.col{display:flex;flex-direction:column;gap:12px}
+.cap{font-size:11px;letter-spacing:2px;color:var(--t3);font-weight:600;text-align:center}
+.ph{width:390px;height:844px;background:linear-gradient(170deg,var(--bg2),var(--bg) 40%);border-radius:42px;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(185,168,255,.14);overflow:hidden;position:relative}
+.in{padding:54px 18px 0;height:100%;display:flex;flex-direction:column}
+/* ---------- S1 stream ---------- */
+.top{display:flex;align-items:center;gap:11px;padding:0 6px 12px}
+.avatar{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 32% 30%,var(--coral2),var(--coral) 55%,#C23A47);box-shadow:0 0 18px rgba(255,107,94,.45);position:relative}
+.avatar::after{content:'';position:absolute;right:1px;bottom:1px;width:10px;height:10px;border-radius:50%;background:var(--mintb);border:2px solid var(--bg)}
+.who b{display:block;font-size:16px;font-weight:600}
+.who span{font-size:11.5px;color:var(--mintb)}
+.ticker{display:flex;gap:8px;overflow:hidden;padding:0 6px 14px}
+.tk{flex:none;display:flex;align-items:center;gap:6px;background:var(--bub);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:11.5px;color:var(--t2);font-weight:500}
+.tk b{color:var(--t1);font-weight:600}
+.tk i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.stream{flex:1;display:flex;flex-direction:column;gap:12px;overflow:hidden;padding:4px 6px}
+.msg{max-width:86%;border-radius:20px;padding:13px 15px;font-size:13.8px;line-height:1.5}
+.coach{background:var(--bub);border:1px solid var(--line);border-bottom-left-radius:6px;align-self:flex-start;color:var(--t1)}
+.coach b{color:var(--lav);font-weight:600}
+.user{background:linear-gradient(135deg,var(--coral),#E54F57);border-bottom-right-radius:6px;align-self:flex-end;color:#fff;font-weight:500}
+.tstamp{font-size:10px;color:var(--t3);align-self:center;letter-spacing:1.5px;font-weight:500;margin:2px 0}
+.rcard{align-self:flex-start;width:86%;background:var(--bub);border:1px solid var(--line);border-radius:20px;border-bottom-left-radius:6px;padding:14px 15px}
+.rcard .rl{font-size:10.5px;letter-spacing:2px;color:var(--t3);font-weight:600;margin-bottom:8px}
+.rrow{display:flex;align-items:center;gap:14px}
+.rnum{font-size:46px;font-weight:700;letter-spacing:-2px;color:var(--mintb);line-height:1}
+.rbarwrap{flex:1}
+.rbar{height:8px;border-radius:99px;background:#2C2148;overflow:hidden;margin-bottom:6px}
+.rbar i{display:block;height:100%;width:78%;border-radius:99px;background:linear-gradient(90deg,var(--lav),var(--mintb))}
+.rbarwrap span{font-size:11.5px;color:var(--t2)}
+.mealcard{align-self:flex-end;width:74%;border-radius:20px;border-bottom-right-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.mphoto{height:104px;background:radial-gradient(90px 50px at 35% 50%,#E8B86B,transparent 70%),radial-gradient(120px 70px at 65% 55%,#C97B3A,transparent 70%),#5C2F14}
+.mealcard .mc{background:var(--bub2);padding:10px 13px;font-size:12px;color:var(--t2)}
+.mealcard .mc b{color:#fff;font-size:13px;display:block;margin-bottom:2px}
+.macro{display:flex;gap:6px;margin-top:8px}
+.macro span{flex:1;height:5px;border-radius:99px;background:#3A2B5E}
+.macro span i{display:block;height:100%;border-radius:99px}
+.chips{display:flex;gap:8px;padding:10px 6px}
+.chip{border:1px solid var(--line);background:rgba(185,168,255,.07);color:var(--lav);font-size:12.5px;font-weight:500;border-radius:999px;padding:9px 13px;white-space:nowrap}
+.inbar{display:flex;align-items:center;gap:10px;background:var(--bub);border:1px solid var(--line);border-radius:999px;padding:8px 8px 8px 18px;margin:2px 6px 20px}
+.inbar span{flex:1;color:var(--t3);font-size:13.5px}
+.ico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bub2)}
+.ico.send{background:linear-gradient(135deg,var(--coral),#E54F57)}
+/* ---------- S2 glance ---------- */
+.glance{height:100%;padding:60px 30px 30px;display:flex;flex-direction:column;background:
+ radial-gradient(300px 200px at 80% -5%,rgba(255,107,94,.22),transparent 60%),
+ radial-gradient(340px 240px at 10% 110%,rgba(185,168,255,.16),transparent 60%)}
+.gl-l{font-size:11px;letter-spacing:3px;color:var(--t3);font-weight:600}
+.gl-big{font-size:148px;font-weight:700;letter-spacing:-8px;line-height:1;background:linear-gradient(135deg,var(--mintb),var(--lav));-webkit-background-clip:text;background-clip:text;color:transparent;margin:4px 0 0}
+.gl-state{font-size:15px;color:var(--mintb);font-weight:500;margin-bottom:34px}
+.gl-row{display:flex;justify-content:space-between;align-items:baseline;padding:17px 0;border-top:1px solid rgba(185,168,255,.14)}
+.gl-row .k{font-size:13px;color:var(--t2)}
+.gl-row .v{font-size:30px;font-weight:600;letter-spacing:-1px}
+.gl-row .v small{font-size:13px;color:var(--t3);font-weight:400;margin-left:3px}
+.gl-row .d{font-size:12px;font-weight:600;margin-left:10px}
+.gl-hint{margin-top:auto;text-align:center;color:var(--t3);font-size:12px;padding-bottom:8px}
+.pill-handle{width:44px;height:5px;border-radius:99px;background:var(--line);margin:0 auto 26px}
+/* ---------- S3 voice ---------- */
+.voice{height:100%;padding:60px 28px 30px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.orbwrap{position:relative;width:230px;height:230px;margin:60px 0 30px}
+.orb{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF9E8C,var(--coral) 45%,#7A2E55 80%,#3A1840);box-shadow:0 0 80px rgba(255,107,94,.5),0 0 160px rgba(185,168,255,.25)}
+.halo{position:absolute;border-radius:50%;border:1px solid rgba(255,142,122,.35)}
+.h1{inset:-22px}.h2{inset:-46px;border-color:rgba(185,168,255,.22)}.h3{inset:-72px;border-color:rgba(185,168,255,.1)}
+.v-l{font-size:11px;letter-spacing:3px;color:var(--t3);font-weight:600;margin-bottom:10px}
+.v-t{font-size:26px;font-weight:600;letter-spacing:-.5px;line-height:1.3}
+.v-t span{color:var(--coral2)}
+.trans{margin-top:26px;background:var(--bub);border:1px solid var(--line);border-radius:18px;padding:14px 18px;font-size:13.5px;color:var(--t2);line-height:1.55;max-width:320px}
+.trans b{color:var(--t1)}
+.moods{display:flex;gap:10px;margin-top:auto;margin-bottom:18px}
+.mood{width:54px;height:54px;border-radius:50%;background:var(--bub);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:22px}
+.mood.on{background:rgba(94,230,200,.14);border-color:var(--mintb)}
+.endbtn{width:100%;border-radius:999px;padding:15px;background:var(--bub2);border:1px solid var(--line);color:var(--t2);font-size:13.5px;font-weight:500;text-align:center}
+</style></head><body>
+<div class="tag">OPTION B</div>
+<div class="head"><h1>Majlis — The Conversation</h1><div class="ar">المجلس</div>
+<p>Conversation-first. There is no app to learn — the whole product is one live chat with your coach. Meals are photographed into the stream, vitals ride in a ticker, and a long-press “glance” shows the numbers. Built for a WhatsApp-native market.</p></div>
+<div class="row">
+
+<!-- S1 stream -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="top"><div class="avatar"></div><div class="who"><b>نبض · Coach</b><span>online · watching your day</span></div></div>
+ <div class="ticker">
+  <div class="tk"><i style="background:var(--coral)"></i>HR <b>58</b></div>
+  <div class="tk"><i style="background:var(--lav)"></i>Sleep <b>7.3h</b></div>
+  <div class="tk"><i style="background:var(--mintb)"></i>Steps <b>8,432</b></div>
+  <div class="tk"><i style="background:#F2B544"></i>Kcal <b>1,412</b></div>
+ </div>
+ <div class="stream">
+  <div class="tstamp">7:05 AM</div>
+  <div class="msg coach">Sabah alkhair, Ali ☀️ You slept <b>7h 20m</b> — but your HRV dipped again overnight. Let’s keep today light.</div>
+  <div class="rcard"><div class="rl">TODAY’S READINESS</div><div class="rrow"><div class="rnum">64</div><div class="rbarwrap"><div class="rbar"><i style="width:64%"></i></div><span>below your weekly average — recovery day</span></div></div></div>
+  <div class="tstamp">1:42 PM</div>
+  <div class="mealcard"><div class="mphoto"></div><div class="mc"><b>Kabsa with chicken 🍛</b>642 kcal · 38g protein · 71g carbs<div class="macro"><span><i style="width:78%;background:var(--mintb)"></i></span><span><i style="width:62%;background:var(--lav)"></i></span><span><i style="width:34%;background:var(--coral)"></i></span></div></div></div>
+  <div class="msg coach">Nice — that covers your protein for lunch. Keep dinner under <b>500 kcal</b> and you’re on plan. Walk after Asr? 🚶</div>
+ </div>
+ <div class="chips"><div class="chip">🚶 Start walk</div><div class="chip">💧 Log water</div><div class="chip">📷 صوّر وجبتك</div></div>
+ <div class="inbar"><span>Message your coach…</span><div class="ico">🎙️</div><div class="ico">📷</div><div class="ico send">↑</div></div>
+</div></div><div class="cap">HOME — THE STREAM</div></div>
+
+<!-- S2 glance -->
+<div class="col"><div class="ph"><div class="glance">
+ <div class="pill-handle"></div>
+ <div class="gl-l">GLANCE · THURSDAY 1:48 PM</div>
+ <div class="gl-big">64</div>
+ <div class="gl-state">Recovery day — go easy</div>
+ <div class="gl-row"><span class="k">Resting heart rate</span><span><span class="v">58<small>bpm</small></span><span class="d" style="color:var(--coral2)">▲4</span></span></div>
+ <div class="gl-row"><span class="k">HRV overnight</span><span><span class="v">48<small>ms</small></span><span class="d" style="color:var(--coral2)">▼6</span></span></div>
+ <div class="gl-row"><span class="k">Sleep</span><span><span class="v">7.3<small>h</small></span><span class="d" style="color:var(--mintb)">▲22m</span></span></div>
+ <div class="gl-row"><span class="k">Steps</span><span><span class="v">8,432</span><span class="d" style="color:var(--mintb)">84%</span></span></div>
+ <div class="gl-row"><span class="k">Calories in / out</span><span><span class="v">1,412</span><span class="d" style="color:var(--t3)">/ 2,180</span></span></div>
+ <div class="gl-hint">release to return to the conversation</div>
+</div></div><div class="cap">LONG-PRESS — GLANCE SHEET</div></div>
+
+<!-- S3 voice -->
+<div class="col"><div class="ph"><div class="voice">
+ <div class="v-l">EVENING CHECK-IN · 9:30 PM</div>
+ <div class="v-t">Talking with <span>your coach</span></div>
+ <div class="orbwrap"><div class="halo h3"></div><div class="halo h2"></div><div class="halo h1"></div><div class="orb"></div></div>
+ <div class="trans"><b>“How did the day feel?”</b><br>…sounds like the afternoon walk helped. I’ll nudge you toward bed by <b>11:15</b> so we rebuild that HRV tonight.</div>
+ <div class="moods"><div class="mood">😩</div><div class="mood">😐</div><div class="mood on">🙂</div><div class="mood">🤩</div></div>
+ <div class="endbtn">End check-in</div>
+</div></div><div class="cap">EVENING — VOICE CHECK-IN</div></div>
+
+</div>
+</body></html>

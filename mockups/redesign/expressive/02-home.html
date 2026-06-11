@@ -1,0 +1,144 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F1E8;--card:#FFFBF4;--ink:#1F1C17;--mut:#80796C;--grn:#2E7D5B;--grn2:#4FA379;
+--peach:#F7E3C2;--lav:#DDD6F6;--mint:#D8EFE2;--pink:#F8DCE4;--dark:#211E1A;--yel:#F2C94C;--navbg:#EFE8DA}
+body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);padding:40px 44px;-webkit-font-smoothing:antialiased}
+.hd{margin-bottom:22px}
+.hd .k{font-size:11px;letter-spacing:2.5px;color:var(--grn);font-weight:800}
+.hd h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.row{display:flex;gap:34px}
+.col{display:flex;flex-direction:column;gap:11px}
+.cap{font-size:11px;letter-spacing:2px;color:#8d8470;font-weight:800;text-align:center}
+.ph{width:390px;height:844px;background:var(--bg);border-radius:44px;box-shadow:0 24px 60px rgba(60,48,20,.25),0 0 0 1px rgba(60,48,20,.07);overflow:hidden;position:relative}
+.in{padding:54px 24px 0;height:100%;display:flex;flex-direction:column}
+.in>*{flex-shrink:0}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:800;font-size:19px}.logo i{font-style:normal;color:var(--grn)}
+.avc{width:38px;height:38px;border-radius:14px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.greet{font-size:34px;font-weight:800;letter-spacing:-1.4px;line-height:1.08;margin:16px 0 16px}
+.greet i{font-style:normal;color:var(--grn)}
+.nav{margin-top:auto;display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.tabs{flex:1;display:flex;background:var(--navbg);border-radius:999px;padding:6px}
+.tabs div{flex:1;text-align:center;padding:12px 0;border-radius:999px;font-size:13px;font-weight:700;color:var(--mut)}
+.tabs div.on{background:var(--dark);color:#FFF8EC}
+.fab{width:56px;height:56px;border-radius:22px;background:var(--grn);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;box-shadow:0 12px 24px rgba(46,125,91,.35)}
+.coach{background:var(--dark);border-radius:26px;padding:17px 18px;display:flex;gap:13px;align-items:flex-start;color:#F5EFE3}
+.cic{width:36px;height:36px;border-radius:50%;background:var(--yel);flex:none;display:flex;align-items:center;justify-content:center;font-size:17px}
+.coach p{font-size:13px;font-weight:600;line-height:1.55}
+.coach b{color:var(--yel)}
+/* A — picked design */
+.hero{background:linear-gradient(120deg,var(--grn),#256A4C);border-radius:30px;padding:20px 22px;color:#fff;position:relative;overflow:hidden;display:flex;gap:16px;align-items:center;margin-bottom:14px}
+.hero .bub{position:absolute;right:-50px;top:-55px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.13)}
+.hero .n{font-size:84px;font-weight:800;letter-spacing:-4px;line-height:.95}
+.hero .s .l{font-size:10px;letter-spacing:2.2px;font-weight:800;opacity:.75;margin-bottom:5px}
+.hero .s p{font-size:14px;font-weight:700;line-height:1.45}
+.segs{display:flex;gap:6px;margin-top:10px}
+.segs i{width:30px;height:8px;border-radius:99px;background:rgba(255,255,255,.3)}
+.segs i.on{background:var(--yel)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.tile{border-radius:26px;padding:16px 17px}
+.tile .l{font-size:10px;letter-spacing:1.8px;font-weight:800;opacity:.55;margin-bottom:8px}
+.tile .v{font-size:31px;font-weight:800;letter-spacing:-1.4px}
+.tile .v small{font-size:12px;font-weight:700;opacity:.45;margin-left:2px}
+.tile .d{font-size:11.5px;font-weight:700;margin-top:5px;opacity:.75}
+/* B — typographic */
+.bign{display:flex;align-items:flex-end;gap:14px;margin-bottom:4px}
+.bign .n{font-size:130px;font-weight:800;letter-spacing:-7px;line-height:.85;color:var(--grn)}
+.bign .side{padding-bottom:14px}
+.bign .side .l{font-size:10px;letter-spacing:2.2px;font-weight:800;color:var(--mut)}
+.bign .side p{font-size:13.5px;font-weight:700;line-height:1.4;max-width:140px}
+.bign .side p b{color:var(--grn)}
+.hr{border:0;border-top:2px solid #E7DFCE;margin:16px 0}
+.lrow{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:2px solid #EFE8D8}
+.lrow .k{display:flex;align-items:center;gap:11px;font-size:14px;font-weight:700}
+.lrow .ic{width:38px;height:38px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.lrow .v{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.lrow .v small{font-size:11px;color:var(--mut);font-weight:700}
+.lrow .d{font-size:11.5px;font-weight:800;width:52px;text-align:right}
+/* C — ring */
+.ringwrap{display:flex;flex-direction:column;align-items:center;margin:4px 0 12px}
+.state{margin-top:10px;background:var(--mint);border-radius:999px;padding:9px 16px;font-size:12.5px;font-weight:800;color:#1E5A40}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}
+.mini{border-radius:20px;padding:12px 10px;text-align:center}
+.mini .l{font-size:8.5px;letter-spacing:1.4px;font-weight:800;opacity:.55;margin-bottom:4px}
+.mini .v{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.plan{background:var(--card);border:2px solid #EDE5D3;border-radius:26px;padding:6px 18px;margin-bottom:12px}
+.pl{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:2px solid #F2ECDD;font-size:13.5px;font-weight:700}
+.pl:last-child{border-bottom:0}
+.ck{width:24px;height:24px;border-radius:9px;border:2.5px solid #D8CFBC;flex:none}
+.ck.on{background:var(--grn);border-color:var(--grn);position:relative}
+.ck.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800}
+.pl .tm{margin-left:auto;font-size:11px;color:var(--mut);font-weight:800}
+.pl s{color:var(--mut)}
+</style></head><body>
+<div class="hd"><div class="k">EXPRESSIVE SYSTEM · SCREEN 2</div><h1>Home / Today — 3 options</h1></div>
+<div class="row">
+
+<!-- A : the picked card layout -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="top"><div class="logo">Nabdh<i>.</i></div><div class="avc">A</div></div>
+ <div class="greet">Easy does it<br>today, <i>Ali.</i></div>
+ <div class="hero"><div class="bub"></div>
+  <div class="n">64</div>
+  <div class="s"><div class="l">READINESS</div><p>HRV dipped a third night — recovery beats grind today.</p>
+   <div class="segs"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+ </div>
+ <div class="g2">
+  <div class="tile" style="background:var(--peach)"><div class="l">REST HR</div><div class="v">58<small>bpm</small></div><div class="d">▲ 4 vs baseline</div></div>
+  <div class="tile" style="background:var(--lav)"><div class="l">HRV</div><div class="v">48<small>ms</small></div><div class="d">▼ 6 overnight</div></div>
+  <div class="tile" style="background:var(--mint)"><div class="l">SLEEP</div><div class="v">7:18<small>h</small></div><div class="d">▲ 22 min — nice</div></div>
+  <div class="tile" style="background:var(--pink)"><div class="l">STEPS</div><div class="v">8,432</div><div class="d">84% of 10k goal</div></div>
+ </div>
+ <div class="coach"><div class="cic">💬</div><p><b>Coach</b> — kabsa sorted your protein. Dinner under <b>500 kcal</b>, walk after Asr, lights out by 11:15.</p></div>
+ <div class="nav"><div class="tabs"><div class="on">Today</div><div>Sleep</div><div>Food</div></div><div class="fab">＋</div></div>
+</div></div><div class="cap">A — CARDS (YOUR PICK, REFINED)</div></div>
+
+<!-- B : typographic -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="top"><div class="logo">Nabdh<i>.</i></div><div class="avc" style="background:var(--lav)">A</div></div>
+ <div class="greet" style="font-size:23px;margin:14px 0 8px">Easy does it today, <i>Ali.</i></div>
+ <div class="bign">
+  <div class="n">64</div>
+  <div class="side"><div class="l">READINESS</div><p>recovery beats <b>grind</b> today</p></div>
+ </div>
+ <hr class="hr">
+ <div class="lrow"><div class="k"><div class="ic" style="background:var(--peach)">💗</div>Rest heart rate</div><div><span class="v">58<small> bpm</small></span></div><div class="d" style="color:#C26B4A">▲ 4</div></div>
+ <div class="lrow"><div class="k"><div class="ic" style="background:var(--lav)">📉</div>HRV</div><div><span class="v">48<small> ms</small></span></div><div class="d" style="color:#C26B4A">▼ 6</div></div>
+ <div class="lrow"><div class="k"><div class="ic" style="background:var(--mint)">😴</div>Sleep</div><div><span class="v">7:18<small> h</small></span></div><div class="d" style="color:var(--grn)">▲ 22m</div></div>
+ <div class="lrow" style="border-bottom:0"><div class="k"><div class="ic" style="background:var(--pink)">👟</div>Steps</div><div><span class="v">8,432</span></div><div class="d" style="color:var(--grn)">84%</div></div>
+ <div class="coach" style="margin-top:10px"><div class="cic">💬</div><p><b>Coach</b> — dinner under <b>500 kcal</b>, walk after Asr, lights out 11:15.</p></div>
+ <div class="nav"><div class="tabs"><div class="on">Today</div><div>Sleep</div><div>Food</div></div><div class="fab">＋</div></div>
+</div></div><div class="cap">B — TYPOGRAPHIC LIST</div></div>
+
+<!-- C : ring + plan -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="top"><div class="logo">Nabdh<i>.</i></div><div class="avc" style="background:var(--mint)">A</div></div>
+ <div class="ringwrap">
+  <svg width="190" height="190" viewBox="0 0 190 190">
+   <circle cx="95" cy="95" r="80" fill="none" stroke="#EDE5D3" stroke-width="15"/>
+   <circle cx="95" cy="95" r="80" fill="none" stroke="var(--grn)" stroke-width="15" stroke-linecap="round" stroke-dasharray="503" stroke-dashoffset="181" transform="rotate(-90 95 95)"/>
+   <text x="95" y="100" text-anchor="middle" font-size="52" font-weight="800" fill="#1F1C17" letter-spacing="-3">64</text>
+   <text x="95" y="122" text-anchor="middle" font-size="9" font-weight="800" fill="#80796C" letter-spacing="2">READINESS</text>
+  </svg>
+  <div class="state">Recovery day — HRV dipped 3 nights</div>
+ </div>
+ <div class="g4">
+  <div class="mini" style="background:var(--peach)"><div class="l">HR</div><div class="v">58</div></div>
+  <div class="mini" style="background:var(--lav)"><div class="l">HRV</div><div class="v">48</div></div>
+  <div class="mini" style="background:var(--mint)"><div class="l">SLEEP</div><div class="v">7:18</div></div>
+  <div class="mini" style="background:var(--pink)"><div class="l">STEPS</div><div class="v">8.4k</div></div>
+ </div>
+ <div class="plan">
+  <div class="pl"><div class="ck on"></div><span><s>Protein at lunch — kabsa 38g</s></span><span class="tm">1:42</span></div>
+  <div class="pl"><div class="ck"></div><span>Easy walk, 30 min</span><span class="tm">after Asr</span></div>
+  <div class="pl"><div class="ck"></div><span>Dinner under 500 kcal</span><span class="tm">8 pm</span></div>
+  <div class="pl"><div class="ck"></div><span>Lights out</span><span class="tm">11:15</span></div>
+ </div>
+ <div class="coach"><div class="cic">💬</div><p><b>Coach</b> — three ticks left. Finish the walk and tomorrow’s score bounces back.</p></div>
+ <div class="nav"><div class="tabs"><div class="on">Today</div><div>Sleep</div><div>Food</div></div><div class="fab">＋</div></div>
+</div></div><div class="cap">C — RING + DAILY PLAN</div></div>
+
+</div>
+</body></html>

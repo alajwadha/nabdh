@@ -1,0 +1,72 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#08090C;font-family:Inter,system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#7C7F8A;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#fff}
+.mono{font-family:'JetBrains Mono',monospace}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;background:#0D0E12;box-shadow:0 30px 70px rgba(0,0,0,.7),0 0 0 1px #1E2028}
+.in{padding:56px 18px 0;height:100%;display:flex;flex-direction:column;color:#E8E9ED}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:0 4px}
+.logo{font-weight:700;font-size:16px}.logo span{color:#8B8BF5}
+.cmd{flex:1;display:flex;align-items:center;justify-content:space-between;background:#14151B;border:1px solid #23242E;border-radius:10px;padding:9px 12px;font-size:12px;color:#6E7180}
+.cmd kbd{font-family:'JetBrains Mono';font-size:10px;background:#1E2028;border:1px solid #2A2C38;border-radius:5px;padding:2px 6px;color:#8E92A2}
+.panel{background:#12131A;border:1px solid #23242E;border-radius:14px;margin-bottom:12px}
+.ph1{padding:16px 16px 0}
+.hrow{display:flex;justify-content:space-between;align-items:baseline}
+.hl{font-size:11px;font-weight:600;color:#8E92A2;letter-spacing:.6px}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:#FFB224}
+.status i{width:7px;height:7px;border-radius:50%;background:#FFB224;box-shadow:0 0 8px #FFB224}
+.hnum{font-size:54px;font-weight:700;letter-spacing:-2.5px;margin:6px 0 2px}
+.hnum small{font-size:13px;color:#6E7180;font-weight:500;letter-spacing:0;margin-left:6px}
+.chartw{position:relative;margin:8px -1px 0}
+.rows{padding:4px 0}
+.row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #1B1C24}
+.dot{width:8px;height:8px;border-radius:3px;flex:none}
+.row .k{font-size:12.5px;font-weight:600;flex:1}
+.row .m{font-family:'JetBrains Mono';font-size:12px;color:#8E92A2}
+.row .val{font-family:'JetBrains Mono';font-size:13px;font-weight:600;width:74px;text-align:right}
+.badge{font-size:10px;font-weight:700;border-radius:5px;padding:3px 7px}
+.b-warn{background:rgba(255,108,124,.12);color:#FF6C7C}
+.b-ok{background:rgba(94,222,160,.12);color:#5EDEA0}
+.b-info{background:rgba(139,139,245,.12);color:#8B8BF5}
+.tasks .row .k{font-weight:500}
+.check{width:16px;height:16px;border-radius:5px;border:1.5px solid #2E3040;flex:none}
+.check.on{background:#8B8BF5;border-color:#8B8BF5;position:relative}
+.check.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#0D0E12;font-weight:800}
+.sect{font-size:10.5px;letter-spacing:1.6px;font-weight:700;color:#5C5F6E;padding:2px 6px 8px}
+.nav{margin-top:auto;margin-bottom:18px;display:flex;justify-content:space-around;background:#12131A;border:1px solid #23242E;border-radius:12px;padding:10px}
+.nav div{font-size:12px;font-weight:600;color:#5C5F6E;padding:7px 16px;border-radius:8px}
+.nav div.on{color:#fff;background:#1E2028}
+</style></head><body>
+<div class="meta">OPTION 8 · <b>PRECISION</b> · inspired by Linear’s dark product-grade UI</div>
+<div class="ph"><div class="in">
+ <div class="top"><div class="logo">Nabdh<span>▴</span></div><div class="cmd"><span>Ask anything…</span><kbd>⌘K</kbd></div></div>
+ <div class="panel ph1">
+  <div class="hrow"><div class="hl">Readiness · THU JUN 11</div><div class="status"><i></i>Recovery advised</div></div>
+  <div class="hnum">64<small>↓10 vs 7-day avg 74</small></div>
+  <svg class="chartw" width="352" height="86" viewBox="0 0 352 86">
+   <defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B8BF5" stop-opacity=".28"/><stop offset="1" stop-color="#8B8BF5" stop-opacity="0"/></linearGradient></defs>
+   <path d="M0,40 L50,30 L100,42 L150,18 L200,12 L250,26 L300,22 L352,56 L352,86 L0,86 Z" fill="url(#f)"/>
+   <path d="M0,40 L50,30 L100,42 L150,18 L200,12 L250,26 L300,22 L352,56" fill="none" stroke="#8B8BF5" stroke-width="2"/>
+   <circle cx="352" cy="56" r="4" fill="#0D0E12" stroke="#8B8BF5" stroke-width="2.5"/>
+   <line x1="0" y1="29" x2="352" y2="29" stroke="#23242E" stroke-dasharray="3 5"/>
+  </svg>
+ </div>
+ <div class="panel rows">
+  <div class="sect" style="padding:12px 16px 4px">SIGNALS</div>
+  <div class="row"><span class="dot" style="background:#FF6C7C"></span><span class="k">HRV trending down</span><span class="m">48ms · 3 nights</span><span class="badge b-warn">▼ 11%</span></div>
+  <div class="row"><span class="dot" style="background:#FF6C7C"></span><span class="k">Resting HR elevated</span><span class="m">58bpm</span><span class="badge b-warn">+4</span></div>
+  <div class="row"><span class="dot" style="background:#5EDEA0"></span><span class="k">Sleep duration</span><span class="m">7h18m</span><span class="badge b-ok">+22m</span></div>
+  <div class="row"><span class="dot" style="background:#8B8BF5"></span><span class="k">Steps</span><span class="m">8,432 / 10k</span><span class="badge b-info">84%</span></div>
+ </div>
+ <div class="panel rows tasks">
+  <div class="sect" style="padding:12px 16px 4px">COACH PLAN — TODAY</div>
+  <div class="row"><span class="check on"></span><span class="k" style="text-decoration:line-through;color:#5C5F6E">Lunch ≥ 35g protein — kabsa ✓</span><span class="m">13:42</span></div>
+  <div class="row"><span class="check"></span><span class="k">30-min easy walk after Asr</span><span class="m">~16:30</span></div>
+  <div class="row"><span class="check"></span><span class="k">Dinner ≤ 500 kcal</span><span class="m">budget</span></div>
+  <div class="row"><span class="check"></span><span class="k">Lights out 23:15 — rebuild HRV</span><span class="m">tonight</span></div>
+ </div>
+ <div class="nav"><div class="on">Today</div><div>Trends</div><div>Fuel</div><div>Coach</div></div>
+</div></div>
+</body></html>
