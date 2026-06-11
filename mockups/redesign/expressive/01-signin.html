@@ -1,0 +1,111 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F1E8;--card:#FFFBF4;--ink:#1F1C17;--mut:#80796C;--grn:#2E7D5B;--grn2:#4FA379;
+--peach:#F7E3C2;--lav:#DDD6F6;--mint:#D8EFE2;--pink:#F8DCE4;--dark:#211E1A;--yel:#F2C94C;--navbg:#EFE8DA}
+body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);padding:40px 44px;-webkit-font-smoothing:antialiased}
+.hd{margin-bottom:22px}
+.hd .k{font-size:11px;letter-spacing:2.5px;color:var(--grn);font-weight:800}
+.hd h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.row{display:flex;gap:34px}
+.col{display:flex;flex-direction:column;gap:11px}
+.cap{font-size:11px;letter-spacing:2px;color:#8d8470;font-weight:800;text-align:center}
+.ph{width:390px;height:844px;background:var(--bg);border-radius:44px;box-shadow:0 24px 60px rgba(60,48,20,.25),0 0 0 1px rgba(60,48,20,.07);overflow:hidden;position:relative}
+.in{padding:56px 26px 0;height:100%;display:flex;flex-direction:column}
+.in>*{flex-shrink:0}
+.logo{font-weight:800;font-size:20px}.logo i{font-style:normal;color:var(--grn)}
+.btn{border-radius:999px;padding:17px;text-align:center;font-size:14.5px;font-weight:700}
+.btn.dark{background:var(--dark);color:#FFF8EC}
+.btn.line{border:2px solid #D9D1C0;color:var(--ink)}
+.btn.grn{background:var(--grn);color:#fff}
+.legal{font-size:11px;color:var(--mut);text-align:center;line-height:1.6;padding:14px 10px 22px}
+/* A — hero type */
+.h1a{font-size:46px;font-weight:800;letter-spacing:-1.8px;line-height:1.06;margin:26px 0 18px}
+.h1a i{font-style:normal;color:var(--grn)}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}
+.chip{border-radius:999px;padding:10px 15px;font-size:12.5px;font-weight:700}
+.blob{margin-top:auto;background:linear-gradient(135deg,var(--grn),#256A4C);border-radius:30px;padding:22px;color:#fff;position:relative;overflow:hidden;margin-bottom:16px}
+.blob .bub{position:absolute;right:-44px;top:-44px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.14)}
+.blob p{font-size:14px;font-weight:600;line-height:1.5;max-width:250px;margin-bottom:4px}
+.blob .ar{font-family:'IBM Plex Sans Arabic';font-size:16px;opacity:.85}
+.stack{display:flex;flex-direction:column;gap:11px;margin-bottom:4px}
+/* B — green field */
+.phB{background:linear-gradient(165deg,#338A64,#22573F)}
+.bigar{font-family:'IBM Plex Sans Arabic';font-size:96px;color:#fff;line-height:1.1;margin-top:64px}
+.bword{color:#fff;font-size:34px;font-weight:800;letter-spacing:-1px}
+.btag{color:rgba(255,255,255,.82);font-size:15px;font-weight:600;line-height:1.55;margin-top:12px;max-width:270px}
+.btag b{color:var(--yel)}
+.dotsB{display:flex;gap:7px;margin-top:22px}
+.dotsB i{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.35)}
+.dotsB i.on{width:24px;background:#fff}
+.sheet{margin-top:auto;background:var(--bg);border-radius:34px 34px 0 0;padding:24px 24px 8px}
+.sheet .t{font-size:13px;font-weight:700;color:var(--mut);text-align:center;margin-bottom:14px}
+/* C — bento */
+.h1c{font-size:34px;font-weight:800;letter-spacing:-1.2px;line-height:1.1;margin:18px 0 16px}
+.h1c i{font-style:normal;color:var(--grn)}
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.bx{border-radius:24px;padding:16px;min-height:118px;display:flex;flex-direction:column}
+.bx .l{font-size:10px;letter-spacing:1.8px;font-weight:800;opacity:.55}
+.bx .v{font-size:30px;font-weight:800;letter-spacing:-1px;margin-top:auto}
+.bx .s{font-size:11.5px;font-weight:600;opacity:.7}
+.ringmini{width:64px;height:64px;margin:auto 0 0}
+.foodimg{height:56px;border-radius:14px;margin-top:auto;background:radial-gradient(40px 24px at 35% 50%,#E8B86B,transparent 70%),radial-gradient(50px 30px at 65% 55%,#C97B3A,transparent 70%),#5C2F14}
+.arbx{font-family:'IBM Plex Sans Arabic';font-size:18px;margin-top:auto;line-height:1.5}
+</style></head><body>
+<div class="hd"><div class="k">EXPRESSIVE SYSTEM · SCREEN 1</div><h1>Sign-in / Welcome — 3 options</h1></div>
+<div class="row">
+
+<div class="col"><div class="ph"><div class="in">
+ <div class="logo">Nabdh<i>.</i></div>
+ <div class="h1a">Your health,<br>in <i>your</i><br>language.</div>
+ <div class="chips">
+  <div class="chip" style="background:var(--mint)">⌚ Apple Watch</div>
+  <div class="chip" style="background:var(--lav)">🤖 AI coach</div>
+  <div class="chip" style="background:var(--peach)">🍛 Saudi dishes</div>
+  <div class="chip" style="background:var(--pink)">🌙 Arabic-first</div>
+ </div>
+ <div class="blob"><div class="bub"></div><p>A coach that knows kabsa from cornflakes — and your data stays in the Kingdom’s region.</p><div class="ar">صحتك، بلغتك.</div></div>
+ <div class="stack">
+  <div class="btn dark"> Continue with Apple</div>
+  <div class="btn line">Continue with Google</div>
+ </div>
+ <div class="legal">By continuing you accept the PDPL consent &amp; privacy terms.</div>
+</div></div><div class="cap">A — TYPE HERO</div></div>
+
+<div class="col"><div class="ph phB"><div class="in">
+ <div class="logo" style="color:#fff">Nabdh<i style="color:var(--yel)">.</i></div>
+ <div class="bigar">نبض</div>
+ <div class="bword">Every pulse,<br>understood.</div>
+ <div class="btag">Wearables + food photos + an AI coach with <b>Saudi context</b> built in.</div>
+ <div class="dotsB"><i class="on"></i><i></i><i></i></div>
+ <div class="sheet">
+  <div class="t">Sign in to begin</div>
+  <div class="stack">
+   <div class="btn dark"> Continue with Apple</div>
+   <div class="btn line">Continue with Google</div>
+   <div class="btn line" style="border-color:transparent;color:var(--mut)">Use phone number</div>
+  </div>
+  <div class="legal">PDPL consent &amp; privacy terms apply.</div>
+ </div>
+</div></div><div class="cap">B — GREEN FIELD + SHEET</div></div>
+
+<div class="col"><div class="ph"><div class="in">
+ <div class="logo">Nabdh<i>.</i></div>
+ <div class="h1c">Everything your body says — <i>in one place.</i></div>
+ <div class="bento">
+  <div class="bx" style="background:var(--mint)"><div class="l">READINESS</div>
+   <svg class="ringmini" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#fff" stroke-width="8"/><circle cx="32" cy="32" r="26" fill="none" stroke="var(--grn)" stroke-width="8" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="59" transform="rotate(-90 32 32)"/><text x="32" y="38" text-anchor="middle" font-size="17" font-weight="800" fill="#1F1C17">64</text></svg></div>
+  <div class="bx" style="background:var(--peach)"><div class="l">FOOD PHOTO AI</div><div class="foodimg"></div></div>
+  <div class="bx" style="background:var(--lav)"><div class="l">SLEEP</div><div class="v">7:18<span style="font-size:13px;font-weight:700;opacity:.5">h</span></div><div class="s">tracked every night</div></div>
+  <div class="bx" style="background:var(--pink)"><div class="l">عربي أولاً</div><div class="arbx">مدرّب يفهمك<br>ويفهم أكلك.</div></div>
+ </div>
+ <div class="stack" style="margin-top:auto">
+  <div class="btn dark"> Continue with Apple</div>
+  <div class="btn line">Continue with Google</div>
+ </div>
+ <div class="legal">By continuing you accept the PDPL consent &amp; privacy terms.</div>
+</div></div><div class="cap">C — BENTO PREVIEW</div></div>
+
+</div>
+</body></html>

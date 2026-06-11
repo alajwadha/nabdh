@@ -1,0 +1,125 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F1E8;--card:#FFFBF4;--ink:#1F1C17;--mut:#80796C;--grn:#2E7D5B;
+--peach:#F7E3C2;--lav:#DDD6F6;--mint:#D8EFE2;--pink:#F8DCE4;--dark:#211E1A;--yel:#F2C94C;--navbg:#EFE8DA}
+body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);padding:40px 44px;-webkit-font-smoothing:antialiased}
+.hd{margin-bottom:22px}
+.hd .k{font-size:11px;letter-spacing:2.5px;color:var(--grn);font-weight:800}
+.hd h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.row{display:flex;gap:34px}
+.col{display:flex;flex-direction:column;gap:11px}
+.cap{font-size:11px;letter-spacing:2px;color:#8d8470;font-weight:800;text-align:center}
+.ph{width:390px;height:844px;background:var(--bg);border-radius:44px;box-shadow:0 24px 60px rgba(60,48,20,.25),0 0 0 1px rgba(60,48,20,.07);overflow:hidden;position:relative}
+.in{padding:54px 22px 0;height:100%;display:flex;flex-direction:column}
+.in>*{flex-shrink:0}
+.title{font-size:25px;font-weight:800;letter-spacing:-1px}
+.sub{font-size:12.5px;color:var(--mut);font-weight:600;margin-top:3px}
+/* A chat */
+.chead{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:2px solid #EDE5D3}
+.cav{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--grn),#1F5C40);display:flex;align-items:center;justify-content:center;font-size:21px}
+.chead .t b{display:block;font-size:16px;font-weight:800}
+.chead .t span{font-size:11.5px;color:var(--grn);font-weight:700}
+.stream{flex:1;display:flex;flex-direction:column;gap:11px;padding:14px 2px;overflow:hidden}
+.msg{max-width:84%;border-radius:22px;padding:13px 15px;font-size:13.5px;font-weight:600;line-height:1.5}
+.fromc{background:var(--card);border:2px solid #EDE5D3;border-bottom-left-radius:8px;align-self:flex-start}
+.fromc b{color:var(--grn)}
+.fromu{background:var(--grn);color:#fff;border-bottom-right-radius:8px;align-self:flex-end}
+.planc{align-self:flex-start;width:88%;background:var(--card);border:2px solid #EDE5D3;border-radius:22px;border-bottom-left-radius:8px;padding:14px 15px}
+.planc .l{font-size:10px;letter-spacing:1.8px;font-weight:800;color:var(--mut);margin-bottom:8px}
+.pl{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13px;font-weight:700}
+.ck{width:21px;height:21px;border-radius:8px;border:2.5px solid #D8CFBC;flex:none}
+.ck.on{background:var(--grn);border-color:var(--grn);position:relative}
+.ck.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800}
+.pl s{color:var(--mut)}
+.chips{display:flex;gap:8px;padding:6px 0 10px}
+.chip{border-radius:999px;padding:10px 14px;font-size:12px;font-weight:800;white-space:nowrap}
+.inbar{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid #EDE5D3;border-radius:999px;padding:7px 7px 7px 17px;margin-bottom:18px}
+.inbar span{flex:1;color:var(--mut);font-size:13px;font-weight:600}
+.ico{width:38px;height:38px;border-radius:50%;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:16px}
+.ico.send{background:var(--grn);color:#fff}
+/* B plan */
+.prog{background:var(--card);border:2px solid #EDE5D3;border-radius:26px;padding:16px 18px;margin:14px 0 13px}
+.prog .r{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;margin-bottom:9px}
+.prog .r span:last-child{color:var(--grn)}
+.pbar{height:13px;border-radius:99px;background:#EFE8D8;overflow:hidden}
+.pbar i{display:block;height:100%;width:25%;border-radius:99px;background:var(--grn)}
+.task{display:flex;align-items:center;gap:14px;border-radius:24px;padding:16px;margin-bottom:11px}
+.task .ic{width:44px;height:44px;border-radius:16px;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.task .t{font-size:14.5px;font-weight:800}
+.task .s{font-size:11.5px;font-weight:700;opacity:.65;margin-top:2px}
+.task .st{margin-left:auto;font-size:11px;font-weight:800;border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.6)}
+.task.done{opacity:.55}
+.task.done .t{text-decoration:line-through}
+/* C brief */
+.briefc{background:linear-gradient(120deg,var(--grn),#256A4C);color:#fff;border-radius:30px;padding:22px;position:relative;overflow:hidden;margin:14px 0 13px}
+.briefc .bub{position:absolute;right:-46px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.13)}
+.briefc .l{font-size:10px;letter-spacing:2px;font-weight:800;opacity:.75;margin-bottom:8px}
+.briefc h3{font-size:23px;font-weight:800;letter-spacing:-.6px;line-height:1.2;margin-bottom:10px}
+.briefc p{font-size:13.5px;font-weight:600;line-height:1.6;opacity:.95}
+.briefc p b{color:var(--yel)}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+.qbtn{border-radius:22px;padding:15px;text-align:center;font-size:13px;font-weight:800}
+.fact{background:var(--card);border:2px solid #EDE5D3;border-radius:24px;padding:15px 17px;display:flex;gap:12px;align-items:center;margin-bottom:11px}
+.fact .ic{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none}
+.fact p{font-size:12.5px;font-weight:700;line-height:1.45}
+.fact p b{color:var(--grn)}
+</style></head><body>
+<div class="hd"><div class="k">EXPRESSIVE SYSTEM · SCREEN 5</div><h1>Coach — 3 options</h1></div>
+<div class="row">
+
+<!-- A chat -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="chead"><div class="cav">🫀</div><div class="t"><b>Your coach</b><span>● online · knows today’s data</span></div></div>
+ <div class="stream">
+  <div class="msg fromc">Sabah alkhair, Ali ☀️ HRV dipped a <b>third night</b> — today we recover, not grind.</div>
+  <div class="planc"><div class="l">TODAY’S PLAN</div>
+   <div class="pl"><div class="ck on"></div><span><s>Protein lunch — kabsa 38g</s></span></div>
+   <div class="pl"><div class="ck"></div><span>Easy 30-min walk after Asr</span></div>
+   <div class="pl"><div class="ck"></div><span>Dinner under 500 kcal</span></div>
+   <div class="pl"><div class="ck"></div><span>Lights out 11:15</span></div>
+  </div>
+  <div class="msg fromu">Can I lift weights instead of the walk?</div>
+  <div class="msg fromc">Not today — your nervous system’s still paying off debt. <b>Swap it to Saturday;</b> readiness should be back above 75 by then.</div>
+ </div>
+ <div class="chips">
+  <div class="chip" style="background:var(--mint)">Done ✓</div>
+  <div class="chip" style="background:var(--lav)">Why 500 kcal?</div>
+  <div class="chip" style="background:var(--peach)">Remind me</div>
+ </div>
+ <div class="inbar"><span>Ask your coach…</span><div class="ico">🎙️</div><div class="ico send">↑</div></div>
+</div></div><div class="cap">A — CHAT + INLINE PLAN</div></div>
+
+<!-- B plan -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="title">Today’s plan</div>
+ <div class="sub">Built at 7:05 AM from last night’s data</div>
+ <div class="prog"><div class="r"><span>1 of 4 done</span><span>on track</span></div><div class="pbar"><i></i></div></div>
+ <div class="task done" style="background:var(--mint)"><div class="ic">🍛</div><div><div class="t">Protein at lunch</div><div class="s">kabsa · 38g — done 1:42 PM</div></div><div class="st">✓ DONE</div></div>
+ <div class="task" style="background:var(--peach)"><div class="ic">🚶</div><div><div class="t">Easy walk, 30 min</div><div class="s">after Asr · keep HR under 110</div></div><div class="st">4:45 PM</div></div>
+ <div class="task" style="background:var(--pink)"><div class="ic">🥣</div><div><div class="t">Light dinner</div><div class="s">under 500 kcal · lentil soup fits</div></div><div class="st">8:00 PM</div></div>
+ <div class="task" style="background:var(--lav)"><div class="ic">🌙</div><div><div class="t">Lights out</div><div class="s">7h 30m before tomorrow’s alarm</div></div><div class="st">11:15 PM</div></div>
+ <div class="fact" style="margin-top:auto"><div class="ic" style="background:var(--mint)">💡</div><p><b>Why this plan?</b> Three nights of falling HRV — one disciplined day usually recovers it.</p></div>
+ <div style="height:14px"></div>
+</div></div><div class="cap">B — PLAN AS TASKS</div></div>
+
+<!-- C brief -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="title">Morning brief</div>
+ <div class="sub">Thursday 7:05 AM · 40-second read</div>
+ <div class="briefc"><div class="bub"></div>
+  <div class="l">FROM YOUR COACH</div>
+  <h3>Recovery beats grind today.</h3>
+  <p>You slept 7h 18m — solid — but your HRV slipped a third straight night and your morning heart rate is 4 beats high. Nothing’s wrong; you’re just carrying fatigue. Walk easy after Asr, eat light tonight (<b>≤ 500 kcal</b>), and be in bed by <b>11:15</b>. Tomorrow we push again.</p>
+ </div>
+ <div class="qa">
+  <div class="qbtn" style="background:var(--grn);color:#fff">Accept plan ✓</div>
+  <div class="qbtn" style="background:var(--navbg)">Adjust it</div>
+ </div>
+ <div class="fact"><div class="ic" style="background:var(--lav)">📉</div><p>HRV <b>48ms</b> — lowest in 3 weeks, still in your safe range.</p></div>
+ <div class="fact"><div class="ic" style="background:var(--peach)">☕</div><p>Karak after 6 PM correlates with <b>−9% deep sleep</b> for you.</p></div>
+</div></div><div class="cap">C — DAILY BRIEF + ACTIONS</div></div>
+
+</div>
+</body></html>

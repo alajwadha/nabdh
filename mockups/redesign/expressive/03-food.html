@@ -1,0 +1,132 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F1E8;--card:#FFFBF4;--ink:#1F1C17;--mut:#80796C;--grn:#2E7D5B;
+--peach:#F7E3C2;--lav:#DDD6F6;--mint:#D8EFE2;--pink:#F8DCE4;--dark:#211E1A;--yel:#F2C94C;--navbg:#EFE8DA}
+body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);padding:40px 44px;-webkit-font-smoothing:antialiased}
+.hd{margin-bottom:22px}
+.hd .k{font-size:11px;letter-spacing:2.5px;color:var(--grn);font-weight:800}
+.hd h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.row{display:flex;gap:34px}
+.col{display:flex;flex-direction:column;gap:11px}
+.cap{font-size:11px;letter-spacing:2px;color:#8d8470;font-weight:800;text-align:center}
+.ph{width:390px;height:844px;background:var(--bg);border-radius:44px;box-shadow:0 24px 60px rgba(60,48,20,.25),0 0 0 1px rgba(60,48,20,.07);overflow:hidden;position:relative}
+.in{padding:54px 24px 0;height:100%;display:flex;flex-direction:column}
+.in>*{flex-shrink:0}
+.title{font-size:25px;font-weight:800;letter-spacing:-1px}
+.sub{font-size:12.5px;color:var(--mut);font-weight:600;margin-top:3px}
+.btn{border-radius:999px;padding:16px;text-align:center;font-size:14px;font-weight:800}
+.dish{background:radial-gradient(130px 75px at 32% 48%,#E8B86B,transparent 70%),radial-gradient(160px 95px at 64% 58%,#C97B3A,transparent 70%),radial-gradient(220px 140px at 50% 50%,#8A4A22,#56300F)}
+.coach{background:var(--dark);border-radius:24px;padding:15px 17px;display:flex;gap:12px;align-items:flex-start;color:#F5EFE3}
+.cic{width:34px;height:34px;border-radius:50%;background:var(--yel);flex:none;display:flex;align-items:center;justify-content:center;font-size:16px}
+.coach p{font-size:12.5px;font-weight:600;line-height:1.55}
+.coach b{color:var(--yel)}
+/* A — result sheet */
+.photoA{height:240px;border-radius:30px;position:relative;overflow:hidden;margin:14px 0}
+.conf{position:absolute;left:14px;bottom:13px;background:rgba(31,28,23,.82);color:#FFF6E8;border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:800}
+.conf b{color:#7FE0B4}
+.resA{background:linear-gradient(120deg,var(--grn),#256A4C);color:#fff;border-radius:28px;padding:19px 20px;position:relative;overflow:hidden;margin-bottom:13px}
+.resA .bub{position:absolute;right:-46px;top:-46px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.13)}
+.resA .nm{font-size:23px;font-weight:800;letter-spacing:-.6px}
+.resA .kc{font-size:13px;font-weight:700;opacity:.85;margin-top:3px}
+.resA .kc b{font-size:17px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:13px}
+.mac{border-radius:22px;padding:14px 14px}
+.mac .l{font-size:9.5px;letter-spacing:1.6px;font-weight:800;opacity:.55;margin-bottom:5px}
+.mac .v{font-size:23px;font-weight:800;letter-spacing:-.8px}
+.mac .v small{font-size:11px;opacity:.5}
+.actA{display:flex;gap:11px;margin-top:auto;margin-bottom:22px}
+.actA .btn{flex:1}
+/* B — camera */
+.phB{background:#171410}
+.vf{position:absolute;inset:0}
+.vf .grad{position:absolute;inset:0;opacity:.9}
+.brkt{position:absolute;width:34px;height:34px;border-color:#fff;opacity:.9}
+.b1{left:46px;top:200px;border-left:4px solid;border-top:4px solid;border-radius:8px 0 0 0}
+.b2{right:46px;top:200px;border-right:4px solid;border-top:4px solid;border-radius:0 8px 0 0}
+.b3{left:46px;bottom:330px;border-left:4px solid;border-bottom:4px solid;border-radius:0 0 0 8px}
+.b4{right:46px;bottom:330px;border-right:4px solid;border-bottom:4px solid;border-radius:0 0 8px 0}
+.topB{position:absolute;top:54px;left:24px;right:24px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.topB .x{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:16px}
+.topB .t{font-size:13px;font-weight:800;letter-spacing:.5px}
+.found{position:absolute;left:50%;transform:translateX(-50%);bottom:352px;background:rgba(24,20,16,.86);border:1.5px solid rgba(255,255,255,.18);border-radius:999px;padding:11px 18px;color:#fff;font-size:13px;font-weight:800;white-space:nowrap}
+.found b{color:#7FE0B4}
+.sheetB{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-radius:34px 34px 0 0;padding:22px 24px 26px}
+.sheetB .t{font-size:18px;font-weight:800;letter-spacing:-.4px}
+.sheetB .s{font-size:12px;color:var(--mut);font-weight:600;margin:3px 0 14px}
+.shutter{display:flex;align-items:center;justify-content:space-between}
+.thumb{width:48px;height:48px;border-radius:16px}
+.snap{width:74px;height:74px;border-radius:50%;background:var(--grn);border:5px solid #fff;box-shadow:0 0 0 2.5px var(--grn),0 12px 24px rgba(46,125,91,.4)}
+.flip{width:48px;height:48px;border-radius:50%;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:18px}
+/* C — diary */
+.budget{background:var(--card);border:2px solid #EDE5D3;border-radius:28px;padding:18px;margin:14px 0 13px}
+.budget .r{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.budget .v{font-size:27px;font-weight:800;letter-spacing:-1px}
+.budget .v small{font-size:12px;color:var(--mut);font-weight:700}
+.budget .rm{font-size:12px;font-weight:800;color:var(--grn)}
+.bbar{height:14px;border-radius:99px;background:#EFE8D8;overflow:hidden;display:flex}
+.bbar i{height:100%}
+.meal{display:flex;align-items:center;gap:13px;background:var(--card);border:2px solid #EDE5D3;border-radius:24px;padding:12px;margin-bottom:11px}
+.mph{width:54px;height:54px;border-radius:18px;flex:none}
+.meal .t{font-size:14.5px;font-weight:800}
+.meal .m{font-size:11.5px;color:var(--mut);font-weight:600;margin-top:2px}
+.meal .kc{margin-left:auto;text-align:right;font-size:16px;font-weight:800}
+.meal .kc small{display:block;font-size:10px;color:var(--mut);font-weight:700}
+.dinner{border:2.5px dashed #CDC3AD;border-radius:24px;padding:15px;text-align:center;font-size:13px;font-weight:800;color:var(--mut);margin-bottom:11px}
+.dinner b{color:var(--grn)}
+</style></head><body>
+<div class="hd"><div class="k">EXPRESSIVE SYSTEM · SCREEN 3</div><h1>Food logging — 3 options</h1></div>
+<div class="row">
+
+<!-- A result -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="title">Looks delicious 👀</div>
+ <div class="sub">Snapped at 1:42 PM — recognized in 1.2s</div>
+ <div class="photoA dish"><div class="conf">DISH Nº12 · <b>93% sure</b></div></div>
+ <div class="resA"><div class="bub"></div>
+  <div class="nm">Kabsa with chicken</div>
+  <div class="kc"><b>642</b> kcal · fits today’s 1,900 budget</div>
+ </div>
+ <div class="g3">
+  <div class="mac" style="background:var(--mint)"><div class="l">PROTEIN</div><div class="v">38<small>g</small></div></div>
+  <div class="mac" style="background:var(--peach)"><div class="l">CARBS</div><div class="v">71<small>g</small></div></div>
+  <div class="mac" style="background:var(--lav)"><div class="l">FAT</div><div class="v">22<small>g</small></div></div>
+ </div>
+ <div class="coach"><div class="cic">💬</div><p><b>Coach</b> — great protein. Rice was generous; keep dinner under <b>500 kcal</b> and you’re on plan.</p></div>
+ <div class="actA"><div class="btn" style="background:var(--navbg);color:var(--ink)">Edit portion</div><div class="btn" style="background:var(--grn);color:#fff">Log it ✓</div></div>
+</div></div><div class="cap">A — PHOTO RESULT SHEET</div></div>
+
+<!-- B camera -->
+<div class="col"><div class="ph phB">
+ <div class="vf"><div class="grad dish" style="position:absolute;inset:0"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,5,.55),transparent 28%,transparent 55%,rgba(10,8,5,.72) 78%)"></div>
+  <div class="brkt b1"></div><div class="brkt b2"></div><div class="brkt b3"></div><div class="brkt b4"></div>
+  <div class="topB"><div class="x">✕</div><div class="t">SNAP YOUR PLATE</div><div class="x">⚡</div></div>
+  <div class="found">Seeing <b>kabsa…</b> hold steady</div>
+  <div class="sheetB">
+   <div class="t">Point at your plate</div>
+   <div class="s">Nabdh knows 96 Saudi &amp; Gulf dishes — kabsa, jareesh, saleeg, mandi…</div>
+   <div class="shutter"><div class="thumb dish"></div><div class="snap"></div><div class="flip">🔄</div></div>
+  </div>
+ </div>
+</div><div class="cap">B — CAMERA CAPTURE</div></div>
+
+<!-- C diary -->
+<div class="col"><div class="ph"><div class="in">
+ <div class="title">Food diary</div>
+ <div class="sub">Thursday · budget 1,900 kcal</div>
+ <div class="budget">
+  <div class="r"><div class="v">1,412 <small>/ 1,900 kcal</small></div><div class="rm">488 left</div></div>
+  <div class="bbar"><i style="width:22%;background:var(--grn)"></i><i style="width:4%;background:#7FC9A4"></i><i style="width:38%;background:var(--yel)"></i><i style="width:10%;background:#E8A87C"></i></div>
+ </div>
+ <div class="meal"><div class="mph" style="background:radial-gradient(26px 16px at 40% 50%,#D9A45C,transparent),#7A4A1E"></div><div><div class="t">Dates &amp; laban</div><div class="m">7:12 AM · photo</div></div><div class="kc">310<small>kcal</small></div></div>
+ <div class="meal"><div class="mph" style="background:radial-gradient(26px 16px at 40% 50%,#4A2F18,transparent),#2E1C0C"></div><div><div class="t">Arabic coffee ×2</div><div class="m">9:40 AM · quick add</div></div><div class="kc">12<small>kcal</small></div></div>
+ <div class="meal"><div class="mph dish"></div><div><div class="t">Kabsa with chicken</div><div class="m">1:42 PM · photo · 38g protein</div></div><div class="kc">642<small>kcal</small></div></div>
+ <div class="meal"><div class="mph" style="background:radial-gradient(26px 16px at 40% 50%,#C98A4A,transparent),#8A5A28"></div><div><div class="t">Karak tea</div><div class="m">4:05 PM · quick add</div></div><div class="kc">120<small>kcal</small></div></div>
+ <div class="dinner">Dinner — keep it under <b>488 kcal</b> to stay on plan</div>
+ <div class="coach" style="margin-top:auto;margin-bottom:14px"><div class="cic">💬</div><p><b>Coach</b> — protein’s done for the day. Something light tonight: shorbat adas would fit perfectly.</p></div>
+</div></div><div class="cap">C — DAY DIARY + BUDGET</div></div>
+
+</div>
+</body></html>
