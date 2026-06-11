@@ -1,0 +1,85 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#D8D4CB;font-family:Inter,system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#5A554A;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#211D17}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;background:#FAF8F2;box-shadow:0 30px 70px rgba(60,55,40,.3)}
+.in{padding:54px 26px 0;height:100%;display:flex;flex-direction:column;color:#2B2722}
+.top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.logo{font-family:Newsreader,serif;font-size:21px;font-weight:500}.logo i{font-style:normal;color:#D45B3E}
+.no{font-size:10px;letter-spacing:2.4px;color:#8F897A;font-weight:600}
+.tt{font-family:Newsreader,serif;font-style:italic;font-size:22px;color:#2B2722;margin-bottom:2px}
+.ts{font-size:11.5px;color:#8F897A;margin-bottom:8px}
+.plate{position:relative;margin:0 auto}
+.center-n{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.center-n b{font-family:Newsreader,serif;font-size:46px;font-weight:500;color:#2B2722;line-height:1}
+.center-n span{font-size:8.5px;letter-spacing:2.6px;color:#8F897A;font-weight:600;margin-top:2px}
+.leg{display:grid;grid-template-columns:1fr 1fr;gap:7px 18px;border-top:1px solid #DCD6C8;padding-top:14px;margin-top:6px}
+.lg{display:flex;align-items:center;gap:9px;font-size:11px;color:#5A554A}
+.lg i{width:14px;height:14px;flex:none;display:inline-block}
+.lg b{font-weight:600;color:#2B2722}
+.fn{margin-top:14px;font-family:Newsreader,serif;font-style:italic;font-size:15.5px;line-height:1.55;color:#4A453C}
+.fn sup{color:#D45B3E;font-style:normal;font-weight:600}
+.fn2{margin-top:10px;font-size:11px;line-height:1.6;color:#8F897A;border-top:1px solid #DCD6C8;padding-top:10px}
+.fn2 sup{color:#D45B3E;font-weight:700}
+.nav{margin-top:auto;margin-bottom:20px;display:flex;justify-content:center;gap:26px;border-top:1px solid #DCD6C8;padding-top:15px}
+.nav div{font-size:10.5px;letter-spacing:2.2px;font-weight:600;color:#8F897A}
+.nav div.on{color:#2B2722;border-bottom:2px solid #D45B3E;padding-bottom:4px}
+</style></head><body>
+<div class="meta">OPTION 17 · <b>DATA HUMANISM</b> · inspired by Giorgia Lupi’s hand-drawn data portraits</div>
+<div class="ph"><div class="in">
+ <div class="top"><div class="logo">nabdh<i>.</i></div><div class="no">PORTRAIT Nº 162</div></div>
+ <div class="tt">A day, drawn from your body</div>
+ <div class="ts">Thursday June 11 — each mark is one hour</div>
+ <div class="plate">
+  <svg width="320" height="320" viewBox="0 0 320 320">
+   <g transform="translate(160,160)">
+    <circle r="146" fill="none" stroke="#DCD6C8" stroke-width="1"/>
+    <circle r="104" fill="none" stroke="#DCD6C8" stroke-width="1" stroke-dasharray="2 5"/>
+    <circle r="62" fill="none" stroke="#DCD6C8" stroke-width="1" stroke-dasharray="2 5"/>
+    <!-- sleep arc 23:42→07:00 (hours 0-7 ≈ -90° start at top=0h) -->
+    <path d="M -4,-146 A146,146 0 0,1 142,-32" fill="none" stroke="#7B6FB8" stroke-width="7" stroke-linecap="round" opacity=".85"/>
+    <path d="M -2,-120 A120,120 0 0,1 96,-71" fill="none" stroke="#7B6FB8" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+    <!-- hour ticks -->
+    <g stroke="#B9B2A0" stroke-width="1.4">
+     <line x1="0" y1="-150" x2="0" y2="-158"/><line x1="150" y1="0" x2="158" y2="0"/>
+     <line x1="0" y1="150" x2="0" y2="158"/><line x1="-150" y1="0" x2="-158" y2="0"/>
+    </g>
+    <text x="0" y="-166" font-size="9" fill="#8F897A" text-anchor="middle">00</text>
+    <text x="170" y="3" font-size="9" fill="#8F897A" text-anchor="middle">06</text>
+    <text x="0" y="176" font-size="9" fill="#8F897A" text-anchor="middle">12</text>
+    <text x="-170" y="3" font-size="9" fill="#8F897A" text-anchor="middle">18</text>
+    <!-- steps: dots sized by activity, plotted around afternoon/evening -->
+    <g fill="#3E8E6B">
+     <circle cx="-30" cy="140" r="4"/><circle cx="-58" cy="128" r="6"/><circle cx="-86" cy="110" r="5"/>
+     <circle cx="-108" cy="84" r="8"/><circle cx="-124" cy="52" r="5"/><circle cx="-134" cy="18" r="3.5"/>
+     <circle cx="6" cy="146" r="3"/><circle cx="40" cy="138" r="4.5"/>
+    </g>
+    <!-- meals: triangles -->
+    <g fill="#D4A23E">
+     <path d="M 98,96 l 7,12 l -14,0 Z"/><path d="M 22,104 l 8,13 l -16,0 Z" transform="rotate(14 22 104)"/>
+     <path d="M -116,-30 l 7,12 l -14,0 Z"/>
+    </g>
+    <!-- heart strain: small red strokes where RHR elevated (morning) -->
+    <g stroke="#D45B3E" stroke-width="2.4" stroke-linecap="round">
+     <line x1="60" y1="-86" x2="70" y2="-98"/><line x1="74" y1="-70" x2="84" y2="-82"/>
+     <line x1="88" y1="-50" x2="98" y2="-62"/><line x1="46" y1="-100" x2="56" y2="-112"/>
+    </g>
+    <!-- hrv dip annotation curve -->
+    <path d="M -60,-60 C -40,-90 20,-96 44,-76" fill="none" stroke="#2B2722" stroke-width="1" stroke-dasharray="3 4"/>
+   </g>
+  </svg>
+  <div class="center-n"><b>64</b><span>READINESS</span></div>
+ </div>
+ <div class="leg">
+  <div class="lg"><i style="background:#7B6FB8;border-radius:99px;height:6px"></i><span><b>Sleep</b> — 7h18, ring thickness = depth</span></div>
+  <div class="lg"><i style="background:#3E8E6B;border-radius:50%"></i><span><b>Movement</b> — dot size = intensity</span></div>
+  <div class="lg"><i style="background:#D4A23E;clip-path:polygon(50% 0,100% 100%,0 100%)"></i><span><b>Meals</b> — kabsa at 13:42</span></div>
+  <div class="lg"><i style="background:#D45B3E;height:3px;transform:rotate(-45deg)"></i><span><b>Heart strain</b> — RHR +4 marks</span></div>
+ </div>
+ <div class="fn">Your night was generous<sup>1</sup>, your morning heart worked harder than it should<sup>2</sup> — so this afternoon stays soft.</div>
+ <div class="fn2"><sup>1</sup> sleep +22 min vs your month &nbsp;&nbsp;<sup>2</sup> HRV 48ms, third consecutive dip — tonight’s lights-out: 11:15</div>
+ <div class="nav"><div class="on">TODAY</div><div>GALLERY</div><div>FOOD</div><div>COACH</div></div>
+</div></div>
+</body></html>

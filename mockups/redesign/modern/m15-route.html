@@ -1,0 +1,91 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#15181D;font-family:'DM Sans',system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#8A93A0;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#fff}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;background:#1B2026;box-shadow:0 30px 70px rgba(0,0,0,.7),0 0 0 1px #2A323C}
+.map{position:absolute;inset:0;height:430px;background:#20262E;overflow:hidden}
+.map svg{position:absolute;inset:0}
+.fadem{position:absolute;left:0;right:0;top:330px;height:100px;background:linear-gradient(180deg,transparent,#1B2026)}
+.in{position:absolute;inset:0;padding:54px 20px 0;display:flex;flex-direction:column;color:#F2F5F8}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.logo{font-weight:800;font-size:19px}.logo span{color:#FC5200}
+.chip{background:rgba(27,32,38,.85);border:1px solid #2A323C;border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;letter-spacing:1px}
+.maplabel{margin-top:236px;display:flex;justify-content:space-between;align-items:flex-end}
+.big{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.big small{font-size:13px;font-weight:600;color:#8A93A0;letter-spacing:0}
+.sub{font-size:12.5px;color:#A8B2BE;font-weight:500;margin-top:4px}
+.sub b{color:#FC5200}
+.medal{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#FC5200,#FF8A3C);display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 8px 22px rgba(252,82,0,.4)}
+.seg{margin-top:18px;background:#20262E;border:1px solid #2A323C;border-radius:18px;padding:16px}
+.seg .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.seg .t{font-size:12px;font-weight:800;letter-spacing:1.6px;color:#8A93A0}
+.seg .pr{font-size:11px;font-weight:700;color:#FC5200}
+.elev{display:block}
+.splits{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.sp{background:#20262E;border:1px solid #2A323C;border-radius:14px;padding:13px 14px}
+.sp .k{font-size:9.5px;letter-spacing:1.8px;font-weight:800;color:#8A93A0;margin-bottom:5px}
+.sp .v{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.sp .v small{font-size:10.5px;color:#8A93A0;font-weight:600}
+.sp .d{font-size:10.5px;font-weight:700;margin-top:2px}
+.kudos{margin-top:14px;display:flex;align-items:center;gap:12px;background:#20262E;border:1px solid #2A323C;border-radius:16px;padding:13px 15px}
+.kav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FC5200,#FFB03C);flex:none;display:flex;align-items:center;justify-content:center;font-size:16px}
+.kudos p{font-size:12.5px;line-height:1.45;color:#D6DEE6;font-weight:500}
+.kudos b{color:#FC5200}
+.nav{margin-top:auto;margin-bottom:18px;display:flex;justify-content:space-around;background:#20262E;border:1px solid #2A323C;border-radius:999px;padding:8px}
+.nav div{padding:11px 17px;border-radius:999px;font-size:12px;font-weight:800;color:#6E7884}
+.nav div.on{background:#FC5200;color:#fff}
+</style></head><body>
+<div class="meta">OPTION 15 · <b>ROUTE</b> · inspired by Strava’s maps &amp; segments</div>
+<div class="ph">
+ <div class="map">
+  <svg width="390" height="430" viewBox="0 0 390 430">
+   <g stroke="#2A323C" fill="none" stroke-width="1">
+    <path d="M-20,60 C80,40 140,90 230,70 C300,55 350,80 410,60"/>
+    <path d="M-20,130 C70,110 160,160 250,140 C320,125 360,150 410,130"/>
+    <path d="M-20,200 C90,180 150,230 240,210 C310,195 360,220 410,200"/>
+    <path d="M-20,270 C80,250 150,300 240,280 C310,265 360,290 410,270"/>
+    <path d="M-20,340 C90,320 150,370 240,350 C310,335 360,360 410,340"/>
+    <path d="M60,-20 C70,80 30,180 60,280 C80,350 50,400 60,450"/>
+    <path d="M150,-20 C160,80 120,180 150,280 C170,350 140,400 150,450"/>
+    <path d="M250,-20 C260,80 220,180 250,280 C270,350 240,400 250,450"/>
+    <path d="M330,-20 C340,80 300,180 330,280 C350,350 320,400 330,450"/>
+   </g>
+   <g stroke="#39424E" fill="none" stroke-width="3" opacity=".6">
+    <path d="M-20,95 C100,75 180,125 290,105 C340,97 380,110 410,100"/>
+    <path d="M105,-20 C115,100 75,220 105,340 C115,380 95,410 105,450"/>
+   </g>
+   <path d="M70,330 C110,300 90,250 140,230 C200,206 190,150 250,140 C300,132 310,180 350,170"
+     fill="none" stroke="#FC5200" stroke-width="5" stroke-linecap="round" style="filter:drop-shadow(0 0 8px rgba(252,82,0,.6))"/>
+   <circle cx="70" cy="330" r="7" fill="#1B2026" stroke="#fff" stroke-width="3"/>
+   <circle cx="350" cy="170" r="9" fill="#FC5200" stroke="#fff" stroke-width="3"/>
+   <rect x="296" y="120" rx="7" width="110" height="26" fill="rgba(12,16,20,.85)"/>
+   <text x="351" y="137" fill="#fff" font-size="11" font-weight="700" text-anchor="middle" font-family="DM Sans">Walk after Asr</text>
+  </svg>
+ </div>
+ <div class="fadem"></div>
+ <div class="in">
+  <div class="top"><div class="logo">Nabdh<span>.</span></div><div class="chip">THU · RECOVERY DAY</div></div>
+  <div class="maplabel">
+   <div><div class="big">64 <small>readiness</small></div><div class="sub">Today’s mission: <b>2.4 km easy loop</b> · after Asr</div></div>
+   <div class="medal">🏅</div>
+  </div>
+  <div class="seg">
+   <div class="hd"><span class="t">HRV — 7-DAY SEGMENT</span><span class="pr">▼ baseline 54ms</span></div>
+   <svg class="elev" width="318" height="58" viewBox="0 0 318 58">
+    <defs><linearGradient id="e" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FC5200" stop-opacity=".4"/><stop offset="1" stop-color="#FC5200" stop-opacity="0"/></linearGradient></defs>
+    <path d="M0,20 L53,14 L106,22 L159,17 L212,30 L265,38 L318,44 L318,58 L0,58 Z" fill="url(#e)"/>
+    <path d="M0,20 L53,14 L106,22 L159,17 L212,30 L265,38 L318,44" fill="none" stroke="#FC5200" stroke-width="2.5"/>
+   </svg>
+  </div>
+  <div class="splits">
+   <div class="sp"><div class="k">SLEEP</div><div class="v">7:18<small>h</small></div><div class="d" style="color:#4ADE80">+22m</div></div>
+   <div class="sp"><div class="k">REST HR</div><div class="v">58<small>bpm</small></div><div class="d" style="color:#FF7A6B">+4</div></div>
+   <div class="sp"><div class="k">STEPS</div><div class="v">8.4k</div><div class="d" style="color:#FC5200">84%</div></div>
+  </div>
+  <div class="kudos"><div class="kav">👏</div><p><b>Coach gave kudos</b> — kabsa nailed the protein target. Finish the loop and keep dinner under 500 kcal.</p></div>
+  <div class="nav"><div class="on">Today</div><div>Routes</div><div>Fuel</div><div>Coach</div></div>
+ </div>
+</div>
+</body></html>

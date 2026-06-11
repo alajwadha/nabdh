@@ -47,6 +47,30 @@ kabsa lunch, dinner ≤ 500 kcal) so the designs compare fairly.
 | 9 | `m09-journey` | Daily "recovery quest" path with nodes, streak and XP | Duolingo |
 | 10 | `m10-ai-ambient` | Near-black, edge glow, AI orb, one sentence + four numbers, ask bar | Apple Intelligence |
 
+## Round 2 — options 11–20
+
+Ten more directions, deliberately non-overlapping with 1–10. New named sources: neubrutalism
+(Figma/Gumroad web aesthetic), Calm/Headspace mindful gradients, F1 race-engineer telemetry HUDs,
+Nothing OS dot-matrix typography, Strava's maps/segments/kudos, the analog bullet-journal &
+scrapbook trend, Giorgia Lupi's "data humanism" portraits, iOS StandBy/Smart Stack widgets, the
+claymorphism soft-3D trend, and contemporary Saudi place-brand identity (Diriyah / Vision-era).
+
+| # | File | Direction | Inspired by |
+|---|------|-----------|-------------|
+| 11 | `m11-neubrutal` | Thick borders, hard offset shadows, flat vivid color, sticker stamps | Figma/Gumroad neubrutalism |
+| 12 | `m12-dusk` | Full-screen sunset gradient, breathing ring, serif mantra, wind-down CTA | Calm / Headspace |
+| 13 | `m13-telemetry` | Bio-telemetry HUD: systems radar, mode flag, engineer radio message | F1 pit-wall HUDs / sci-fi FUI |
+| 14 | `m14-dot-matrix` | Monochrome dot-matrix numerals, red dot accent, ledger rows | Nothing OS |
+| 15 | `m15-route` | The day as a route on a dark map; HRV as an elevation segment; kudos | Strava |
+| 16 | `m16-journal` | Graph paper, sticky-note score, handwritten checklist, meal polaroid | Bullet-journal / scrapbook |
+| 17 | `m17-data-humanism` | Radial 24-h "portrait" of the day with footnoted prose | Giorgia Lupi / Dear Data |
+| 18 | `m18-widget-stack` | Three giant glanceable widgets, page dots, nightstand-scale type | iOS StandBy / Smart Stack |
+| 19 | `m19-clay` | Soft-3D clay surfaces, squishy orb score, playful tone | Claymorphism trend |
+| 20 | `m20-khaleeji` | Arabic-first RTL, Reem Kufi display, najdi green + gold + sadu band | Modern Saudi brand design |
+
+Option 20 is strategically distinct: it is the only direction designed *in Arabic first* — the
+product's actual primary language — rather than translated after the fact.
+
 ## Notes
 
 - 1, 2, 4, 6, 8, 10 are "serious premium"; 3, 5, 9 are "warm friendly"; 7 is the wildcard
