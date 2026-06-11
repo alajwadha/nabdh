@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#D9DCE3;font-family:Inter,system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#5A6070;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#1A1D24}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;box-shadow:0 30px 70px rgba(40,50,80,.35),0 0 0 1px rgba(255,255,255,.7)}
+.bgx{position:absolute;inset:0;background:
+ radial-gradient(340px 300px at 15% 10%,#FFD9C8 0%,transparent 60%),
+ radial-gradient(380px 340px at 95% 30%,#C9E4FF 0%,transparent 65%),
+ radial-gradient(360px 320px at 20% 90%,#E4D6FF 0%,transparent 60%),
+ radial-gradient(300px 280px at 85% 95%,#CFF5E2 0%,transparent 60%),#F4F4F8;filter:blur(0px)}
+.in{position:absolute;inset:0;padding:56px 20px 0;display:flex;flex-direction:column;color:#23262E}
+.pane{background:rgba(255,255,255,.58);backdrop-filter:blur(30px) saturate(1.3);-webkit-backdrop-filter:blur(30px) saturate(1.3);
+ border-radius:30px;border:1px solid rgba(255,255,255,.85);box-shadow:0 18px 44px rgba(70,80,120,.14)}
+.top{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 16px}
+.logo{font-weight:700;font-size:19px;letter-spacing:-.3px}.logo span{color:#7C6CF0}
+.date{font-size:12px;font-weight:600;color:#8A8FA0;letter-spacing:1.6px}
+.hero{padding:26px 24px;text-align:center;margin-bottom:14px}
+.greet{font-size:14px;color:#6B7080;margin-bottom:16px}
+.ringw{position:relative;width:178px;height:178px;margin:0 auto}
+.num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.num b{font-size:56px;font-weight:300;letter-spacing:-2.5px;color:#23262E}
+.num span{font-size:10px;letter-spacing:2.6px;color:#8A8FA0;font-weight:600;margin-top:3px}
+.state{margin-top:16px;display:inline-block;padding:9px 18px;border-radius:999px;font-size:12.5px;font-weight:600;color:#5B49D6;
+ background:rgba(124,108,240,.12);border:1px solid rgba(124,108,240,.25)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.card{padding:17px 18px}
+.cl{font-size:10.5px;letter-spacing:1.8px;font-weight:600;color:#8A8FA0;margin-bottom:7px}
+.cv{font-size:27px;font-weight:600;letter-spacing:-1px}
+.cv small{font-size:12px;font-weight:400;color:#9AA0B0;margin-left:2px}
+.cd{margin-top:4px;font-size:11.5px;font-weight:600}
+.coach{padding:17px 19px;display:flex;gap:12px;align-items:flex-start}
+.av{width:34px;height:34px;border-radius:50%;flex:none;background:linear-gradient(135deg,#9F8CFF,#6CC7F0);box-shadow:0 6px 16px rgba(124,108,240,.4)}
+.coach p{font-size:13.5px;line-height:1.5;color:#3A3E48}
+.coach b{color:#5B49D6}
+.dock{margin-top:auto;margin-bottom:18px;align-self:center;display:flex;gap:2px;padding:7px;border-radius:999px;
+ background:rgba(255,255,255,.65);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 36px rgba(70,80,120,.18)}
+.dock div{padding:11px 19px;border-radius:999px;font-size:12.5px;font-weight:600;color:#7A8090}
+.dock div.on{background:#23262E;color:#fff}
+</style></head><body>
+<div class="meta">OPTION 2 · <b>SPATIAL LIGHT</b> · inspired by Apple visionOS frosted panels</div>
+<div class="ph"><div class="bgx"></div><div class="in">
+ <div class="top"><div class="logo">Nabdh<span>.</span></div><div class="date">THU · JUN 11</div></div>
+ <div class="pane hero">
+  <div class="greet">Good afternoon, Ali — your body wants an easy day.</div>
+  <div class="ringw">
+   <svg width="178" height="178" viewBox="0 0 178 178">
+    <circle cx="89" cy="89" r="78" fill="none" stroke="rgba(124,108,240,.16)" stroke-width="11"/>
+    <circle cx="89" cy="89" r="78" fill="none" stroke="url(#g)" stroke-width="11" stroke-linecap="round"
+      stroke-dasharray="490" stroke-dashoffset="176" transform="rotate(-90 89 89)"/>
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C6CF0"/><stop offset="1" stop-color="#6CC7F0"/></linearGradient></defs>
+   </svg>
+   <div class="num"><b>64</b><span>READINESS</span></div>
+  </div>
+  <div><span class="state">Recovery day · HRV ▼ 3 nights</span></div>
+ </div>
+ <div class="g2">
+  <div class="pane card"><div class="cl">REST HR</div><div class="cv">58<small>bpm</small></div><div class="cd" style="color:#E0769A">▲ 4 baseline</div></div>
+  <div class="pane card"><div class="cl">HRV</div><div class="cv">48<small>ms</small></div><div class="cd" style="color:#E0769A">▼ 6 overnight</div></div>
+  <div class="pane card"><div class="cl">SLEEP</div><div class="cv">7:18<small>h</small></div><div class="cd" style="color:#3FAE7C">▲ 22 min</div></div>
+  <div class="pane card"><div class="cl">STEPS</div><div class="cv">8,432</div><div class="cd" style="color:#4A90D6">84% of goal</div></div>
+ </div>
+ <div class="pane coach"><div class="av"></div><p><b>Coach —</b> lunch protein covered. Keep dinner light (<b>≤ 500 kcal</b>) and walk after Asr.</p></div>
+ <div class="dock"><div class="on">Today</div><div>Sleep</div><div>Food</div><div>Coach</div></div>
+</div></div>
+</body></html>

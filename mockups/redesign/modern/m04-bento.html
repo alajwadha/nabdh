@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0A0A0E;font-family:Inter,system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#8A8A98;font-size:11px;letter-spacing:2px;font-weight:600}.meta b{color:#fff}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;background:#101016;box-shadow:0 30px 70px rgba(0,0,0,.7),0 0 0 1px #26262E}
+.in{padding:56px 16px 0;height:100%;display:flex;flex-direction:column;color:#F4F4F8}
+.top{display:flex;justify-content:space-between;align-items:center;padding:0 6px 16px}
+.logo{font-weight:800;font-size:19px}.logo span{color:#5EEAD4}
+.date{font-size:11.5px;color:#6E6E7C;font-weight:600;letter-spacing:1.6px}
+.bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:84px;gap:10px}
+.b{background:linear-gradient(160deg,#1B1B24,#15151C);border:1px solid #26262E;border-radius:24px;padding:16px;position:relative;overflow:hidden}
+.bl{font-size:10px;letter-spacing:1.8px;font-weight:700;color:#7C7C8C;margin-bottom:6px}
+.bv{font-weight:800;letter-spacing:-1px}
+.bd{font-size:11px;font-weight:600;margin-top:3px}
+.hero{grid-column:span 4;grid-row:span 2}
+.hero .bv{font-size:72px;letter-spacing:-3.5px;line-height:1;background:linear-gradient(135deg,#5EEAD4,#818CF8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .glow{position:absolute;right:-50px;top:-50px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(94,234,212,.22),transparent 70%)}
+.hero .tagx{display:inline-block;margin-top:10px;padding:6px 12px;border-radius:999px;background:rgba(94,234,212,.1);border:1px solid rgba(94,234,212,.25);color:#5EEAD4;font-size:11px;font-weight:700}
+.tall{grid-column:span 2;grid-row:span 2;display:flex;flex-direction:column}
+.ringx{margin:auto;position:relative;width:84px;height:84px}
+.ringx b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800}
+.s3{grid-column:span 2}
+.s3 .bv{font-size:23px}
+.s3 small{font-size:11px;color:#6E6E7C;font-weight:500}
+.wide{grid-column:span 6;grid-row:span 2;display:flex;flex-direction:column}
+.wl{display:flex;justify-content:space-between;align-items:baseline}
+.wl .bd{color:#818CF8}
+.chart{flex:1;display:flex;align-items:flex-end;gap:7px;margin-top:10px}
+.chart i{flex:1;border-radius:6px 6px 3px 3px;background:#23232E}
+.chart i.hi{background:linear-gradient(180deg,#818CF8,#4F46E5)}
+.chart i.sg{background:linear-gradient(180deg,#5EEAD4,#14B8A6)}
+.coachb{grid-column:span 6;grid-row:span 2;background:linear-gradient(160deg,#142B26,#101D1A);border-color:#1E4038}
+.coachb p{font-size:13px;line-height:1.5;color:#D9F4EC;margin-top:6px}
+.coachb b{color:#5EEAD4}
+.nav{margin-top:auto;margin-bottom:18px;display:flex;justify-content:space-around;padding:13px 8px;background:#16161E;border:1px solid #26262E;border-radius:999px}
+.nav div{font-size:12px;font-weight:700;color:#62626E;padding:6px 16px;border-radius:999px}
+.nav div.on{color:#0E1513;background:#5EEAD4}
+</style></head><body>
+<div class="meta">OPTION 4 · <b>BENTO</b> · inspired by Apple keynote bento grids / bento.me</div>
+<div class="ph"><div class="in">
+ <div class="top"><div class="logo">Nabdh<span>.</span></div><div class="date">THU · JUN 11</div></div>
+ <div class="bento">
+  <div class="b hero"><div class="glow"></div><div class="bl">READINESS</div><div class="bv">64</div><div class="tagx">RECOVERY DAY · ▼10 vs week</div></div>
+  <div class="b tall"><div class="bl">STEPS</div>
+   <div class="ringx"><svg width="84" height="84" viewBox="0 0 84 84">
+    <circle cx="42" cy="42" r="35" fill="none" stroke="#23232E" stroke-width="9"/>
+    <circle cx="42" cy="42" r="35" fill="none" stroke="#5EEAD4" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="35" transform="rotate(-90 42 42)"/>
+   </svg><b>84%</b></div>
+   <div class="bd" style="text-align:center;color:#8A8A98">8,432 / 10k</div></div>
+  <div class="b s3"><div class="bl">REST HR</div><div class="bv">58 <small>bpm</small></div><div class="bd" style="color:#F87193">▲4</div></div>
+  <div class="b s3"><div class="bl">HRV</div><div class="bv">48 <small>ms</small></div><div class="bd" style="color:#F87193">▼6</div></div>
+  <div class="b s3"><div class="bl">SLEEP</div><div class="bv">7:18 <small>h</small></div><div class="bd" style="color:#5EEAD4">▲22m</div></div>
+  <div class="b wide"><div class="wl"><div class="bl">READINESS — 7 DAYS</div><div class="bd">avg 74</div></div>
+   <div class="chart"><i style="height:55%"></i><i style="height:66%"></i><i style="height:52%"></i><i class="hi" style="height:78%"></i><i class="hi" style="height:84%"></i><i style="height:70%"></i><i class="sg" style="height:46%"></i></div></div>
+  <div class="b coachb"><div class="bl" style="color:#3FA68C">COACH</div>
+   <p><b>Protein’s covered</b> after the kabsa. Dinner ≤ 500 kcal, a walk after Asr, and lights out by 11:15 to rebuild HRV.</p></div>
+ </div>
+ <div class="nav"><div class="on">Today</div><div>Sleep</div><div>Food</div><div>Coach</div></div>
+</div></div>
+</body></html>

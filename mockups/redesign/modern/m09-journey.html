@@ -1,0 +1,54 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#CDE3EA;font-family:'Baloo 2','Noto Color Emoji',system-ui,sans-serif;padding:36px 0 30px;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-font-smoothing:antialiased}
+.meta{color:#46666F;font-size:11px;letter-spacing:2px;font-weight:700}.meta b{color:#13282E}
+.ph{width:390px;height:844px;border-radius:42px;overflow:hidden;position:relative;background:linear-gradient(180deg,#EAF6FA 0%,#F6FBFD 60%);box-shadow:0 30px 70px rgba(20,60,75,.35)}
+.in{padding:54px 22px 0;height:100%;display:flex;flex-direction:column;color:#13282E}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.logo{font-weight:800;font-size:20px}.logo span{color:#0FA3A3}
+.streak{display:flex;align-items:center;gap:7px;background:#FFF;border-radius:999px;padding:8px 14px;font-weight:800;font-size:14px;color:#E8843C;box-shadow:0 4px 12px rgba(20,60,75,.12)}
+.title{font-size:23px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px}
+.sub{font-size:13.5px;font-weight:600;color:#5E7A83;margin-bottom:6px}
+.path{position:relative;flex:1;margin:0 -22px}
+.path svg{display:block}
+.node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:6px;width:108px;text-align:center}
+.bub{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:#fff;box-shadow:0 6px 0 #C3D9DF, 0 10px 22px rgba(20,60,75,.15)}
+.bub.done{background:#0FA3A3;box-shadow:0 6px 0 #0B7A7A,0 10px 22px rgba(15,163,163,.3)}
+.bub.now{background:#FFC93C;box-shadow:0 6px 0 #D9A015,0 10px 26px rgba(255,201,60,.45);transform:scale(1.18)}
+.bub.lock{background:#E3EEF1;box-shadow:0 6px 0 #C3D9DF;opacity:.85;font-size:20px;color:#9DB6BD}
+.nl{font-size:12px;font-weight:800;line-height:1.25;color:#2A4A52}
+.nl span{display:block;font-size:10.5px;font-weight:700;color:#7E99A1}
+.coach{position:absolute;right:14px;top:224px;width:168px;background:#fff;border-radius:18px 18px 18px 4px;padding:12px 14px;font-size:12px;font-weight:700;line-height:1.4;color:#2A4A52;box-shadow:0 8px 20px rgba(20,60,75,.15)}
+.coach b{color:#0FA3A3}
+.xp{margin:0 0 14px;background:#fff;border-radius:20px;padding:14px 18px;box-shadow:0 8px 20px rgba(20,60,75,.1)}
+.xp .r{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;margin-bottom:8px}
+.xp .r span:last-child{color:#0FA3A3}
+.xpbar{height:12px;border-radius:99px;background:#E3EEF1;overflow:hidden}
+.xpbar i{display:block;height:100%;width:62%;border-radius:99px;background:linear-gradient(90deg,#0FA3A3,#37C9A5)}
+.nav{margin-bottom:18px;display:flex;justify-content:space-around;background:#fff;border-radius:999px;padding:8px;box-shadow:0 10px 26px rgba(20,60,75,.14)}
+.nav div{padding:11px 18px;border-radius:999px;font-size:12.5px;font-weight:800;color:#8FA8AF}
+.nav div.on{background:#13282E;color:#fff}
+</style></head><body>
+<div class="meta">OPTION 9 · <b>JOURNEY</b> · inspired by Duolingo’s path &amp; streak mechanics</div>
+<div class="ph"><div class="in">
+ <div class="top"><div class="logo">Nabdh<span>.</span></div><div class="streak">🔥 12</div></div>
+ <div class="title">Today’s recovery quest</div>
+ <div class="sub">Readiness 64 — easy day, big rewards. 2 of 5 done.</div>
+ <div class="path">
+  <svg width="390" height="470" viewBox="0 0 390 470">
+   <path d="M95,42 C220,60 300,90 290,150 C280,212 120,200 100,265 C82,326 250,330 280,392 C295,424 240,448 180,452"
+    fill="none" stroke="#C3D9DF" stroke-width="14" stroke-linecap="round" stroke-dasharray="2 22"/>
+  </svg>
+  <div class="node" style="left:42px;top:8px"><div class="bub done">😴</div><div class="nl">Sleep 7h+<span>DONE · 7:18</span></div></div>
+  <div class="node" style="left:236px;top:96px"><div class="bub done">🍛</div><div class="nl">Protein lunch<span>DONE · kabsa</span></div></div>
+  <div class="node" style="left:46px;top:212px"><div class="bub now">🚶</div><div class="nl">Walk after Asr<span>30 min · NOW</span></div></div>
+  <div class="node" style="left:226px;top:336px"><div class="bub lock">🥗</div><div class="nl">Light dinner<span>≤ 500 kcal</span></div></div>
+  <div class="node" style="left:126px;top:398px"><div class="bub lock">🌙</div><div class="nl">Lights out 11:15<span>+50 XP bonus</span></div></div>
+  <div class="coach"><b>Coach:</b> HRV’s been dipping — finish today’s path and tomorrow’s readiness jumps. 💪</div>
+ </div>
+ <div class="xp"><div class="r"><span>Level 7 — Steady Heart</span><span>620 / 1000 XP</span></div><div class="xpbar"><i></i></div></div>
+ <div class="nav"><div class="on">Quest</div><div>Stats</div><div>Food</div><div>You</div></div>
+</div></div>
+</body></html>
