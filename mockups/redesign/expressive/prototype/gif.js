@@ -17,7 +17,7 @@ const W = 295, H = 639; // 393x852 * 0.75
   let recording = true, last = 0;
   const recLoop = (async () => {
     const t0 = Date.now(); last = t0;
-    while (recording && frames.length < 220) {
+    while (recording && frames.length < 270) {
       const buf = await page.screenshot({ type: 'png' });
       const now = Date.now();
       delays.push(frames.length === 0 ? 80 : Math.max(30, now - last));
@@ -27,9 +27,12 @@ const W = 295, H = 639; // 393x852 * 0.75
 
   const wait = (ms) => new Promise(r => setTimeout(r, ms));
   await wait(900);
-  await page.click('#enter');        await wait(1900); // sign-in -> today stagger + count-up
-  await page.click('[data-v="sleep"]'); await wait(1700);
-  await page.click('[data-v="food"]');  await wait(1700);
+  await page.click('#enter');        await wait(1800); // sign-in -> today stagger + count-up
+  await page.click('[data-metric="rhr"]'); await wait(1700); // tile -> detail sheet + chart draw
+  await page.mouse.click(196, 110);  await wait(800);  // dismiss
+  await page.click('[data-v="sleep"]'); await wait(1600);
+  await page.click('[data-v="food"]');  await wait(1100);
+  await page.click('#addwater');        await wait(500);
   await page.click('#fab');             await wait(2400); // camera + recognition
   await page.click('#snap');            await wait(1300); // result sheet
   await page.click('#logit');           await wait(2200); // log -> food updates + toast
