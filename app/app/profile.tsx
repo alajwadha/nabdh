@@ -5,6 +5,8 @@ import { AppText, Button, Screen, Sheet } from '../src/design-system/components'
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAuth } from '../src/auth/AuthProvider';
+import { useHealth } from '../src/store/health';
+import { useFitbitConnect } from '../src/integrations/fitbit';
 import { useAppState } from '../src/store/app';
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
@@ -44,11 +46,18 @@ const PERMS: Record<'apple' | 'fitbit', { name: string; rows: [string, string][]
 export default function Profile() {
   const { colors, tiles, mode, toggle } = useTheme();
   const { signOut } = useAuth();
+  const { setSummary } = useHealth();
   const { ramadan, setRamadan, showPrayers, setShowPrayers } = useAppState();
   const router = useRouter();
   const [model, setModel] = useState<'managed' | 'claude' | 'gpt'>('managed');
   const [connect, setConnect] = useState<'apple' | 'fitbit' | null>(null);
   const [fitbitConnected, setFitbitConnected] = useState(false);
+
+  // Real Fitbit OAuth (legacy Web API, PKCE — no backend needed).
+  const { connectFitbit, configured: fitbitConfigured } = useFitbitConnect((fresh) => {
+    setSummary(fresh);
+    setFitbitConnected(true);
+  });
 
   const fam: [string, string, number, string][] = [
     ['You', 'A', 0.84, '#2E7D5B'],
@@ -172,9 +181,21 @@ export default function Profile() {
                 <Toggle on />
               </View>
             ))}
+            {connect === 'fitbit' && !fitbitConfigured && (
+              <AppText variant="caption" color={colors.warning} style={{ fontWeight: '600' }}>
+                Add your Fitbit Client ID to app.json (expo.extra.fitbit.clientId) and rebuild to enable this.
+              </AppText>
+            )}
             <Button
               label="Allow & connect"
-              onPress={() => { if (connect === 'fitbit') setFitbitConnected(true); setConnect(null); }}
+              onPress={() => {
+                if (connect === 'fitbit') {
+                  setConnect(null);
+                  if (fitbitConfigured) connectFitbit();
+                } else {
+                  setConnect(null);
+                }
+              }}
             />
           </View>
         )}
