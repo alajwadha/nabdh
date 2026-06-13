@@ -2,16 +2,15 @@
 
 Arabic-first, iOS-first AI health coach for the Saudi market. Connects wearables (Apple Watch via HealthKit, Fitbit Air via the Google Health API), unifies the data, adds food-photo nutrition with a curated Saudi/Gulf dish database, and gives predictive, closed-loop coaching through a swappable AI provider with a Saudi-context layer on top.
 
-The full product plan (architecture, phases, compliance, risks, the ~96-dish catalog, and the step-by-step build plan) lives outside this repo at:
-`C:\Users\Ali-h\.claude\plans\project-nabdh-snug-cookie.md`
+The full product plan (architecture, phases, compliance, risks, the ~96-dish catalog, and the step-by-step build plan) lives in [`docs/PLAN.md`](docs/PLAN.md).
 
 ## Monorepo layout
 
 ```
 nabdh/
 ├─ app/                 Expo (React Native) iOS-first app
+│  ├─ app/              expo-router routes (sign-in, onboarding, (tabs), …)
 │  └─ src/
-│     ├─ app/           expo-router routes
 │     ├─ design-system/ dark theme tokens + UI primitives
 │     ├─ i18n/          Arabic-first RTL localization
 │     ├─ animations/    Reanimated helpers
@@ -25,15 +24,15 @@ nabdh/
 
 ## Prerequisites
 
-- Node 20+ (you have v24), npm, git - installed.
-- An Apple Developer account (enroll as a **company / legal entity**, required for a health app).
-- An Expo account (free) for EAS cloud iOS builds: `npm i -g eas-cli && eas login`.
-- A physical iPhone + paired Apple Watch (HealthKit needs a real device; the simulator cannot test it).
+- Node 20+, npm, git.
+- **macOS + Xcode** for local iOS builds (recommended) — see [`docs/run-on-mac.md`](docs/run-on-mac.md). On Windows/Linux you build in the cloud with EAS instead.
+- An Apple Developer account (enroll as a **company / legal entity**, required for a health app). A free personal Apple ID is enough for local dev builds.
+- A physical iPhone + paired Apple Watch (HealthKit needs a real device; the simulator cannot test it, but every screen runs on the simulator with sample data).
 
 ## First-time setup (run these)
 
-```powershell
-cd C:\Users\Ali-h\nabdh
+```bash
+cd nabdh
 
 # 1. Install all workspace dependencies (add --legacy-peer-deps if npm reports peer conflicts)
 npm install
@@ -42,15 +41,27 @@ npm install
 cd app
 npx expo install --fix
 
-# 3. Start the dev server (needs a dev build, not Expo Go - see step 4)
+# 3. Start the dev server (needs a dev build, not Expo Go — see below)
 npx expo start --dev-client
 ```
 
-### Build the iOS dev client (from Windows, via the cloud)
+### Build the iOS dev client
 
-```powershell
-cd C:\Users\Ali-h\nabdh\app
-eas login
+**On a Mac (recommended) — build locally with Xcode, no cloud needed:**
+
+```bash
+cd nabdh/app
+npx expo run:ios            # Simulator (full UI, sample data)
+npx expo run:ios --device   # your iPhone (real Apple Health data)
+```
+
+The full Mac walkthrough — signing, device setup, common hiccups — is in [`docs/run-on-mac.md`](docs/run-on-mac.md).
+
+**On Windows/Linux — build in the cloud with EAS:**
+
+```bash
+cd nabdh/app
+npm i -g eas-cli && eas login
 eas build:configure
 eas build --profile development --platform ios
 ```
@@ -64,14 +75,16 @@ Install the resulting build on your iPhone (EAS gives an install link / QR), the
 3. Paste the web config values into `app/app.json` under `expo.extra.firebase` (the app reads them via `expo-constants`).
 4. Deploy rules: `firebase deploy --only firestore:rules`.
 
-### GitHub remote (no `gh` CLI installed)
+### GitHub
 
-Create an empty repo on github.com named `nabdh`, then:
+The repo lives at [github.com/alajwadha/nabdh](https://github.com/alajwadha/nabdh):
 
-```powershell
-cd C:\Users\Ali-h\nabdh
-git remote add origin https://github.com/<you>/nabdh.git
-git push -u origin main
+```bash
+git clone https://github.com/alajwadha/nabdh.git
+cd nabdh
+# ...make changes...
+git pull            # get the latest
+git push            # publish your commits
 ```
 
 ## Status
@@ -81,4 +94,4 @@ git push -u origin main
 - Phase 0: monorepo, Expo app skeleton, dark design system, Arabic RTL i18n, backend stub + Saudi-context seed, shared types, Firestore rules, CI.
 - Phase 1: Firebase auth (Apple + Google wired, phone OTP stubbed), auth-gated routing, the three consent gates (PDPL / HealthKit / AI cross-border), onboarding with goals, a HealthKit read wrapper, and a real dashboard with the daily summary.
 
-Run `npm install` + `npx expo install --fix` then an EAS dev build to try it on your iPhone. See the plan's Appendix B for the full roadmap.
+Run `npm install` + `npx expo install --fix`, then `npx expo run:ios` (Mac) or an EAS dev build to try it on your iPhone. See the plan's Appendix B for the full roadmap.
