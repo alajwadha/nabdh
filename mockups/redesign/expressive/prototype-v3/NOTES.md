@@ -30,6 +30,13 @@ health apps ship that v2 was missing, driven by a competitor study (June 2026).
 - Ramadan health apps (prayer/fasting/hydration): https://scoopempire.com/5-apps-that-help-you-stay-on-track-this-ramadan/
 - Gamification / streaks / social accountability: https://trophy.so/blog/health-gamification-examples
 
+## Changelog
+- **v3.1** — prayer-time strip is now **off by default** (opt in via the Add sheet, the
+  profile *Prayer times* row, or automatically in Ramadan mode); **Coach now has a
+  free-text chat bar** (keyword-aware replies) alongside the quick chips; **Connect a
+  device** flow added — Apple Health & Fitbit-Air/Google-Health permission sheets with an
+  in-Kingdom data note (mirrors the real `Connect` buttons already in `app/app/index.tsx`).
+
 ## What's interactive
 - Swipe the hero (scroll-snap + dots); tap a card to open the related detail / Trends.
 - **Customize** → drag tiles to reorder, tap × to remove, "Add metric" sheet to add (persisted).

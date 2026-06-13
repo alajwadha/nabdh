@@ -50,6 +50,8 @@ const path = require('path');
 
   // profile / settings
   await page.click('#avatar'); await wait(800); await shot('13-profile');
+  await page.click('#conn-fitbit'); await wait(800); await shot('13b-connect');
+  await closeBackdrop(); await wait(600);
   await page.evaluate(()=>document.getElementById('profile').scrollTop=940); await wait(400); await shot('14-profile-family');
   await page.click('#profBack'); await wait(700);
 
@@ -65,6 +67,8 @@ const path = require('path');
   await page.click('[data-v="food"]'); await wait(1300); await shot('19-food');
   await page.click('[data-v="coach"]'); await wait(700);
   await page.click('[data-q="lift"]'); await wait(2100); await shot('20-coach');
+  await page.type('#chatInput','can I have kabsa for dinner?'); await wait(200);
+  await page.click('#chatSend'); await wait(1900); await shot('20b-coach-chat');
 
   // dark mode
   await page.click('#theme'); await wait(800);

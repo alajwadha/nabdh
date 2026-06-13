@@ -215,9 +215,24 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 .chip{border-radius:999px;padding:11px 15px;font-size:12px;font-weight:800;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .3s,background-color .45s}
 .chip:active{transform:scale(.92)}
 .chip.used{opacity:.35;pointer-events:none}
+.composer{display:flex;gap:9px;align-items:center;padding:8px 0 calc(2px + env(safe-area-inset-bottom))}
+.composer input{flex:1;background:var(--card);border:2px solid var(--bord);border-radius:999px;padding:13px 17px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);outline:none}
+.composer input::placeholder{color:var(--mut)}
+.composer .send{width:46px;height:46px;border-radius:50%;background:var(--grn);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;flex:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.composer .send:active{transform:scale(.88)}
+/* connect sheet */
+.cnhero{display:flex;align-items:center;gap:13px;background:var(--card);border:2px solid var(--bord);border-radius:22px;padding:15px;margin:14px 0 6px}
+.cnhero .ic{width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.cnhero .t b{font-size:15px;font-weight:800}.cnhero .t small{display:block;font-size:11.5px;font-weight:600;color:var(--mut);margin-top:2px}
+.perm{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:2px solid var(--bord)}
+.perm:last-child{border-bottom:0}
+.perm .ic{width:34px;height:34px;border-radius:11px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.perm .t{font-size:13px;font-weight:800}.perm .t small{display:block;font-size:11px;font-weight:600;color:var(--mut)}
 /* ============ generic sheet ============ */
 .backdrop{position:absolute;inset:0;background:rgba(15,12,8,.45);z-index:55;opacity:0;pointer-events:none;transition:opacity .4s}
 .backdrop.show{opacity:1;pointer-events:auto}
+.backdrop.hi{z-index:63}
+#connect{z-index:64}
 .sheet,.dsheet,.addsheet{position:absolute;left:0;right:0;bottom:0;z-index:56;background:var(--bg);border-radius:36px 36px 0 0;padding:14px 24px calc(24px + env(safe-area-inset-bottom));transform:translateY(104%);transition:transform .55s cubic-bezier(.22,1,.36,1),background-color .45s;max-height:90%;overflow-y:auto}
 .sheet.open,.dsheet.open,.addsheet.open{transform:none}
 .sheet::-webkit-scrollbar,.dsheet::-webkit-scrollbar,.addsheet::-webkit-scrollbar{display:none}
@@ -575,6 +590,10 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
      <button class="chip" data-q="why" style="background:var(--lav);color:var(--lavT)">Why 500 kcal?</button>
      <button class="chip" data-q="lift" style="background:var(--peach);color:var(--peachT)">Can I lift instead?</button>
     </div>
+    <div class="composer">
+     <input id="chatInput" type="text" placeholder="Message your coach…" autocomplete="off">
+     <button class="send" id="chatSend">➤</button>
+    </div>
    </section>
   </div>
 
@@ -648,6 +667,9 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
   <button class="btn bdark" style="background:var(--grn);color:#fff" id="jsave">Save to journal</button>
  </div>
 
+ <!-- ===== CONNECT DEVICE SHEET ===== -->
+ <div class="dsheet" id="connect"><div class="grab"></div><div id="connectBody"></div></div>
+
  <!-- ===== PROFILE / SETTINGS ===== -->
  <div class="scr" id="profile">
   <div class="scrtop"><button class="bk" id="profBack">‹</button><div class="h">Profile</div></div>
@@ -660,11 +682,11 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
    <div class="row" id="r-ramadan"><div class="ic">☪</div>Ramadan mode<div class="r"><span id="ramState">Off</span> ›</div></div>
   </div>
 
-  <div class="grph">CONNECTED</div>
+  <div class="grph">CONNECTED DEVICES</div>
   <div class="grp">
-   <div class="row"><div class="ic">⌚</div>Apple Watch<div class="r"><span class="dot"></span><span class="ok">Synced</span></div></div>
-   <div class="row"><div class="ic">⚡</div>Fitbit (Google Health)<div class="r" style="color:var(--grnT)">Connect ›</div></div>
-   <div class="row"><div class="ic">🕌</div>Prayer times · Riyadh<div class="r">Aladhan ›</div></div>
+   <div class="row" id="conn-apple"><div class="ic">⌚</div>Apple Health<div class="r" id="appleState"><span class="dot"></span><span class="ok">Synced</span></div></div>
+   <div class="row" id="conn-fitbit"><div class="ic">⚡</div>Fitbit Air · Google Health<div class="r" id="fitbitState" style="color:var(--grnT)">Connect ›</div></div>
+   <div class="row" id="conn-prayer"><div class="ic">🕌</div>Prayer times · Riyadh<div class="r">Aladhan ›</div></div>
   </div>
 
   <div class="grph">AI COACH MODEL</div>
@@ -821,6 +843,10 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
  try{layout=JSON.parse(localStorage.getItem('nabdh_tiles'));}catch(e){}
  if(!layout||!layout.length)layout=['rhr','hrv','sleep','steps'];
  var editing=false;
+ // prayer strip is OFF by default — opt-in via Add sheet / profile / Ramadan mode
+ var showPrayers=false;try{showPrayers=localStorage.getItem('nabdh_prayers')==='1';}catch(e){}
+ function paintPrayers(){var p=document.getElementById('prayers');if(p)p.style.display=(showPrayers||ramOn)?'flex':'none';}
+ paintPrayers();
  function saveLayout(){try{localStorage.setItem('nabdh_tiles',JSON.stringify(layout));}catch(e){}
   var rc=document.querySelector('#r-customize .r');if(rc)rc.textContent=layout.length+' metrics ›';}
  function renderTiles(){
@@ -888,13 +914,22 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 
  // ===== add-metric sheet =====
  var addsheet=document.getElementById('addsheet'),addlist=document.getElementById('addlist'),backdrop=document.getElementById('backdrop');
- function buildAdd(){addlist.innerHTML='';ALL.forEach(function(k){var m=CAT[k];var on=layout.indexOf(k)>-1;
+ function buildAdd(){addlist.innerHTML='';
+  var pr=document.createElement('div');pr.className='mopt';pr.dataset.special='prayers';
+  pr.innerHTML='<div class="ic" style="background:var(--mint);color:var(--mintT)">🕌</div>'
+   +'<div class="t">Prayer-time strip<small>Riyadh · prayer-anchored plan</small></div>'
+   +'<div class="tog'+(showPrayers?' on':'')+'"></div>';
+  addlist.appendChild(pr);
+  ALL.forEach(function(k){var m=CAT[k];var on=layout.indexOf(k)>-1;
   var row=document.createElement('div');row.className='mopt';row.dataset.k=k;
   row.innerHTML='<div class="ic" style="background:var('+m.bg+');color:var('+m.t+')">'+m.ic+'</div>'
    +'<div class="t">'+m.lbl.replace(/&sup2;|₂/g,'')+'<small>'+(m.v?m.v+' '+m.u:'')+'</small></div>'
    +'<div class="tog'+(on?' on':'')+'"></div>';
   addlist.appendChild(row);});}
  addlist.addEventListener('click',function(e){var row=e.target.closest('.mopt');if(!row)return;
+  if(row.dataset.special==='prayers'){showPrayers=!showPrayers;
+   try{localStorage.setItem('nabdh_prayers',showPrayers?'1':'0');}catch(e){}
+   row.querySelector('.tog').classList.toggle('on',showPrayers);paintPrayers();return;}
   var k=row.dataset.k,tog=row.querySelector('.tog');
   if(layout.indexOf(k)>-1){layout=layout.filter(function(x){return x!==k});tog.classList.remove('on');}
   else{layout.push(k);tog.classList.add('on');}
@@ -933,7 +968,8 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
  snap.addEventListener('click',function(){backdrop.classList.add('show');sheet.classList.add('open');});
  function closeSheets(){sheet.classList.remove('open');document.getElementById('detail').classList.remove('open');
   addsheet.classList.remove('open');document.getElementById('journal').classList.remove('open');
-  document.getElementById('qmenu').classList.remove('open');backdrop.classList.remove('show');}
+  document.getElementById('connect').classList.remove('open');
+  document.getElementById('qmenu').classList.remove('open');backdrop.classList.remove('show','hi');}
  document.getElementById('cancel').addEventListener('click',closeSheets);
  backdrop.addEventListener('click',closeSheets);
  function showToast(html){toast.innerHTML=html;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show')},2600);}
@@ -1110,6 +1146,27 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
     stream.scrollTop=stream.scrollHeight;if(r.act)r.act();},1500);
   });
  });
+ // free-text composer
+ function coachReply(text){var t=text.toLowerCase();
+  if(/walk|مشي|asr/.test(t)){syncPlan('walk',true);return 'Logged the walk ✓ — that easy session is exactly the recovery dose today. Two tasks left.';}
+  if(/dinner|عشاء|kabsa|كبسة|eat|food|كل|hungry/.test(t))return 'Keep tonight under <b>500 kcal</b> and protein-forward — shorbat adas or grilled fish fits your budget perfectly.';
+  if(/sleep|نوم|bed|tired|تعب/.test(t))return 'Lights out by <b>11:15</b> tonight — that pays your 1h40 sleep debt and should push HRV back toward baseline.';
+  if(/water|ماء|hydrat|thirst/.test(t))return 'You\'re at 3 of 8 glasses. Front-load 3 before Dhuhr while it\'s this hot — I\'ll keep nudging you.';
+  if(/stress|قلق|anx/.test(t))return 'Your stress peaked before Dhuhr. Try the <b>1-minute breath</b> from the readiness card — it flattened your spikes last week.';
+  if(/ramadan|صوم|fast|iftar|suhoor|سحور/.test(t))return 'In Ramadan I shift everything around iftar &amp; suhoor — break gently with dates, then hydrate steadily across the night.';
+  if(/why|ليش|كيف|how|explain/.test(t))return 'Short version: HRV is down a <b>third night</b>, so today is recovery, not load. One disciplined day usually clears it.';
+  return 'Got it. Based on today\'s numbers I\'d still keep it light — easy walk after Asr, light dinner, early night. Want me to adjust the plan?';
+ }
+ function sendChat(text){text=(text||'').trim();if(!text)return;
+  var u=document.createElement('div');u.className='msg fromu';u.textContent=text;stream.appendChild(u);stream.scrollTop=stream.scrollHeight;
+  var ty=document.createElement('div');ty.className='typing';ty.innerHTML='<i></i><i></i><i></i>';
+  setTimeout(function(){stream.appendChild(ty);stream.scrollTop=stream.scrollHeight;},380);
+  var reply=coachReply(text);
+  setTimeout(function(){ty.remove();var c=document.createElement('div');c.className='msg fromc';c.innerHTML=reply;stream.appendChild(c);stream.scrollTop=stream.scrollHeight;},1450);
+ }
+ var chatInput=document.getElementById('chatInput'),chatSend=document.getElementById('chatSend');
+ chatSend.addEventListener('click',function(){sendChat(chatInput.value);chatInput.value='';chatInput.focus();});
+ chatInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendChat(chatInput.value);chatInput.value='';}});
 
  // ===== journal =====
  var TAGS=['☕ Late karak','😴 Nap','🏋️ Gym','🍽 Big dinner','😰 Stress','💨 Shisha','✈️ Travel','🌶 Spicy','🧊 Cold shower','💊 Supplement'];
@@ -1132,9 +1189,38 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
   document.querySelectorAll('#profile .modelopt').forEach(function(x){x.classList.remove('sel')});o.classList.add('sel');});});
  document.getElementById('r-ramadan').addEventListener('click',function(){profile.classList.remove('open');setRamadan(!ramOn);});
 
+ // ===== connect a device (Apple Health / Fitbit via Google Health) =====
+ var connect=document.getElementById('connect'),connectBody=document.getElementById('connectBody');
+ var PERMS={
+  apple:{name:'Apple Health',ic:'⌚',col:'--pink',sub:'Read from your iPhone & Apple Watch',
+   rows:[['👟','Steps & distance'],['❤️','Heart rate & resting HR'],['📈','Heart rate variability'],['😴','Sleep analysis'],['🩸','Blood oxygen'],['🔥','Active energy']]},
+  fitbit:{name:'Fitbit Air',ic:'⚡',col:'--blue',sub:'via Google Health · sign in opens your browser',
+   rows:[['👟','Activity & steps'],['❤️','Heart rate'],['😴','Sleep stages'],['🔥','Calories']]}
+ };
+ function buildConnect(p){var m=PERMS[p];
+  connectBody.innerHTML='<div class="dhead"><div class="t">Connect '+m.name+'</div><div class="s">Choose what Nabdh can read. You can change this anytime.</div></div>'
+   +'<div class="cnhero"><div class="ic" style="background:var('+m.col+')">'+m.ic+'</div><div class="t"><b>'+m.name+'</b><small>'+m.sub+'</small></div></div>'
+   +'<div class="sov" style="margin:12px 2px">🛡 Data is processed and stored in-Kingdom (Dammam · me-central2). Raw samples stay on your device.</div>'
+   +m.rows.map(function(r){return '<div class="perm"><div class="ic">'+r[0]+'</div><div class="t">'+r[1]+'</div><div class="tog on" data-perm></div></div>';}).join('')
+   +'<button class="btn bdark" style="background:var(--grn);color:#fff;margin-top:14px" data-allow="'+p+'">Allow &amp; connect</button>';
+  connectBody.querySelectorAll('[data-perm]').forEach(function(t){t.addEventListener('click',function(){t.classList.toggle('on')})});
+  connectBody.querySelector('[data-allow]').addEventListener('click',function(){
+   if(p==='fitbit')document.getElementById('fitbitState').innerHTML='<span class="dot"></span><span class="ok">Synced</span>';
+   if(p==='apple')document.getElementById('appleState').innerHTML='<span class="dot"></span><span class="ok">Synced</span>';
+   closeSheets();setTimeout(function(){showToast('<b>Connected</b> · '+m.name+' is now syncing');},160);
+  });
+ }
+ function openConnect(p){buildConnect(p);connect.classList.add('open');backdrop.classList.add('show','hi');}
+ document.getElementById('conn-apple').addEventListener('click',function(){openConnect('apple');});
+ document.getElementById('conn-fitbit').addEventListener('click',function(){openConnect('fitbit');});
+ document.getElementById('conn-prayer').addEventListener('click',function(){
+  showPrayers=!showPrayers;try{localStorage.setItem('nabdh_prayers',showPrayers?'1':'0');}catch(e){}
+  paintPrayers();showToast(showPrayers?'<b>Added</b> · prayer-time strip is on':'<b>Removed</b> · prayer-time strip is off');});
+
  // ===== ramadan mode =====
  var ramOn=false;
  function setRamadan(on){ramOn=on;
+  paintPrayers();
   document.getElementById('ramadan').classList.toggle('on',on);
   document.getElementById('ramBanner').style.display=on?'block':'none';
   document.getElementById('ramState').textContent=on?'On':'Off';
