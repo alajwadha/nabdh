@@ -52,6 +52,16 @@
   },
   "home": {
     "greeting": "Good morning, here is your day at a glance",
+    "greetCalm": "Easy does it\ntoday,",
+    "greetRamadan": "Ramadan mubarak,",
+    "greetName": "Ali.",
+    "yourMetrics": "Your metrics",
+    "customize": "Customize",
+    "done": "Done",
+    "addTitle": "Add to Today",
+    "addSub": "Pick the metrics that matter to you",
+    "prayerStrip": "Prayer-time strip",
+    "coachToday": "Kabsa sorted your protein. Walk after Asr while it's cooler, dinner under 500 kcal, lights out by 11:15.",
     "steps": "Steps today",
     "connected": "Connected to Apple Health",
     "notConnected": "Apple Health not connected",
@@ -59,6 +69,28 @@
     "syncing": "Syncing...",
     "disclaimer": "This is not medical advice and is not a substitute for a doctor.",
     "toggleLang": "العربية"
+  },
+  "tab": {
+    "today": "Today",
+    "sleep": "Sleep",
+    "food": "Food",
+    "coach": "Coach"
+  },
+  "quick": {
+    "snap": "Snap a plate",
+    "snapSub": "AI reads Saudi & Gulf dishes",
+    "water": "Add water",
+    "waterSub": "+1 glass",
+    "coach": "Ask the coach",
+    "coachSub": "knows today's data"
+  },
+  "plan": {
+    "lunch": "Protein at lunch — kabsa 38g",
+    "walk": "Easy walk, 30 min",
+    "dinner": "Dinner under 500 kcal",
+    "lights": "Lights out",
+    "afterAsr": "after Asr",
+    "postMaghrib": "post-Maghrib"
   },
   "readiness": {
     "label": "Readiness",
