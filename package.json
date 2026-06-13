@@ -8,9 +8,9 @@
     "packages/*"
   ],
   "scripts": {
-    "app": "npm run start -w app",
+    "app": "npm run start --prefix app",
     "backend": "npm run dev -w backend",
-    "typecheck": "npm run typecheck -w app && npm run typecheck -w backend"
+    "typecheck": "npm run typecheck --prefix app && npm run typecheck -w backend"
   },
   "engines": {
     "node": ">=20"

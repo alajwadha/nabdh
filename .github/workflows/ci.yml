@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - name: Install dependencies
+      - name: Install dependencies (backend + shared)
         run: npm install
+      - name: Install app dependencies
+        run: npm install --prefix app
       - name: Typecheck (app + backend)
         run: npm run typecheck
