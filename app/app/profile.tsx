@@ -1,0 +1,202 @@
+import { useState } from 'react';
+import { Pressable, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { AppText, Button, Screen, Sheet } from '../src/design-system/components';
+import { radii, spacing } from '../src/design-system';
+import { useTheme } from '../src/design-system/theme';
+import { useAuth } from '../src/auth/AuthProvider';
+import { useAppState } from '../src/store/app';
+
+function Group({ title, children }: { title: string; children: React.ReactNode }) {
+  const { colors } = useTheme();
+  return (
+    <View style={{ gap: 0 }}>
+      <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: spacing.sm, marginLeft: 4 }}>
+        {title}
+      </AppText>
+      <View style={{ backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.lg, paddingHorizontal: spacing.lg }}>
+        {children}
+      </View>
+    </View>
+  );
+}
+
+function Row({ icon, label, right, onPress, last }: { icon: string; label: string; right?: React.ReactNode; onPress?: () => void; last?: boolean }) {
+  const { colors } = useTheme();
+  return (
+    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 14, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
+      <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <AppText style={{ fontSize: 15 }}>{icon}</AppText>
+      </View>
+      <AppText variant="title" style={{ flex: 1 }}>
+        {label}
+      </AppText>
+      {right}
+    </Pressable>
+  );
+}
+
+const PERMS: Record<'apple' | 'fitbit', { name: string; rows: [string, string][] }> = {
+  apple: { name: 'Apple Health', rows: [['👟', 'Steps & distance'], ['❤️', 'Heart rate & resting HR'], ['📈', 'Heart rate variability'], ['😴', 'Sleep analysis'], ['🩸', 'Blood oxygen'], ['🔥', 'Active energy']] },
+  fitbit: { name: 'Fitbit Air', rows: [['👟', 'Activity & steps'], ['❤️', 'Heart rate'], ['😴', 'Sleep stages'], ['🔥', 'Calories']] },
+};
+
+export default function Profile() {
+  const { colors, tiles, mode, toggle } = useTheme();
+  const { signOut } = useAuth();
+  const { ramadan, setRamadan, showPrayers, setShowPrayers } = useAppState();
+  const router = useRouter();
+  const [model, setModel] = useState<'managed' | 'claude' | 'gpt'>('managed');
+  const [connect, setConnect] = useState<'apple' | 'fitbit' | null>(null);
+  const [fitbitConnected, setFitbitConnected] = useState(false);
+
+  const fam: [string, string, number, string][] = [
+    ['You', 'A', 0.84, '#2E7D5B'],
+    ['Mama', 'M', 0.96, '#C2562C'],
+    ['Faisal', 'F', 0.61, '#4A3F9E'],
+  ];
+  const badges: [string, string, boolean][] = [
+    ['🔥', '12-day food streak', true],
+    ['🌙', '7 nights on time', true],
+    ['🚶', '100k steps week', true],
+    ['🏆', '30-day streak', false],
+  ];
+
+  return (
+    <Screen>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+          <AppText style={{ fontSize: 18 }}>‹</AppText>
+        </Pressable>
+        <AppText variant="h1">Profile</AppText>
+      </View>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
+        <View style={{ width: 54, height: 54, borderRadius: 27, backgroundColor: colors.yellow, alignItems: 'center', justifyContent: 'center' }}>
+          <AppText style={{ fontSize: 22, fontWeight: '800', color: '#5A4410' }}>A</AppText>
+        </View>
+        <View>
+          <AppText variant="h2" color="#fff">Ali Alajwad</AppText>
+          <AppText variant="caption" color="rgba(255,255,255,0.9)" style={{ fontWeight: '600' }}>
+            Goal · Recover & lose 4 kg by Eid
+          </AppText>
+        </View>
+      </View>
+
+      <Group title="YOUR DAY">
+        <Row icon="🎛" label="Customize Today" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/(tabs)')} />
+        <Row icon="☪" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
+        <Row icon="🕌" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
+        <Row icon={mode === 'dark' ? '☀️' : '🌙'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last />
+      </Group>
+
+      <Group title="CONNECTED DEVICES">
+        <Row icon="⌚" label="Apple Health" right={<Status text="Synced" colors={colors} />} onPress={() => setConnect('apple')} />
+        <Row icon="⚡" label="Fitbit Air · Google Health" right={fitbitConnected ? <Status text="Synced" colors={colors} /> : <AppText variant="caption" color={colors.accentText}>Connect ›</AppText>} onPress={() => setConnect('fitbit')} last />
+      </Group>
+
+      <Group title="AI COACH MODEL">
+        {([['managed', 'Nabdh managed', 'Gemini · processed in-Kingdom', 'DEFAULT'], ['claude', 'Bring your own — Claude', 'Premium · cross-border, opt-in', 'PRO'], ['gpt', 'Bring your own — GPT', 'Premium · cross-border, opt-in', 'PRO']] as const).map(([key, name, sub, tag], i) => (
+          <Pressable key={key} onPress={() => setModel(key)} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: i === 2 ? 0 : 2, borderBottomColor: colors.border }}>
+            <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 2.5, borderColor: model === key ? colors.accent : colors.border, alignItems: 'center', justifyContent: 'center' }}>
+              {model === key && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.accent }} />}
+            </View>
+            <View style={{ flex: 1 }}>
+              <AppText variant="title">{name}</AppText>
+              <AppText variant="caption" color={colors.textMuted} style={{ fontWeight: '500' }}>{sub}</AppText>
+            </View>
+            <View style={{ backgroundColor: tag === 'DEFAULT' ? tiles.mint.bg : tiles.gold.bg, borderRadius: 99, paddingVertical: 4, paddingHorizontal: 9 }}>
+              <AppText variant="caption" color={tag === 'DEFAULT' ? tiles.mint.ink : tiles.gold.ink} style={{ fontSize: 9 }}>{tag}</AppText>
+            </View>
+          </Pressable>
+        ))}
+      </Group>
+
+      <Group title="PRIVACY & DATA">
+        <View style={{ backgroundColor: tiles.mint.bg, borderRadius: 14, padding: 13, marginVertical: 10 }}>
+          <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', lineHeight: 18 }}>
+            🛡 Your health data is processed and stored in the Kingdom (Dammam · me-central2). It never leaves the region unless you opt in to a Pro model.
+          </AppText>
+        </View>
+        <Row icon="📤" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} />
+        <Row icon="🗑" label="Delete everything" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} last />
+      </Group>
+
+      <Group title="FAMILY · RAMADAN STEP CHALLENGE">
+        {fam.map(([name, av, w, c], i) => (
+          <View key={name} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 11, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+            <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: c, alignItems: 'center', justifyContent: 'center' }}>
+              <AppText color="#fff" style={{ fontWeight: '800', fontSize: 13 }}>{av}</AppText>
+            </View>
+            <AppText variant="title" style={{ width: 64 }}>{name}</AppText>
+            <View style={{ flex: 1, height: 8, borderRadius: 99, backgroundColor: colors.navBg, overflow: 'hidden' }}>
+              <View style={{ width: `${w * 100}%`, height: '100%', borderRadius: 99, backgroundColor: colors.accent }} />
+            </View>
+            <AppText variant="caption" style={{ width: 52, textAlign: 'right' }}>{[8432, 9610, 6120][i].toLocaleString()}</AppText>
+          </View>
+        ))}
+        <Row icon="➕" label="Invite family" right={<AppText variant="caption" color={colors.accentText}>Share ›</AppText>} last />
+      </Group>
+
+      <Group title="ACHIEVEMENTS">
+        <View style={{ flexDirection: 'row', gap: spacing.md, paddingVertical: spacing.md }}>
+          {badges.map(([emoji, label, earned]) => (
+            <View key={label} style={{ width: 70, alignItems: 'center', opacity: earned ? 1 : 0.4 }}>
+              <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: earned ? tiles.gold.bg : colors.navBg, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
+                <AppText style={{ fontSize: 24 }}>{emoji}</AppText>
+              </View>
+              <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 9.5, textAlign: 'center', lineHeight: 12 }}>{label}</AppText>
+            </View>
+          ))}
+        </View>
+      </Group>
+
+      <Button label="Sign out" variant="line" onPress={() => { signOut(); router.replace('/sign-in'); }} />
+
+      <Sheet visible={connect != null} onClose={() => setConnect(null)}>
+        {connect && (
+          <View style={{ gap: spacing.md }}>
+            <AppText variant="h2">Connect {PERMS[connect].name}</AppText>
+            <AppText variant="caption" color={colors.textMuted}>Choose what Nabdh can read. You can change this anytime.</AppText>
+            <View style={{ backgroundColor: tiles.mint.bg, borderRadius: 14, padding: 13 }}>
+              <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', lineHeight: 18 }}>
+                🛡 Data is processed and stored in-Kingdom (Dammam · me-central2). Raw samples stay on your device.
+              </AppText>
+            </View>
+            {PERMS[connect].rows.map(([icon, label]) => (
+              <View key={label} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 11, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+                <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+                  <AppText style={{ fontSize: 15 }}>{icon}</AppText>
+                </View>
+                <AppText variant="title" style={{ flex: 1 }}>{label}</AppText>
+                <Toggle on />
+              </View>
+            ))}
+            <Button
+              label="Allow & connect"
+              onPress={() => { if (connect === 'fitbit') setFitbitConnected(true); setConnect(null); }}
+            />
+          </View>
+        )}
+      </Sheet>
+    </Screen>
+  );
+}
+
+function Toggle({ on }: { on: boolean }) {
+  const { colors } = useTheme();
+  return (
+    <View style={{ width: 46, height: 27, borderRadius: 99, backgroundColor: on ? colors.accent : colors.border, justifyContent: 'center' }}>
+      <View style={{ width: 21, height: 21, borderRadius: 99, backgroundColor: '#fff', marginLeft: on ? 22 : 3 }} />
+    </View>
+  );
+}
+
+function Status({ text, colors }: { text: string; colors: ReturnType<typeof useTheme>['colors'] }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accentText }} />
+      <AppText variant="caption" color={colors.accentText}>{text}</AppText>
+    </View>
+  );
+}

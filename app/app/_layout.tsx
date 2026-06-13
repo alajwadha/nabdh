@@ -5,8 +5,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../src/design-system';
+import { ThemeProvider, useTheme } from '../src/design-system/theme';
 import { AuthProvider, useAuth } from '../src/auth/AuthProvider';
 import { HealthProvider } from '../src/store/health';
+import { AppStateProvider } from '../src/store/app';
 import '../src/i18n';
 
 const AUTH_ROUTES = ['sign-in', 'phone'];
@@ -26,24 +28,28 @@ function useProtectedRoute() {
 
 function RootNavigator() {
   const { loading } = useAuth();
+  const { mode, colors: c } = useTheme();
   useProtectedRoute();
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg }}>
-        <ActivityIndicator color={colors.accent} />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: c.bg }}>
+        <ActivityIndicator color={c.accent} />
       </View>
     );
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: colors.bg },
-        animation: 'fade',
-      }}
-    />
+    <>
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: c.bg },
+          animation: 'fade',
+        }}
+      />
+    </>
   );
 }
 
@@ -51,12 +57,15 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
       <SafeAreaProvider>
-        <StatusBar style="light" />
-        <AuthProvider>
-          <HealthProvider>
-            <RootNavigator />
-          </HealthProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <HealthProvider>
+              <AppStateProvider>
+                <RootNavigator />
+              </AppStateProvider>
+            </HealthProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

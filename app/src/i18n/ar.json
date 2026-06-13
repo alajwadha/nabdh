@@ -52,6 +52,16 @@
   },
   "home": {
     "greeting": "صباح الخير، إليك ملخص يومك",
+    "greetCalm": "خفّفها\nاليوم،",
+    "greetRamadan": "رمضان مبارك،",
+    "greetName": "علي.",
+    "yourMetrics": "مؤشراتك",
+    "customize": "تخصيص",
+    "done": "تم",
+    "addTitle": "أضف إلى اليوم",
+    "addSub": "اختر المؤشرات التي تهمك",
+    "prayerStrip": "شريط أوقات الصلاة",
+    "coachToday": "الكبسة وفّت البروتين. امشِ بعد العصر وقت البرودة، عشاء أقل من 500 سعرة، ونم قبل 11:15.",
     "steps": "الخطوات اليوم",
     "connected": "متصل بصحة Apple",
     "notConnected": "صحة Apple غير متصلة",
@@ -60,27 +70,59 @@
     "disclaimer": "هذه ليست نصيحة طبية ولا تغني عن استشارة الطبيب.",
     "toggleLang": "English"
   },
+  "tab": {
+    "today": "اليوم",
+    "sleep": "النوم",
+    "food": "الطعام",
+    "coach": "المدرب"
+  },
+  "quick": {
+    "snap": "صوّر طبقك",
+    "snapSub": "الذكاء يقرأ الأطباق السعودية والخليجية",
+    "water": "أضف ماء",
+    "waterSub": "+كوب",
+    "coach": "اسأل المدرب",
+    "coachSub": "يعرف بيانات يومك"
+  },
+  "plan": {
+    "lunch": "بروتين بالغداء — كبسة 38غ",
+    "walk": "مشي خفيف، 30 دقيقة",
+    "dinner": "عشاء أقل من 500 سعرة",
+    "lights": "إطفاء الأنوار",
+    "afterAsr": "بعد العصر",
+    "postMaghrib": "بعد المغرب"
+  },
+  "readiness": {
+    "label": "الجاهزية",
+    "caption": "اليوم للتعافي لا للإجهاد.",
+    "noData": "اربط جهازاً لعرض جاهزيتك"
+  },
   "metric": {
     "restingHr": "نبض الراحة",
     "sleep": "النوم",
     "hrv": "تغير النبض",
-    "energy": "الطاقة النشطة"
+    "energy": "الطاقة النشطة",
+    "steps": "الخطوات",
+    "spo2": "أكسجين الدم"
   },
   "unit": {
     "bpm": "نبضة",
     "hours": "س",
     "ms": "ملي ث",
-    "kcal": "سعرة"
+    "kcal": "سعرة",
+    "percent": "٪"
   },
   "device": {
     "connectTitle": "ربط جهاز",
     "connectFitbit": "ربط Fitbit",
+    "connectGoogle": "ربط Fitbit Air",
     "connectApple": "ربط صحة Apple",
-    "fitbit": "Fitbit",
+    "fitbit": "Fitbit Air",
     "appleHealth": "صحة Apple",
     "connectedTo": "متصل بـ {{name}}",
     "none": "لا يوجد جهاز متصل",
     "demoBadge": "عرض بيانات تجريبية",
-    "fitbitSetup": "أضف معرّف عميل Fitbit في app.json لتفعيل هذا."
+    "fitbitSetup": "أضف معرّف عميل Fitbit في app.json لتفعيل هذا.",
+    "googleSetup": "أضف معرّف عميل Google Health ورابط الخادم في app.json لتفعيل هذا."
   }
 }

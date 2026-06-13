@@ -1,5 +1,6 @@
 import express from 'express';
 import { DISHES } from './saudi-context/dishes';
+import { googleHealthRouter } from './google-health';
 
 // In-region (Doha/Dammam) Node service. Holds provider keys, the Google Health
 // OAuth token exchange, the Saudi-context layer, data minimization, and the
@@ -11,7 +12,8 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'nabdh-backend', dishes: DISHES.length });
 });
 
-// Phase 2: app.use('/fitbit', fitbitRouter)   Google Health API OAuth + sync
+// Phase 2: Google Health API OAuth token exchange + in-region sync (Fitbit Air).
+app.use('/google-health', googleHealthRouter);
 // Phase 3: app.use('/ai', aiRouter)           Vertex AI proxy + Saudi context
 // Phase 4: app.use('/nutrition', nutritionRouter)
 
