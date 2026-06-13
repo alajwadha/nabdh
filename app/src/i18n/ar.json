@@ -60,27 +60,37 @@
     "disclaimer": "هذه ليست نصيحة طبية ولا تغني عن استشارة الطبيب.",
     "toggleLang": "English"
   },
+  "readiness": {
+    "label": "الجاهزية",
+    "caption": "اليوم للتعافي لا للإجهاد.",
+    "noData": "اربط جهازاً لعرض جاهزيتك"
+  },
   "metric": {
     "restingHr": "نبض الراحة",
     "sleep": "النوم",
     "hrv": "تغير النبض",
-    "energy": "الطاقة النشطة"
+    "energy": "الطاقة النشطة",
+    "steps": "الخطوات",
+    "spo2": "أكسجين الدم"
   },
   "unit": {
     "bpm": "نبضة",
     "hours": "س",
     "ms": "ملي ث",
-    "kcal": "سعرة"
+    "kcal": "سعرة",
+    "percent": "٪"
   },
   "device": {
     "connectTitle": "ربط جهاز",
     "connectFitbit": "ربط Fitbit",
+    "connectGoogle": "ربط Fitbit Air",
     "connectApple": "ربط صحة Apple",
-    "fitbit": "Fitbit",
+    "fitbit": "Fitbit Air",
     "appleHealth": "صحة Apple",
     "connectedTo": "متصل بـ {{name}}",
     "none": "لا يوجد جهاز متصل",
     "demoBadge": "عرض بيانات تجريبية",
-    "fitbitSetup": "أضف معرّف عميل Fitbit في app.json لتفعيل هذا."
+    "fitbitSetup": "أضف معرّف عميل Fitbit في app.json لتفعيل هذا.",
+    "googleSetup": "أضف معرّف عميل Google Health ورابط الخادم في app.json لتفعيل هذا."
   }
 }

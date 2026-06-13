@@ -2,47 +2,75 @@ import { useEffect, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import type { HealthDaily } from '@nabdh/shared';
 import { Screen, Card, AppText, Button } from '../src/design-system/components';
-import { AnimatedCounter } from '../src/animations/AnimatedCounter';
+import { ReadinessHero, MetricTile, TileGrid } from '../src/components/Dashboard';
 import { colors, spacing } from '../src/design-system';
 import { useAuth } from '../src/auth/AuthProvider';
 import { useHealth } from '../src/store/health';
 import { MedicalDisclaimer } from '../src/components/MedicalDisclaimer';
 import { isAvailable, readTodaySummary, requestHealthKitPermissions } from '../src/integrations/healthkit';
-import { useFitbitConnect, getStoredFitbitToken, fetchFitbitToday } from '../src/integrations/fitbit';
+import { useGoogleHealthConnect, fetchGoogleHealthToday } from '../src/integrations/googleHealth';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
+
+/**
+ * Transparent readiness heuristic (placeholder for the in-region insight engine):
+ * weighted blend of sleep, resting HR, and HRV, each scored against a simple
+ * target band. Returns null until at least one input is available.
+ */
+function computeReadiness(s: HealthDaily | null): number | null {
+  if (!s) return null;
+  const clamp = (n: number) => Math.max(0, Math.min(1, n));
+  let score = 0;
+  let weight = 0;
+  if (s.sleepMinutes != null) {
+    score += clamp(s.sleepMinutes / 450) * 40;
+    weight += 40;
+  }
+  if (s.restingHeartRate != null) {
+    score += clamp((70 - s.restingHeartRate) / 16) * 30; // lower RHR is better
+    weight += 30;
+  }
+  if (s.hrvSdnn != null) {
+    score += clamp(s.hrvSdnn / 70) * 30;
+    weight += 30;
+  }
+  if (weight === 0) return null;
+  return Math.round((score / weight) * 100);
+}
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { user, profile } = useAuth();
   const { summary, source, setSummary } = useHealth();
-  const [busy, setBusy] = useState<'fitbit' | 'apple' | null>(null);
+  const [busy, setBusy] = useState<'google' | 'apple' | null>(null);
   const [appleAvailable, setAppleAvailable] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
+  const uid = user?.uid;
 
-  const { connectFitbit, configured: fitbitConfigured } = useFitbitConnect((fresh) => {
+  const { connectGoogleHealth, configured: googleConfigured } = useGoogleHealthConnect(uid, (fresh) => {
     setSummary(fresh);
     setIsDemo(false);
   });
 
   useEffect(() => {
     isAvailable().then(setAppleAvailable);
-    getStoredFitbitToken().then(async (token) => {
-      if (token) {
-        const fresh = await fetchFitbitToday(token);
+    (async () => {
+      if (uid) {
+        const fresh = await fetchGoogleHealthToday(uid);
         if (fresh) {
           setSummary(fresh);
           setIsDemo(false);
           return;
         }
       }
-      // Dev-only: show sample data so the dashboard is not empty before a device connects.
+      // Dev-only: sample data so the dashboard is not empty before a device connects.
       if (__DEV__) {
         setSummary(DEMO_SUMMARY);
         setIsDemo(true);
       }
-    });
-  }, []);
+    })();
+  }, [uid]);
 
   const syncApple = async () => {
     setBusy('apple');
@@ -58,10 +86,10 @@ export default function Dashboard() {
     }
   };
 
-  const onFitbit = () => {
-    if (!fitbitConfigured) return;
-    setBusy('fitbit');
-    connectFitbit().finally(() => setBusy(null));
+  const onGoogle = () => {
+    if (!googleConfigured) return;
+    setBusy('google');
+    connectGoogleHealth().finally(() => setBusy(null));
   };
 
   // Finish onboarding first (skipped in dev so the dashboard is easy to preview).
@@ -69,8 +97,10 @@ export default function Dashboard() {
     return <Redirect href="/onboarding" />;
   }
 
+  const readiness = computeReadiness(summary);
   const sleepHours =
     summary?.sleepMinutes != null ? Math.round((summary.sleepMinutes / 60) * 10) / 10 : undefined;
+
   const connectedLabel =
     source === 'fitbit' ? t('device.fitbit') : source === 'healthkit' ? t('device.appleHealth') : null;
   const badgeColor = isDemo ? colors.warning : connectedLabel ? colors.accent : colors.textMuted;
@@ -80,10 +110,12 @@ export default function Dashboard() {
       ? t('device.connectedTo', { name: connectedLabel })
       : t('device.none');
 
+  const primaryConnect = appleAvailable && Platform.OS === 'ios' ? syncApple : onGoogle;
+
   return (
     <Screen>
       <View style={{ gap: spacing.xs }}>
-        <AppText variant="h1">{t('app.name')}</AppText>
+        <AppText variant="display">{t('app.name')}</AppText>
         <AppText variant="body" color={colors.textSecondary}>
           {t('home.greeting')}
         </AppText>
@@ -96,52 +128,63 @@ export default function Dashboard() {
         </AppText>
       </View>
 
+      <ReadinessHero
+        score={readiness}
+        label={t('readiness.label')}
+        caption={t('readiness.caption')}
+        emptyText={t('readiness.noData')}
+        connectLabel={t('device.connectTitle')}
+        onConnect={primaryConnect}
+      />
+
+      <TileGrid>
+        <MetricTile
+          label={t('metric.restingHr')}
+          value={summary?.restingHeartRate}
+          unit={t('unit.bpm')}
+          color="peach"
+        />
+        <MetricTile label={t('metric.hrv')} value={summary?.hrvSdnn} unit={t('unit.ms')} color="lav" />
+        <MetricTile label={t('metric.sleep')} value={sleepHours} unit={t('unit.hours')} color="mint" />
+        <MetricTile
+          label={t('metric.steps')}
+          value={summary?.steps != null ? summary.steps.toLocaleString() : undefined}
+          color="pink"
+        />
+        <MetricTile
+          label={t('metric.energy')}
+          value={summary?.activeEnergyKcal}
+          unit={t('unit.kcal')}
+          color="gold"
+        />
+        <MetricTile
+          label={t('metric.spo2')}
+          value={summary?.spo2}
+          unit={t('unit.percent')}
+          color="blue"
+        />
+      </TileGrid>
+
       <Card>
-        <AppText variant="caption" color={colors.textMuted}>
-          {t('home.steps')}
-        </AppText>
-        <AnimatedCounter value={summary?.steps ?? 0} />
-      </Card>
-
-      <View style={{ flexDirection: 'row', gap: spacing.md }}>
-        <Stat label={t('metric.restingHr')} value={summary?.restingHeartRate} unit={t('unit.bpm')} />
-        <Stat label={t('metric.sleep')} value={sleepHours} unit={t('unit.hours')} />
-      </View>
-      <View style={{ flexDirection: 'row', gap: spacing.md }}>
-        <Stat label={t('metric.hrv')} value={summary?.hrvSdnn} unit={t('unit.ms')} />
-        <Stat label={t('metric.energy')} value={summary?.activeEnergyKcal} unit={t('unit.kcal')} />
-      </View>
-
-      <View style={{ gap: spacing.sm, marginTop: spacing.sm }}>
         <AppText variant="title">{t('device.connectTitle')}</AppText>
-        <Button label={busy === 'fitbit' ? t('home.syncing') : t('device.connectFitbit')} onPress={onFitbit} />
         {Platform.OS === 'ios' && appleAvailable && (
-          <Button label={busy === 'apple' ? t('home.syncing') : t('device.connectApple')} onPress={syncApple} />
+          <Button
+            label={busy === 'apple' ? t('home.syncing') : t('device.connectApple')}
+            onPress={syncApple}
+          />
         )}
-        {!fitbitConfigured && (
+        <Button
+          label={busy === 'google' ? t('home.syncing') : t('device.connectGoogle')}
+          onPress={onGoogle}
+        />
+        {!googleConfigured && (
           <AppText variant="caption" color={colors.textMuted}>
-            {t('device.fitbitSetup')}
+            {t('device.googleSetup')}
           </AppText>
         )}
-      </View>
+      </Card>
 
       <MedicalDisclaimer />
     </Screen>
-  );
-}
-
-function Stat({ label, value, unit }: { label: string; value?: number; unit: string }) {
-  return (
-    <Card style={{ flex: 1 }}>
-      <AppText variant="caption" color={colors.textMuted}>
-        {label}
-      </AppText>
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
-        <AppText variant="h2">{value != null ? String(value) : '--'}</AppText>
-        <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 4 }}>
-          {unit}
-        </AppText>
-      </View>
-    </Card>
   );
 }

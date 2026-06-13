@@ -17,6 +17,19 @@ export const colors = {
   danger: '#F26D6D',
 } as const;
 
+// Expressive metric-tile palette (dark-surface variants of the v3 prototype
+// tiles). Each tile gets a tinted surface + a readable ink for its label/hint.
+export const tiles = {
+  peach: { bg: '#2E2517', ink: '#F2D5A4' },
+  lav: { bg: '#262238', ink: '#CDC3F2' },
+  mint: { bg: '#1C2A21', ink: '#A9DEC2' },
+  pink: { bg: '#2C2024', ink: '#EFC3D0' },
+  gold: { bg: '#2C2410', ink: '#F2CE7C' },
+  blue: { bg: '#142530', ink: '#A9D4EC' },
+} as const;
+
+export type TileColor = keyof typeof tiles;
+
 export const spacing = {
   xs: 4,
   sm: 8,
@@ -62,5 +75,5 @@ export const shadow = {
   },
 } as const;
 
-export const theme = { colors, spacing, radii, typography, motion, shadow };
+export const theme = { colors, tiles, spacing, radii, typography, motion, shadow };
 export type Theme = typeof theme;

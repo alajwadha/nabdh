@@ -54,6 +54,10 @@
       "fitbit": {
         "clientId": ""
       },
+      "googleHealth": {
+        "clientId": ""
+      },
+      "backendUrl": "",
       "router": {},
       "eas": {
         "projectId": "041b33c1-3cbb-489f-a5c7-e7af047a0974"

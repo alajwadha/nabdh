@@ -60,27 +60,37 @@
     "disclaimer": "This is not medical advice and is not a substitute for a doctor.",
     "toggleLang": "العربية"
   },
+  "readiness": {
+    "label": "Readiness",
+    "caption": "Recovery beats grind today.",
+    "noData": "Connect a device to see your readiness"
+  },
   "metric": {
     "restingHr": "Resting HR",
     "sleep": "Sleep",
     "hrv": "HRV",
-    "energy": "Active energy"
+    "energy": "Active energy",
+    "steps": "Steps",
+    "spo2": "Blood O₂"
   },
   "unit": {
     "bpm": "bpm",
     "hours": "h",
     "ms": "ms",
-    "kcal": "kcal"
+    "kcal": "kcal",
+    "percent": "%"
   },
   "device": {
     "connectTitle": "Connect a device",
     "connectFitbit": "Connect Fitbit",
+    "connectGoogle": "Connect Fitbit Air",
     "connectApple": "Connect Apple Health",
-    "fitbit": "Fitbit",
+    "fitbit": "Fitbit Air",
     "appleHealth": "Apple Health",
     "connectedTo": "Connected to {{name}}",
     "none": "No device connected",
     "demoBadge": "Showing sample data",
-    "fitbitSetup": "Add your Fitbit Client ID to app.json (expo.extra.fitbit.clientId) to enable this."
+    "fitbitSetup": "Add your Fitbit Client ID to app.json (expo.extra.fitbit.clientId) to enable this.",
+    "googleSetup": "Add your Google Health client ID + backend URL to app.json (expo.extra.googleHealth) to enable this."
   }
 }
