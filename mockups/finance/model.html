@@ -1,0 +1,130 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nabdh — Year-1 Cash Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0B0F14;--s1:#141A21;--s2:#1A222C;--bd:#232C36;--t1:#F3F6F8;--t2:#9AA7B3;--t3:#5A6675;--mint:#36E2B4;--red:#F26D6D;--amber:#F2B544}
+body{background:var(--bg);color:var(--t1);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:26px 30px 60px}
+h1{font-size:24px;font-weight:800;letter-spacing:-.5px}h1 b{color:var(--mint)}
+.sub{color:var(--t2);font-size:13.5px;margin:6px 0 22px;max-width:760px;line-height:1.5}
+.wrap{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.panel{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:18px}
+.inputs{width:300px;flex:none}
+.inputs h2{font-size:12px;letter-spacing:1px;color:var(--t3);font-weight:700;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;font-size:13px;color:var(--t2)}
+.row input{width:88px;background:var(--s2);border:1px solid var(--bd);color:var(--t1);border-radius:8px;padding:7px 9px;font-size:13px;text-align:right;font-family:inherit}
+.row input:focus{outline:none;border-color:var(--mint)}
+.divider{height:1px;background:var(--bd);margin:14px 0}
+.scn{font-weight:700;color:var(--t1)}
+.results{flex:1;min-width:540px}
+.cards{display:flex;gap:12px;margin-bottom:18px}
+.card{flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.card .nm{font-size:12px;font-weight:700;margin-bottom:8px}
+.card .big{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.card .ln{font-size:11.5px;color:var(--t2);margin-top:5px}
+.pess .nm{color:var(--red)}.base .nm{color:var(--amber)}.opt .nm{color:var(--mint)}
+.chart{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:18px}
+.chart h3{font-size:12px;letter-spacing:1px;color:var(--t3);font-weight:700;margin-bottom:6px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{padding:7px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--s1);color:var(--t2);font-size:12.5px;font-weight:600;cursor:pointer}
+.tab.on{background:rgba(54,226,180,.12);border-color:rgba(54,226,180,.35);color:var(--mint)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:7px 6px;text-align:right;border-bottom:1px solid #1c2530}
+th{color:var(--t3);font-weight:600;font-size:11px;letter-spacing:.3px}
+td:first-child,th:first-child{text-align:left;color:var(--t2)}
+tr:last-child td{border-bottom:none}
+.tot td{font-weight:700;border-top:2px solid var(--bd);color:var(--t1)}
+.pos{color:var(--mint)}.neg{color:var(--red)}
+.note{color:var(--t3);font-size:12px;margin-top:14px;line-height:1.5}
+.note b{color:var(--mint)}
+</style></head><body>
+<h1>Nabdh<b>.</b> Year-1 cash model</h1>
+<div class="sub">One consistent <b>cash-basis</b> model (annual subscribers pre-pay 12 months upfront, monthly subscribers bill each month). Change any input on the left and every number updates. The 3 scenarios differ <i>only</i> by how many new paying subscribers you add per month.</div>
+<div class="wrap">
+ <div class="panel inputs">
+  <h2>ASSUMPTIONS</h2>
+  <div class="row"><span>Annual price ($/yr)</span><input id="annualPrice" value="50"></div>
+  <div class="row"><span>Monthly price ($/mo)</span><input id="monthlyPrice" value="6"></div>
+  <div class="row"><span>% on annual plan</span><input id="pctAnnual" value="70"></div>
+  <div class="row"><span>Apple cut (%)</span><input id="apple" value="15"></div>
+  <div class="row"><span>CAC ($/new sub)</span><input id="cac" value="5"></div>
+  <div class="row"><span>Monthly churn (%)</span><input id="churn" value="3"></div>
+  <div class="row"><span>AI ($/user/mo)</span><input id="ai" value="0.15"></div>
+  <div class="row"><span>Infra ($/user/mo)</span><input id="infra" value="0.05"></div>
+  <div class="row"><span>Fixed/mo ($ tools)</span><input id="fixedMo" value="30"></div>
+  <div class="row"><span>Apple fee (one-time)</span><input id="appleFee" value="99"></div>
+  <div class="divider"></div>
+  <h2>NEW SUBS / MONTH</h2>
+  <div class="row"><span class="scn" style="color:var(--red)">Pessimistic</span><input id="addsP" value="30"></div>
+  <div class="row"><span class="scn" style="color:var(--amber)">Base</span><input id="addsB" value="200"></div>
+  <div class="row"><span class="scn" style="color:var(--mint)">Optimistic</span><input id="addsO" value="800"></div>
+ </div>
+ <div class="results">
+  <div class="cards" id="cards"></div>
+  <div class="chart"><h3>CUMULATIVE CASH OVER 12 MONTHS</h3><svg id="chart" width="100%" height="200" viewBox="0 0 700 200" preserveAspectRatio="none"></svg></div>
+  <div class="panel">
+   <div class="tabs" id="tabs"></div>
+   <table id="tbl"></table>
+   <div class="note"><b>Why subs can grow while cash is still negative:</b> you pay the full CAC the moment a user joins, but they pay you back over months — so during a growth year you're always funding fresh cohorts that haven't paid back yet. Each sub is profitable on its own in ~CAC ÷ monthly-margin months; the year-1 dip is the cost of buying that recurring base.</div>
+  </div>
+ </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>{const s=n<0?'-':'';n=Math.abs(n);return s+'$'+(n>=1000?(n/1000).toFixed(1)+'K':Math.round(n));};
+const SC=[{k:'P',nm:'Pessimistic',cls:'pess',col:'#F26D6D',adds:'addsP'},{k:'B',nm:'Base',cls:'base',col:'#F2B544',adds:'addsB'},{k:'O',nm:'Optimistic',cls:'opt',col:'#36E2B4',adds:'addsO'}];
+let activeTab=1;
+function inp(){return{annualPrice:+$('annualPrice').value,monthlyPrice:+$('monthlyPrice').value,pctAnnual:+$('pctAnnual').value/100,apple:+$('apple').value/100,cac:+$('cac').value,churn:+$('churn').value/100,ai:+$('ai').value,infra:+$('infra').value,fixedMo:+$('fixedMo').value,appleFee:+$('appleFee').value};}
+function run(adds,p){
+ let aAnnual=0,aMonthly=0,cum=0;const rows=[];
+ for(let m=1;m<=12;m++){
+  const nAnnual=adds*p.pctAnnual, nMonthly=adds*(1-p.pctAnnual);
+  aMonthly=aMonthly*(1-p.churn)+nMonthly;       // monthly base churns
+  aAnnual=aAnnual+nAnnual;                        // annual locked for the year
+  const active=aAnnual+aMonthly;
+  const gross=nAnnual*p.annualPrice + aMonthly*p.monthlyPrice; // cash: new annual prepay + all monthly bill
+  const net=gross*(1-p.apple);
+  const cac=adds*p.cac;
+  const variable=active*(p.ai+p.infra);
+  const fixed=p.fixedMo+(m===1?p.appleFee:0);
+  const profit=net-cac-variable-fixed;
+  cum+=profit;
+  rows.push({m,adds,active,gross,net,cac,variable,fixed,profit,cum});
+ }
+ return rows;
+}
+function render(){
+ const p=inp();
+ const data=SC.map(s=>({s,rows:run(+$(s.adds).value,p)}));
+ // cards
+ $('cards').innerHTML=data.map(d=>{
+  const last=d.rows[11];const be=d.rows.find(r=>r.profit>0);
+  const arr=Math.round(last.active*( (p.pctAnnual*p.annualPrice)+(1-p.pctAnnual)*p.monthlyPrice*12 )*(1-p.apple));
+  return `<div class="card ${d.s.cls}"><div class="nm">${d.s.nm}</div><div class="big">${Math.round(last.active).toLocaleString()} <span style="font-size:12px;color:var(--t3)">subs</span></div>`
+   +`<div class="ln">Yr-1 cash: <b class="${last.cum>=0?'pos':'neg'}">${fmt(last.cum)}</b></div>`
+   +`<div class="ln">Monthly breakeven: ${be?'M'+be.m:'after yr 1'}</div>`
+   +`<div class="ln">Entering Yr-2 ARR: ${fmt(arr)}</div></div>`;
+ }).join('');
+ // chart
+ let allCum=[];data.forEach(d=>d.rows.forEach(r=>allCum.push(r.cum)));
+ const mx=Math.max(0,...allCum),mn=Math.min(0,...allCum),span=(mx-mn)||1;
+ const X=m=>40+(m-1)/11*640, Y=v=>180-(v-mn)/span*160;
+ let svg=`<line x1="40" y1="${Y(0)}" x2="680" y2="${Y(0)}" stroke="#2a3540" stroke-width="1"/>`;
+ svg+=`<text x="4" y="${Y(0)+3}" fill="#5A6675" font-size="10">$0</text>`;
+ data.forEach(d=>{const pts=d.rows.map(r=>X(r.m)+','+Y(r.cum)).join(' ');svg+=`<polyline points="${pts}" fill="none" stroke="${d.s.col}" stroke-width="2.5" stroke-linejoin="round"/>`;});
+ $('chart').innerHTML=svg;
+ // tabs
+ $('tabs').innerHTML=SC.map((s,i)=>`<div class="tab ${i===activeTab?'on':''}" data-i="${i}">${s.nm}</div>`).join('');
+ $('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{activeTab=+t.dataset.i;render();});
+ // table
+ const rows=data[activeTab].rows;
+ let h=`<tr><th>Month</th><th>New</th><th>Active</th><th>Net rev</th><th title="new subs × CAC per sub">−Mktg spend</th><th>−AI+infra</th><th>−Fixed</th><th>Net cash</th><th>Cumulative</th></tr>`;
+ rows.forEach(r=>{h+=`<tr><td>M${r.m}</td><td>${Math.round(r.adds)}</td><td>${Math.round(r.active).toLocaleString()}</td><td>${fmt(r.net)}</td><td>${fmt(-r.cac)}</td><td>${fmt(-r.variable)}</td><td>${fmt(-r.fixed)}</td><td class="${r.profit>=0?'pos':'neg'}">${fmt(r.profit)}</td><td class="${r.cum>=0?'pos':'neg'}">${fmt(r.cum)}</td></tr>`;});
+ const T=rows.reduce((a,r)=>({net:a.net+r.net,cac:a.cac+r.cac,v:a.v+r.variable,f:a.f+r.fixed,p:a.p+r.profit}),{net:0,cac:0,v:0,f:0,p:0});
+ h+=`<tr class="tot"><td>YEAR 1</td><td></td><td></td><td>${fmt(T.net)}</td><td>${fmt(-T.cac)}</td><td>${fmt(-T.v)}</td><td>${fmt(-T.f)}</td><td class="${T.p>=0?'pos':'neg'}">${fmt(T.p)}</td><td class="${T.p>=0?'pos':'neg'}">${fmt(T.p)}</td></tr>`;
+ $('tbl').innerHTML=h;
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',render));
+render();
+</script>
+</body></html>
