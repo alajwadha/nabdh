@@ -25,7 +25,6 @@ import { ALL_METRICS, METRICS, METRIC_ICON } from '../../src/data/metrics';
 import { useIdentity } from '../../src/data/identity';
 import { fetchGoogleHealthToday } from '../../src/integrations/googleHealth';
 import { isAvailable } from '../../src/integrations/healthkit';
-import { DEMO_SUMMARY } from '../../src/integrations/demo';
 
 function computeReadiness(s: HealthDaily | null): number | null {
   if (!s) return null;
@@ -55,11 +54,12 @@ export default function Today() {
   useEffect(() => {
     isAvailable();
     (async () => {
+      // Real data (when signed in) takes over; otherwise the HealthProvider's
+      // demo seed (dev) or a linked device summary already populates the store.
       if (uid) {
         const fresh = await fetchGoogleHealthToday(uid);
-        if (fresh) { setSummary(fresh); return; }
+        if (fresh) setSummary(fresh);
       }
-      if (__DEV__) setSummary(DEMO_SUMMARY);
     })();
   }, [uid]);
 

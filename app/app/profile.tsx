@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Alert, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText, Button, Screen, Sheet } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
@@ -7,6 +7,8 @@ import { useTheme } from '../src/design-system/theme';
 import { useAuth } from '../src/auth/AuthProvider';
 import { useAppState } from '../src/store/app';
 import { useIdentity } from '../src/data/identity';
+import { useHealth } from '../src/store/health';
+import { useFitbitConnect, fitbitRedirectUri } from '../src/integrations/fitbit';
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   const { colors } = useTheme();
@@ -47,10 +49,30 @@ export default function Profile() {
   const { signOut } = useAuth();
   const { ramadan, setRamadan, showPrayers, setShowPrayers } = useAppState();
   const identity = useIdentity();
+  const { setSummary } = useHealth();
   const router = useRouter();
   const [model, setModel] = useState<'managed' | 'claude' | 'gpt'>('managed');
   const [connect, setConnect] = useState<'apple' | 'fitbit' | null>(null);
   const [fitbitConnected, setFitbitConnected] = useState(false);
+
+  // Real Fitbit OAuth (PKCE). On success the daily summary flows into the
+  // health store and the dashboard switches from demo to live data.
+  const fitbit = useFitbitConnect((summary) => {
+    setSummary(summary);
+    setFitbitConnected(true);
+  });
+
+  const startFitbit = () => {
+    if (!fitbit.configured) {
+      Alert.alert(
+        'Fitbit not configured',
+        `Add your Fitbit OAuth Client ID to app.json (expo.extra.fitbit.clientId), then register this callback at dev.fitbit.com:\n\n${fitbitRedirectUri}`,
+      );
+      return;
+    }
+    setConnect(null);
+    fitbit.connectFitbit();
+  };
 
   const fam: [string, string, number, string][] = [
     ['You', identity.initial, 0.84, '#2E7D5B'],
@@ -175,8 +197,11 @@ export default function Profile() {
               </View>
             ))}
             <Button
-              label="Allow & connect"
-              onPress={() => { if (connect === 'fitbit') setFitbitConnected(true); setConnect(null); }}
+              label={connect === 'fitbit' ? 'Connect Fitbit' : 'Allow & connect'}
+              onPress={() => {
+                if (connect === 'fitbit') startFitbit();
+                else setConnect(null);
+              }}
             />
           </View>
         )}
