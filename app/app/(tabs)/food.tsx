@@ -4,18 +4,22 @@ import { AppHeader } from '../../src/components/AppHeader';
 import { CoachCard } from '../../src/components/Dashboard';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
-import { useAppState } from '../../src/store/app';
+import { useAppState, MACRO_GOALS } from '../../src/store/app';
+import { DEMO_IDENTITY } from '../../src/integrations/demo';
+import { weekdayName } from '../../src/data/derive';
 
-const MACROS: [string, string, number, string][] = [
-  ['PROTEIN', '92g', 0.76, '#2E7D5B'],
-  ['CARBS', '141g', 0.64, '#E0A24E'],
-  ['FAT', '48g', 0.58, '#8E81D6'],
-];
+const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 
 export default function Food() {
   const { colors, tiles } = useTheme();
-  const { water, addWater, meals, kcal, budget } = useAppState();
+  const { water, addWater, meals, kcal, macros, budget } = useAppState();
   const left = Math.max(0, budget - kcal);
+
+  const macroRows: [string, number, keyof typeof MACRO_COLORS][] = [
+    ['PROTEIN', macros.protein, 'protein'],
+    ['CARBS', macros.carbs, 'carbs'],
+    ['FAT', macros.fat, 'fat'],
+  ];
 
   return (
     <Screen>
@@ -24,7 +28,7 @@ export default function Food() {
         Food diary
       </AppText>
       <AppText variant="caption" color={colors.textMuted}>
-        Thursday · budget {budget.toLocaleString()} kcal · 🔥 12-day streak
+        {weekdayName()} · budget {budget.toLocaleString()} kcal · 🔥 {DEMO_IDENTITY.foodStreakDays}-day streak
       </AppText>
 
       <Card>
@@ -40,16 +44,16 @@ export default function Food() {
           <View style={{ width: `${Math.min(100, (kcal / budget) * 100)}%`, height: '100%', borderRadius: 99, backgroundColor: colors.accent }} />
         </View>
         <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.md }}>
-          {MACROS.map(([k, v, w, c]) => (
-            <View key={k} style={{ flex: 1 }}>
+          {macroRows.map(([label, grams, key]) => (
+            <View key={label} style={{ flex: 1 }}>
               <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 9, letterSpacing: 1, textAlign: 'center' }}>
-                {k}
+                {label}
               </AppText>
               <AppText variant="title" style={{ textAlign: 'center', marginTop: 2 }}>
-                {v}
+                {grams}g
               </AppText>
               <View style={{ height: 6, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 5, overflow: 'hidden' }}>
-                <View style={{ width: `${w * 100}%`, height: '100%', backgroundColor: c, borderRadius: 99 }} />
+                <View style={{ width: `${Math.min(100, (grams / MACRO_GOALS[key]) * 100)}%`, height: '100%', backgroundColor: MACRO_COLORS[key], borderRadius: 99 }} />
               </View>
             </View>
           ))}

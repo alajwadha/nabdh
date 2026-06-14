@@ -4,6 +4,7 @@ import { AppText } from '../design-system/components';
 import { radii, spacing } from '../design-system';
 import { useTheme } from '../design-system/theme';
 import { useAppState } from '../store/app';
+import { useIdentity } from '../data/identity';
 
 function HBtn({ children, active, onPress }: { children: string; active?: boolean; onPress: () => void }) {
   const { colors } = useTheme();
@@ -22,6 +23,7 @@ function HBtn({ children, active, onPress }: { children: string; active?: boolea
 export function AppHeader() {
   const { colors, mode, toggle, tiles } = useTheme();
   const { ramadan, setRamadan } = useAppState();
+  const identity = useIdentity();
   const router = useRouter();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -38,7 +40,7 @@ export function AppHeader() {
           style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: tiles.peach.bg, alignItems: 'center', justifyContent: 'center' }}
         >
           <AppText style={{ fontSize: 13.5, fontWeight: '800' }} color={tiles.peach.ink}>
-            A
+            {identity.initial}
           </AppText>
         </Pressable>
       </View>

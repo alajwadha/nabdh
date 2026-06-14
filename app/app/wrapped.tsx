@@ -11,22 +11,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AppText, Button } from '../src/design-system/components';
 import { spacing } from '../src/design-system';
+import { useIdentity } from '../src/data/identity';
+import { weekRangeLabel } from '../src/data/derive';
 
 const W = Dimensions.get('window').width;
 
 type Page = { bg: string; kicker: string; big: string; line: string; share?: boolean };
 
-const PAGES: Page[] = [
-  { bg: '#2E7D5B', kicker: 'JUN 7 – JUN 13', big: 'Your week,\nAli 👋', line: 'Seven days, a few wins, one lesson. Here’s how your body did.' },
-  { bg: '#4A3F9E', kicker: 'SLEEP', big: '7h 02m', line: 'average a night — your best night was Thursday at 82. Bedtime drifted ±38 min; tightening that is next week’s quest.' },
-  { bg: '#27607F', kicker: 'RECOVERY', big: '68', line: 'average readiness, with 3 green days. The dip came mid-week after late karak — your data doesn’t lie ☕.' },
-  { bg: '#C2562C', kicker: 'MOVEMENT', big: '61,204', line: 'steps this week — 5 of them after Asr, your favourite window. That’s 28 km on foot 🚶.' },
-  { bg: '#8A6312', kicker: 'FOOD', big: '12-day\nstreak 🔥', line: 'You hit your protein goal 5 of 7 days, and kabsa showed up 3 times. Hydration is your one gap.' },
-  { bg: '#2E7D5B', kicker: 'COACH’S NOTE', big: 'Recover,\nthen push.', line: 'You ended tired but consistent. Next week: protect bedtime and skip late karak — readiness should clear 75.', share: true },
-];
+function buildPages(name: string, weekRange: string, streak: number): Page[] {
+  return [
+    { bg: '#2E7D5B', kicker: weekRange, big: `Your week,\n${name} 👋`, line: 'Seven days, a few wins, one lesson. Here’s how your body did.' },
+    { bg: '#4A3F9E', kicker: 'SLEEP', big: '7h 02m', line: 'average a night — your best night hit 82. Bedtime drifted ±38 min; tightening that is next week’s quest.' },
+    { bg: '#27607F', kicker: 'RECOVERY', big: '68', line: 'average readiness, with 3 green days. The dip came mid-week after late karak — your data doesn’t lie ☕.' },
+    { bg: '#C2562C', kicker: 'MOVEMENT', big: '61,204', line: 'steps this week — 5 of them after Asr, your favourite window. That’s 28 km on foot 🚶.' },
+    { bg: '#8A6312', kicker: 'FOOD', big: `${streak}-day\nstreak 🔥`, line: 'You hit your protein goal 5 of 7 days, and kabsa showed up 3 times. Hydration is your one gap.' },
+    { bg: '#2E7D5B', kicker: 'COACH’S NOTE', big: 'Recover,\nthen push.', line: 'You ended tired but consistent. Next week: protect bedtime and skip late karak — readiness should clear 75.', share: true },
+  ];
+}
 
 export default function Wrapped() {
   const router = useRouter();
+  const identity = useIdentity();
+  const PAGES = buildPages(identity.firstName, weekRangeLabel(), identity.foodStreakDays);
   const [idx, setIdx] = useState(0);
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => setIdx(Math.round(e.nativeEvent.contentOffset.x / W));
 

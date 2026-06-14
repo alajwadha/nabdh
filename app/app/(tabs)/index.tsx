@@ -22,6 +22,7 @@ import { useAuth } from '../../src/auth/AuthProvider';
 import { useHealth } from '../../src/store/health';
 import { useAppState, type MetricKey } from '../../src/store/app';
 import { ALL_METRICS, METRICS, METRIC_ICON } from '../../src/data/metrics';
+import { useIdentity } from '../../src/data/identity';
 import { fetchGoogleHealthToday } from '../../src/integrations/googleHealth';
 import { isAvailable } from '../../src/integrations/healthkit';
 import { DEMO_SUMMARY } from '../../src/integrations/demo';
@@ -41,6 +42,7 @@ export default function Today() {
   const { t } = useTranslation();
   const { colors, tiles: tilePalette } = useTheme();
   const { user, profile } = useAuth();
+  const identity = useIdentity();
   const { summary, setSummary } = useHealth();
   const { tiles, toggleTile, removeTile, showPrayers, setShowPrayers, ramadan, plan, toggleTask } = useAppState();
   const router = useRouter();
@@ -87,7 +89,7 @@ export default function Today() {
       <AppText variant="display" style={{ marginTop: spacing.xs }}>
         {ramadan ? t('home.greetRamadan') : t('home.greetCalm')}{' '}
         <AppText variant="display" color={colors.accentText}>
-          {t('home.greetName')}
+          {identity.firstName}
         </AppText>
       </AppText>
 

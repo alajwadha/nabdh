@@ -6,6 +6,7 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAuth } from '../src/auth/AuthProvider';
 import { useAppState } from '../src/store/app';
+import { useIdentity } from '../src/data/identity';
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   const { colors } = useTheme();
@@ -45,13 +46,14 @@ export default function Profile() {
   const { colors, tiles, mode, toggle } = useTheme();
   const { signOut } = useAuth();
   const { ramadan, setRamadan, showPrayers, setShowPrayers } = useAppState();
+  const identity = useIdentity();
   const router = useRouter();
   const [model, setModel] = useState<'managed' | 'claude' | 'gpt'>('managed');
   const [connect, setConnect] = useState<'apple' | 'fitbit' | null>(null);
   const [fitbitConnected, setFitbitConnected] = useState(false);
 
   const fam: [string, string, number, string][] = [
-    ['You', 'A', 0.84, '#2E7D5B'],
+    ['You', identity.initial, 0.84, '#2E7D5B'],
     ['Mama', 'M', 0.96, '#C2562C'],
     ['Faisal', 'F', 0.61, '#4A3F9E'],
   ];
@@ -73,12 +75,12 @@ export default function Profile() {
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ width: 54, height: 54, borderRadius: 27, backgroundColor: colors.yellow, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 22, fontWeight: '800', color: '#5A4410' }}>A</AppText>
+          <AppText style={{ fontSize: 22, fontWeight: '800', color: '#5A4410' }}>{identity.initial}</AppText>
         </View>
         <View>
-          <AppText variant="h2" color="#fff">Ali Alajwad</AppText>
+          <AppText variant="h2" color="#fff">{identity.fullName}</AppText>
           <AppText variant="caption" color="rgba(255,255,255,0.9)" style={{ fontWeight: '600' }}>
-            Goal · Recover & lose 4 kg by Eid
+            Goal · {identity.goal}
           </AppText>
         </View>
       </View>

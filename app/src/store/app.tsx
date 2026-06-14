@@ -23,7 +23,21 @@ export type PlanTask = {
   done: boolean;
 };
 
-export type Meal = { id: string; name: string; meta: string; kcal: number; color: TileColor };
+export type Meal = {
+  id: string;
+  name: string;
+  meta: string;
+  kcal: number;
+  color: TileColor;
+  protein: number;
+  carbs: number;
+  fat: number;
+};
+
+export type Macros = { protein: number; carbs: number; fat: number };
+
+/** Daily macro goals (grams) used for the progress bars on the Food screen. */
+export const MACRO_GOALS: Macros = { protein: 120, carbs: 220, fat: 65 };
 
 const DEFAULT_TILES: MetricKey[] = ['rhr', 'hrv', 'sleep', 'steps'];
 
@@ -35,10 +49,10 @@ const DEFAULT_PLAN: PlanTask[] = [
 ];
 
 const DEFAULT_MEALS: Meal[] = [
-  { id: 'm1', name: 'Dates & laban', meta: '7:12 AM · photo', kcal: 310, color: 'peach' },
-  { id: 'm2', name: 'Arabic coffee ×2', meta: '9:40 AM · quick add', kcal: 12, color: 'gold' },
-  { id: 'm3', name: 'Kabsa with chicken', meta: '1:42 PM · photo · 38g protein', kcal: 642, color: 'pink' },
-  { id: 'm4', name: 'Karak tea', meta: '4:05 PM · quick add', kcal: 120, color: 'peach' },
+  { id: 'm1', name: 'Dates & laban', meta: '7:12 AM · photo', kcal: 310, color: 'peach', protein: 8, carbs: 58, fat: 4 },
+  { id: 'm2', name: 'Arabic coffee ×2', meta: '9:40 AM · quick add', kcal: 12, color: 'gold', protein: 0, carbs: 2, fat: 0 },
+  { id: 'm3', name: 'Kabsa with chicken', meta: '1:42 PM · photo · 38g protein', kcal: 642, color: 'pink', protein: 38, carbs: 62, fat: 24 },
+  { id: 'm4', name: 'Karak tea', meta: '4:05 PM · quick add', kcal: 120, color: 'peach', protein: 3, carbs: 18, fat: 4 },
 ];
 
 type AppState = {
@@ -62,6 +76,7 @@ type AppState = {
   meals: Meal[];
   addMeal: (m: Meal) => void;
   kcal: number;
+  macros: Macros;
   budget: number;
 };
 
@@ -112,6 +127,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const addMeal = (m: Meal) => setMeals((arr) => [...arr, m]);
 
   const kcal = meals.reduce((sum, m) => sum + m.kcal, 0);
+  const macros: Macros = meals.reduce(
+    (acc, m) => ({ protein: acc.protein + m.protein, carbs: acc.carbs + m.carbs, fat: acc.fat + m.fat }),
+    { protein: 0, carbs: 0, fat: 0 },
+  );
 
   const value: AppState = {
     tiles,
@@ -129,6 +148,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     meals,
     addMeal,
     kcal,
+    macros,
     budget: 1900,
   };
 
