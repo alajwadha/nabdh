@@ -21,7 +21,9 @@ function useProtectedRoute() {
   useEffect(() => {
     if (loading || configError) return;
     const inAuthArea = AUTH_ROUTES.includes(segments[0] as string);
-    if (!user && !inAuthArea) router.replace('/sign-in');
+    // Dev-only: skip the sign-in gate so the app lands on the dashboard with
+    // demo data (no real auth needed). Production still requires sign-in.
+    if (!user && !inAuthArea && !__DEV__) router.replace('/sign-in');
     else if (user && inAuthArea) router.replace('/');
   }, [user, loading, configError, segments]);
 }
