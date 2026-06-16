@@ -21,6 +21,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+  const timeout = setTimeout(() => setLoading(false), 5000);
+  return () => clearTimeout(timeout);
+}, []);
   const [configError, setConfigError] = useState(false);
 
   useEffect(() => {

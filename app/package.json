@@ -11,6 +11,7 @@
   },
   "//": "Expo-managed libs use '*' to guarantee a clean npm install; run `npx expo install --fix` right after to pin every one to the exact SDK 55 version.",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@kingstinct/react-native-healthkit": "*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@shopify/react-native-skia": "2.4.18",
@@ -28,7 +29,9 @@
     "expo-system-ui": "~55.0.18",
     "expo-web-browser": "~55.0.16",
     "firebase": "^11.3.0",
+    "groq-sdk": "^1.2.1",
     "i18next": "^24.2.0",
+    "openai": "^6.42.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-i18next": "^15.4.0",
