@@ -104,6 +104,9 @@ export default function Workout() {
           <AppText style={{ fontSize: 18 }}>‹</AppText>
         </Pressable>
         <AppText variant="h1" style={{ flex: 1 }}>Workout</AppText>
+        <Pressable onPress={() => router.navigate('/workout-history')} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center', marginRight: spacing.sm }}>
+          <AppText style={{ fontSize: 16 }}>📈</AppText>
+        </Pressable>
         <Pressable
           onPress={() => setDetailed((d) => !d)}
           style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}
