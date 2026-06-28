@@ -50,6 +50,7 @@ const DURATION: Record<string, number> = {
   plank: 2200, // a slow forearm-plank hold with a gentle breathing lift
   padel: 1150, // a forehand swing, low-back to high-front
   tennis: 1150,
+  squash: 1050, // a quick racket swing
   jumprope: 620, // one rope revolution = one hop
   swimming: 1500, // one freestyle stroke cycle (both arms)
   boxing: 900, // a jab then a cross (one each per cycle)
@@ -138,7 +139,7 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <ChestPress phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'shoulderpress' ? (
         <ShoulderPress phase={phase} size={size} fg={fg} equip={equip} />
-      ) : kind === 'padel' || kind === 'tennis' ? (
+      ) : kind === 'padel' || kind === 'tennis' || kind === 'squash' ? (
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'jumprope' ? (
         <JumpRope phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
