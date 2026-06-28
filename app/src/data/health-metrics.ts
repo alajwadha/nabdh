@@ -246,6 +246,11 @@ export function calorieBudget(tdeeValue: number, goal: Goal, sex: 'male' | 'fema
   return Math.max(floor, tdeeValue + delta);
 }
 
+/** Daily protein target per kg bodyweight — higher on a cut to spare muscle. */
+export function proteinPerKgTarget(goal: Goal): number {
+  return goal === 'cut' ? 2.0 : goal === 'gain' ? 1.8 : 1.6;
+}
+
 /**
  * Daily macro targets (grams) from bodyweight + budget. Protein is set per kg
  * (higher on a cut to spare muscle), fat at 25% of calories, carbs fill the rest.
@@ -255,9 +260,31 @@ export function macroTargets(
   budgetKcal: number,
   goal: Goal,
 ): { protein: number; carbs: number; fat: number } {
-  const proteinPerKg = goal === 'cut' ? 2.0 : goal === 'gain' ? 1.8 : 1.6;
-  const protein = Math.round(weightKg * proteinPerKg);
+  const protein = Math.round(weightKg * proteinPerKgTarget(goal));
   const fat = Math.round((budgetKcal * 0.25) / 9);
   const carbs = Math.max(0, Math.round((budgetKcal - protein * 4 - fat * 9) / 4));
   return { protein, carbs, fat };
+}
+
+/**
+ * Daily fibre target (g) — the Institute of Medicine's 14 g per 1,000 kcal, scaled
+ * to the user's own energy budget rather than a flat one-size number.
+ */
+export function fiberTarget(budgetKcal: number): number {
+  return Math.round((budgetKcal / 1000) * 14);
+}
+
+/** Share of consumed energy from each macro (%), for the macro-split readout. */
+export function macroEnergySplit(
+  proteinG: number,
+  carbsG: number,
+  fatG: number,
+): { protein: number; carbs: number; fat: number } {
+  const kcal = proteinG * 4 + carbsG * 4 + fatG * 9;
+  if (kcal <= 0) return { protein: 0, carbs: 0, fat: 0 };
+  return {
+    protein: Math.round((proteinG * 4 * 100) / kcal),
+    carbs: Math.round((carbsG * 4 * 100) / kcal),
+    fat: Math.round((fatG * 9 * 100) / kcal),
+  };
 }

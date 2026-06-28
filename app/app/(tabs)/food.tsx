@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { AppText, Card, Screen } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
@@ -7,14 +8,22 @@ import { useTheme } from '../../src/design-system/theme';
 import { useAppState } from '../../src/store/app';
 import { DEMO_IDENTITY } from '../../src/integrations/demo';
 import { weekdayName } from '../../src/data/derive';
+import { proteinPerKgTarget, fiberTarget, macroEnergySplit } from '../../src/data/health-metrics';
 
 const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 
 export default function Food() {
   const { colors, tiles } = useTheme();
-  const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget } = useAppState();
+  const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget, body } = useAppState();
+  const [detailed, setDetailed] = useState(false);
   const left = Math.max(0, budget - kcal);
   const shownWater = Math.min(water, waterGoal); // a lowered goal can't show a maxed-out bar
+
+  // Nutrition detail — all from real consumed macros + the body profile.
+  const proteinPerKg = body.weightKg > 0 ? Math.round((macros.protein / body.weightKg) * 10) / 10 : 0;
+  const proteinTarget = proteinPerKgTarget(body.goal);
+  const fiberGoal = fiberTarget(budget);
+  const split = macroEnergySplit(macros.protein, macros.carbs, macros.fat);
 
   const macroRows: [string, number, keyof typeof MACRO_COLORS][] = [
     ['PROTEIN', macros.protein, 'protein'],
@@ -25,9 +34,19 @@ export default function Food() {
   return (
     <Screen>
       <AppHeader />
-      <AppText variant="h1" style={{ marginTop: spacing.sm }}>
-        Food diary
-      </AppText>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm }}>
+        <AppText variant="h1" style={{ flex: 1 }}>Food diary</AppText>
+        <Pressable onPress={() => setDetailed((d) => !d)} style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}>
+          {(['Simple', 'Detailed'] as const).map((t, i) => {
+            const on = detailed === (i === 1);
+            return (
+              <View key={t} style={{ paddingVertical: 7, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.navOn : 'transparent' }}>
+                <AppText variant="caption" color={on ? colors.navOnText : colors.textMuted} style={{ fontSize: 11 }}>{t}</AppText>
+              </View>
+            );
+          })}
+        </Pressable>
+      </View>
       <AppText variant="caption" color={colors.textMuted}>
         {weekdayName()} · budget {budget.toLocaleString()} kcal · 🔥 {DEMO_IDENTITY.foodStreakDays}-day streak
       </AppText>
@@ -60,6 +79,53 @@ export default function Food() {
           ))}
         </View>
       </Card>
+
+      {detailed && (
+        <Card>
+          <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 4 }}>NUTRITION DETAIL</AppText>
+
+          {/* protein per kg — the lens lifters actually track */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 6 }}>
+            <AppText variant="caption" color={colors.ink} style={{ fontWeight: '700' }}>Protein density</AppText>
+            <AppText variant="caption" color={colors.accentText} style={{ fontWeight: '800' }}>
+              {proteinPerKg} <AppText variant="caption" color={colors.textMuted}>/ {proteinTarget} g/kg</AppText>
+            </AppText>
+          </View>
+          <View style={{ height: 6, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 5, overflow: 'hidden' }}>
+            <View style={{ width: `${Math.min(100, (proteinPerKg / proteinTarget) * 100)}%`, height: '100%', backgroundColor: MACRO_COLORS.protein, borderRadius: 99 }} />
+          </View>
+          <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 5, lineHeight: 15 }}>
+            {proteinPerKg >= proteinTarget
+              ? `At your ${proteinTarget} g/kg target for ${body.goal === 'cut' ? 'a cut' : body.goal === 'gain' ? 'a lean gain' : 'maintenance'} — muscle protected.`
+              : `${proteinPerKg} g/kg so far — on track for ${proteinTarget} as the day fills in.`}
+          </AppText>
+
+          {/* energy split from real macros */}
+          <View style={{ flexDirection: 'row', gap: 4, marginTop: 12, height: 10, borderRadius: 99, overflow: 'hidden' }}>
+            {split.protein + split.carbs + split.fat > 0 ? (
+              <>
+                <View style={{ flex: split.protein, backgroundColor: MACRO_COLORS.protein }} />
+                <View style={{ flex: split.carbs, backgroundColor: MACRO_COLORS.carbs }} />
+                <View style={{ flex: split.fat, backgroundColor: MACRO_COLORS.fat }} />
+              </>
+            ) : (
+              <View style={{ flex: 1, backgroundColor: colors.navBg }} />
+            )}
+          </View>
+          <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 5 }}>
+            Energy split · {split.protein}% protein · {split.carbs}% carbs · {split.fat}% fat
+          </AppText>
+
+          {/* fibre target (recommendation, not consumed — meal fibre isn't tracked yet) */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTopWidth: 2, borderTopColor: colors.border }}>
+            <AppText variant="caption" color={colors.ink} style={{ fontWeight: '700' }}>Fibre target</AppText>
+            <AppText variant="caption" color={colors.textMuted}>~{fiberGoal} g/day</AppText>
+          </View>
+          <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 4, lineHeight: 15 }}>
+            14 g per 1,000 kcal (IOM), scaled to your budget. Dates, legumes & whole grains get you there.
+          </AppText>
+        </Card>
+      )}
 
       <Card>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4 }}>
