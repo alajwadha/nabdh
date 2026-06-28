@@ -350,24 +350,47 @@ function Ohp({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number
   );
 }
 
-// --- Rowing (erg): legs drive, torso swings back, arms pull the handle to the chest --
+// Rowing stroke is SEQUENCED, not simultaneous: each joint extends during its own slice
+// of the drive (first half of phase) and reverses during recovery. e: 0 catch → 1 finish.
+function rowE(p: number, dS: number, dE: number, rS: number, rE: number): number {
+  'worklet';
+  const seg = (a: number, b: number) => Math.max(0, Math.min(1, (p - a) / (b - a)));
+  return p < 0.5 ? seg(dS, dE) : 1 - seg(rS, rE);
+}
+// Forward-kinematics world position of the rowing handle (for the chain/cable line).
+function rowHand(p: number, s: number): { x: number; y: number } {
+  'worklet';
+  const R = Math.PI / 180;
+  const eT = rowE(p, 0.18, 0.42, 0.6, 0.82);
+  const eA = rowE(p, 0.32, 0.5, 0.5, 0.68);
+  const a0 = -124 * R, aT = (-100 - eT * 24) * R;
+  const rootX = 30 * s + 30 * s * (Math.cos(aT) - Math.cos(a0));
+  const rootY = 46 * s + 30 * s * (Math.sin(aT) - Math.sin(a0));
+  const ua = (20 - eA * 28) * R;
+  const ex = rootX + 14 * s * Math.cos(ua), ey = rootY + 14 * s * Math.sin(ua);
+  const ha = ua + (-20 + eA * 54) * R;
+  return { x: ex + 15 * s * Math.cos(ha), y: ey + 15 * s * Math.sin(ha) };
+}
+
+// --- Rowing (erg): legs drive, torso swings back, arms pull — sequenced like a real stroke
 function Rowing({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
   const s = size / 116;
-  const st = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 catch → 1 finish
-  const A0 = -124; // torso angle at the (authored) finish
-  const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-100 - st(phase.value) * 24}deg` }] }; });
-  const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + st(phase.value) * 22}deg` }] }; });
-  const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${36 - st(phase.value) * 40}deg` }] }; });
-  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${20 - st(phase.value) * 28}deg` }] }; });
-  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + st(phase.value) * 54}deg` }] }; });
-  // head + arm follow the shoulder as the torso swings (authored at the finish lean)
+  const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + rowE(phase.value, 0, 0.3, 0.7, 1) * 22}deg` }] }; });
+  const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${36 - rowE(phase.value, 0, 0.3, 0.7, 1) * 40}deg` }] }; });
+  const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-100 - rowE(phase.value, 0.18, 0.42, 0.6, 0.82) * 24}deg` }] }; });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${20 - rowE(phase.value, 0.32, 0.5, 0.5, 0.68) * 28}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + rowE(phase.value, 0.32, 0.5, 0.5, 0.68) * 54}deg` }] }; });
   const upper = useAnimatedStyle(() => {
     'worklet';
-    const a0 = (A0 * Math.PI) / 180;
-    const a = ((-100 - st(phase.value) * 24) * Math.PI) / 180;
+    const R = Math.PI / 180;
+    const a0 = -124 * R, a = (-100 - rowE(phase.value, 0.18, 0.42, 0.6, 0.82) * 24) * R;
     const L = 30 * s;
     return { transform: [{ translateX: L * (Math.cos(a) - Math.cos(a0)) }, { translateY: L * (Math.sin(a) - Math.sin(a0)) }] };
   });
+  // chain/cable from the flywheel centre to the handle (pivot rotates, inner bar = distance)
+  const flyX = 99 * s, flyY = 59 * s;
+  const cableRot = useAnimatedStyle(() => { 'worklet'; const h = rowHand(phase.value, s); return { transform: [{ rotate: `${Math.atan2(h.y - flyY, h.x - flyX)}rad` }] }; });
+  const cableLen = useAnimatedStyle(() => { 'worklet'; const h = rowHand(phase.value, s); return { width: Math.sqrt((h.x - flyX) ** 2 + (h.y - flyY) ** 2) }; });
   const hipX = 44 * s, hipY = 70 * s;
   return (
     <View style={{ width: size, height: size }}>
@@ -376,6 +399,10 @@ function Rowing({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
       <View style={{ position: 'absolute', left: 88 * s, top: 48 * s, width: 22 * s, height: 22 * s, borderRadius: 99, backgroundColor: bg }} />
       <View style={{ position: 'absolute', left: 84 * s, top: 62 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
       <View style={{ position: 'absolute', left: 34 * s, top: 74 * s, width: 18 * s, height: 6 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* chain/cable: a Bone-style pivot at the flywheel with an animated-length bar to the handle */}
+      <Animated.View style={[{ position: 'absolute', left: flyX, top: flyY, width: 0, height: 0 }, cableRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -1.5 * s, height: 3 * s, borderRadius: 99, backgroundColor: bg }, cableLen]} />
+      </Animated.View>
       {/* legs extend from bent (catch) to straight (finish) */}
       <Bone x={hipX} y={hipY} len={24 * s} w={9 * s} color={fg} rot={thigh}>
         <Bone x={0} y={0} len={20 * s} w={9 * s} color={fg} rot={shin} />
