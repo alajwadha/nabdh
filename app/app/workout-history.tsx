@@ -16,9 +16,15 @@ export default function WorkoutHistory() {
   const { sessions } = useWorkouts();
   const now = Date.now();
 
-  const gym = sessions.filter((s) => s.kind === 'gym');
-  const sport = sessions.filter((s) => s.kind === 'sport');
-  const inWindow = (iso: string, days: number) => now - Date.parse(iso) <= days * DAY;
+  // Seed is demo-only (it powers the Workout screen's example) — never count it
+  // in real progress stats, or the user sees fabricated "this week" numbers.
+  const real = sessions.filter((s) => !s.id.startsWith('seed-'));
+  const gym = real.filter((s) => s.kind === 'gym');
+  const sport = real.filter((s) => s.kind === 'sport');
+  const inWindow = (iso: string, days: number) => {
+    const diff = now - Date.parse(iso);
+    return diff >= 0 && diff <= days * DAY; // guard against future-dated/skewed timestamps
+  };
 
   // this-week headline stats
   const weekTonnage = gym.filter((s) => inWindow(s.at, 7)).reduce((sum, s) => sum + (s.volume ?? 0), 0);
@@ -27,11 +33,13 @@ export default function WorkoutHistory() {
 
   // per-exercise progression
   const exKeys = Array.from(new Set(gym.map((s) => s.exKey).filter(Boolean))) as string[];
-  const [sel, setSel] = useState(exKeys[0] ?? EXERCISES[0].key);
-  const selSessions = gym.filter((s) => s.exKey === sel).sort((a, b) => a.at.localeCompare(b.at));
+  const [sel, setSel] = useState('');
+  // Guard against async data load: if the selection isn't a real exercise yet, fall back.
+  const selKey = exKeys.includes(sel) ? sel : (exKeys[0] ?? '');
+  const selSessions = gym.filter((s) => s.exKey === selKey).sort((a, b) => a.at.localeCompare(b.at));
   const e1rmTrend = selSessions.map((s) => s.e1rm ?? 0);
   const best = e1rmTrend.reduce((m, v) => Math.max(m, v), 0);
-  const selEx = EXERCISES.find((e) => e.key === sel);
+  const selEx = EXERCISES.find((e) => e.key === selKey);
 
   // 30-day volume by muscle
   const muscleVol: Partial<Record<Muscle, number>> = {};
@@ -68,7 +76,7 @@ export default function WorkoutHistory() {
           <SectionHeader title="Per-exercise progression" />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.sm }}>
             {exKeys.map((k) => {
-              const on = k === sel;
+              const on = k === selKey;
               const e = EXERCISES.find((x) => x.key === k);
               return (
                 <Pressable key={k} onPress={() => setSel(k)} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
@@ -83,7 +91,7 @@ export default function WorkoutHistory() {
               <AppText variant="caption" color={colors.accentText}>best {Math.round(best)} kg e1RM</AppText>
             </View>
             <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 6 }}>
-              {selSessions.length} sessions · estimated 1RM over time
+              {selSessions.length} sessions · estimated 1RM by session
             </AppText>
             {e1rmTrend.length > 1 ? (
               <LineChart data={e1rmTrend} color={colors.accentText} height={120} />
@@ -125,6 +133,23 @@ export default function WorkoutHistory() {
                 <View key={p.k} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
                   <AppText variant="caption" color={colors.ink}>{e?.emoji} {e?.name ?? p.k}</AppText>
                   <AppText variant="caption" color={colors.accentText}>{Math.round(p.best)} kg</AppText>
+                </View>
+              );
+            })}
+          </Card>
+        </>
+      )}
+
+      {sport.length > 0 && (
+        <>
+          <SectionHeader title="Recent sports" />
+          <Card>
+            {[...sport].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 6).map((ws) => {
+              const sp = SPORTS.find((x) => x.key === ws.sportKey);
+              return (
+                <View key={ws.id} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+                  <AppText variant="caption" color={colors.ink}>{sp?.emoji} {sp?.name ?? ws.sportKey} · {ws.minutes ?? 0} min</AppText>
+                  <AppText variant="caption" color={colors.textMuted}>{ws.kcal ?? 0} kcal{ws.distanceKm ? ` · ${ws.distanceKm} km` : ''} · {ws.at.slice(5, 10)}</AppText>
                 </View>
               );
             })}
