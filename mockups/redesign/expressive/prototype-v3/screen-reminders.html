@@ -1,0 +1,55 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+:root{--bg:#F7F1E8;--card:#FFFBF4;--bord:#EDE5D3;--navbg:#EFE8DA;--grn:#2E7D5B;--mut:#80796C;--sec:#6B6457;--ink:#1F1C17;--warn:#C2562C}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+body{background:#cfc7b6;display:flex;justify-content:center;padding:24px}
+.phone{width:390px;background:var(--bg);border-radius:30px;padding:22px;min-height:760px}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.back{width:38px;height:38px;border-radius:14px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--ink)}
+.h1{font-size:28px;font-weight:800;color:var(--ink)}
+.sub{font-size:15px;line-height:22px;color:var(--sec);font-weight:500;margin-bottom:18px}
+.glabel{font-size:12px;letter-spacing:1.4px;font-weight:800;color:var(--mut);margin:0 0 8px 4px}
+.group{background:var(--card);border:2px solid var(--bord);border-radius:20px;padding:0 16px;margin-bottom:20px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:2px solid var(--bord)}
+.row.last{border-bottom:none}
+.ic{width:34px;height:34px;border-radius:11px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:15px}
+.lbl{font-size:17px;font-weight:700;color:var(--ink)}
+.sm{font-size:12px;font-weight:700;color:var(--mut);margin-top:2px}
+.grow{flex:1}
+.tog{width:46px;height:27px;border-radius:99px;display:flex;align-items:center}
+.tog.on{background:var(--grn);justify-content:flex-end}
+.tog.off{background:var(--bord)}
+.knob{width:21px;height:21px;border-radius:99px;background:#fff;margin:0 3px}
+.stepper{display:flex;align-items:center;gap:8px;margin-top:5px}
+.sbtn{width:30px;height:30px;border-radius:9px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:var(--sec)}
+.time{width:64px;text-align:center;font-size:12px;font-weight:700;color:var(--ink)}
+.freq{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:2px solid var(--bord)}
+.pills{display:flex;gap:8px}
+.pill{padding:7px 14px;border-radius:99px;background:var(--navbg);font-size:12px;font-weight:700;color:var(--ink)}
+.pill.sel{background:var(--grn);color:#fff}
+</style></head><body>
+<div class="phone">
+  <div class="hd"><div class="back">‹</div><div class="h1">Reminders</div></div>
+  <div class="sub">Gentle nudges, on your schedule. These are local to your phone — no account, no server. Toggle any off anytime.</div>
+
+  <div class="glabel">DAILY REMINDERS</div>
+  <div class="group">
+    <div class="row"><div class="ic">🏋️</div><div class="grow"><div class="lbl">Workout</div>
+      <div class="stepper"><div class="sbtn">−</div><div class="time">5:30 PM</div><div class="sbtn">+</div></div></div>
+      <div class="tog on"><div class="knob"></div></div></div>
+    <div class="row"><div class="ic">🍽</div><div class="grow"><div class="lbl">Log a meal</div></div><div class="tog off"><div class="knob"></div></div></div>
+    <div class="row"><div class="ic">👟</div><div class="grow"><div class="lbl">Step goal</div></div><div class="tog off"><div class="knob"></div></div></div>
+    <div class="row"><div class="ic">🌙</div><div class="grow"><div class="lbl">Wind down</div>
+      <div class="stepper"><div class="sbtn">−</div><div class="time">10:30 PM</div><div class="sbtn">+</div></div></div>
+      <div class="tog on"><div class="knob"></div></div></div>
+    <div class="row last"><div class="ic">⚖️</div><div class="grow"><div class="lbl">Weigh-in</div></div><div class="tog off"><div class="knob"></div></div></div>
+  </div>
+
+  <div class="glabel">HYDRATION</div>
+  <div class="group">
+    <div class="row last" style="padding-bottom:12px"><div class="ic">💧</div><div class="grow"><div class="lbl">Drink water</div><div class="sm">Every 2h · 9:00 AM–9:00 PM</div></div><div class="tog on"><div class="knob"></div></div></div>
+    <div class="freq"><div style="font-size:15px;font-weight:500;color:var(--sec)">How often</div>
+      <div class="pills"><div class="pill">1h</div><div class="pill sel">2h</div><div class="pill">3h</div></div></div>
+  </div>
+</div>
+</body></html>

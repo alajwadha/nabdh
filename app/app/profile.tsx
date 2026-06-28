@@ -110,6 +110,7 @@ export default function Profile() {
       <Group title="YOUR DAY">
         <Row icon="🎛" label="Customize Today" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/(tabs)')} />
         <Row icon="🫀" label="Body & metrics" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/body')} />
+        <Row icon="🔔" label="Reminders" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/reminders')} />
         <Row icon="☪" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
         <Row icon="🕌" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
         <Row icon={mode === 'dark' ? '☀️' : '🌙'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last />

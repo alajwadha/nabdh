@@ -1,7 +1,16 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TileColor } from '../design-system';
 import { bmr, calorieBudget, hydrationGlasses, macroTargets, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
+import {
+  DEFAULT_HYDRATION,
+  DEFAULT_REMINDERS,
+  ensureNotificationPermission,
+  syncReminders,
+  type Hydration,
+  type Reminder,
+  type ReminderKey,
+} from '../services/notifications';
 
 export type MetricKey =
   | 'rhr'
@@ -99,6 +108,12 @@ type AppState = {
 
   body: Body;
   setBody: (patch: Partial<Body>) => void;
+
+  reminders: Reminder[];
+  hydration: Hydration;
+  setReminder: (key: ReminderKey, patch: Partial<Reminder>) => void;
+  setHydration: (patch: Partial<Hydration>) => void;
+  requestRemindersPermission: () => Promise<boolean>;
 };
 
 const Ctx = createContext<AppState | undefined>(undefined);
@@ -111,12 +126,30 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [water, setWater] = useState(3);
   const [meals, setMeals] = useState<Meal[]>(DEFAULT_MEALS);
   const [body, setBodyState] = useState<Body>(DEFAULT_BODY);
+  const [reminders, setRemindersState] = useState<Reminder[]>(DEFAULT_REMINDERS);
+  const [hydration, setHydrationState] = useState<Hydration>(DEFAULT_HYDRATION);
   // Saudi-first: scale hydration by activity and assume Gulf heat by default.
   const waterGoal = hydrationGlasses(body.weightKg, resolveActivityFactor(body.activity), true);
 
   useEffect(() => {
-    AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body']).then((pairs) => {
+    AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body', 'nabdh.reminders', 'nabdh.hydration']).then((pairs) => {
       for (const [k, v] of pairs) {
+        if (k === 'nabdh.reminders' && v) {
+          try {
+            const arr = JSON.parse(v) as Reminder[];
+            // merge stored enabled/time onto the known reminder set (keeps new keys/defaults)
+            if (Array.isArray(arr)) setRemindersState(DEFAULT_REMINDERS.map((d) => arr.find((a) => a.key === d.key) ?? d));
+          } catch {
+            /* ignore */
+          }
+        }
+        if (k === 'nabdh.hydration' && v) {
+          try {
+            setHydrationState({ ...DEFAULT_HYDRATION, ...(JSON.parse(v) as Partial<Hydration>) });
+          } catch {
+            /* ignore */
+          }
+        }
         if (k === 'nabdh.tiles' && v) {
           try {
             const arr = JSON.parse(v) as MetricKey[];
@@ -146,6 +179,32 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       return next;
     });
   };
+
+  // Reschedule OS notifications whenever the reminder config changes (no-ops without the
+  // native module or permission). Skips the very first render so we don't fire on mount.
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    syncReminders(reminders, hydration);
+  }, [reminders, hydration]);
+
+  const persistReminders = (next: Reminder[]) => {
+    setRemindersState(next);
+    AsyncStorage.setItem('nabdh.reminders', JSON.stringify(next)).catch(() => {});
+  };
+  const setReminder = (key: ReminderKey, patch: Partial<Reminder>) =>
+    persistReminders(reminders.map((r) => (r.key === key ? { ...r, ...patch } : r)));
+  const setHydration = (patch: Partial<Hydration>) => {
+    setHydrationState((h) => {
+      const next = { ...h, ...patch };
+      AsyncStorage.setItem('nabdh.hydration', JSON.stringify(next)).catch(() => {});
+      return next;
+    });
+  };
+  const requestRemindersPermission = () => ensureNotificationPermission();
 
   const setTiles = (next: MetricKey[]) => {
     setTilesState(next);
@@ -201,6 +260,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     budget,
     body,
     setBody,
+    reminders,
+    hydration,
+    setReminder,
+    setHydration,
+    requestRemindersPermission,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
