@@ -438,6 +438,15 @@ function Rowing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
   );
 }
 
+// ATTACHMENT CONVENTIONS — how an object (bar, plate, cable, handle) stays put on a
+// moving limb. Three cases cover every figure:
+//   (1) object sits at the IK TARGET (the hand we solve toward) → attach DIRECTLY; its
+//       position is a known input (lat-pulldown bar/cable, pull-up bar).
+//   (2) object sits at an FK CHAIN END (position computed from joint angles), and is
+//       rigid → TRANSLATE-FOLLOW the computed point (rowing handle/cable, squat headbar).
+//   (3) object rides a BENDING limb and must stay level → COUNTER-ROTATE by the negated
+//       cumulative bone angle (bench/OHP/curl bar & dumbbell).
+//
 // Two-bar inverse kinematics (limb-agnostic): place an end-effector (fx,fy) from a
 // root (hx,hy) with segments L1,L2. Returns the root's world angle and the shin angle RELATIVE to the thigh
 // (so they map straight onto nested Bones). `bend` (±1) picks which way the knee folds.
