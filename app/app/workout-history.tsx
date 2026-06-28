@@ -7,6 +7,7 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
 import { EXERCISES, SPORTS, MUSCLE_LABEL, type Muscle } from '../src/data/workouts';
+import { computeAcwr } from '../src/data/health-metrics';
 
 const DAY = 86400000;
 
@@ -15,6 +16,7 @@ export default function WorkoutHistory() {
   const router = useRouter();
   const { sessions } = useWorkouts();
   const now = Date.now();
+  const [detailed, setDetailed] = useState(false);
 
   // Seed is demo-only (it powers the Workout screen's example) — never count it
   // in real progress stats, or the user sees fabricated "this week" numbers.
@@ -25,6 +27,9 @@ export default function WorkoutHistory() {
     const diff = now - Date.parse(iso);
     return diff >= 0 && diff <= days * DAY; // guard against future-dated/skewed timestamps
   };
+  const acwr = computeAcwr(real, now);
+  const loadColor =
+    acwr.status === 'optimal' ? tiles.mint : acwr.status === 'caution' ? tiles.gold : acwr.status === 'high' ? tiles.pink : tiles.blue;
 
   // this-week headline stats
   const weekTonnage = gym.filter((s) => inWindow(s.at, 7)).reduce((sum, s) => sum + (s.volume ?? 0), 0);
@@ -62,13 +67,43 @@ export default function WorkoutHistory() {
         <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <AppText style={{ fontSize: 18 }}>‹</AppText>
         </Pressable>
-        <AppText variant="h1">Progress</AppText>
+        <AppText variant="h1" style={{ flex: 1 }}>Progress</AppText>
+        <Pressable onPress={() => setDetailed((d) => !d)} style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}>
+          {(['Simple', 'Detailed'] as const).map((t, i) => {
+            const on = detailed === (i === 1);
+            return (
+              <View key={t} style={{ paddingVertical: 7, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.navOn : 'transparent' }}>
+                <AppText variant="caption" color={on ? colors.navOnText : colors.textMuted} style={{ fontSize: 11 }}>{t}</AppText>
+              </View>
+            );
+          })}
+        </Pressable>
       </View>
 
       <View style={{ flexDirection: 'row', gap: spacing.md }}>
         <Stat label="THIS WEEK" value={`${Math.round(weekTonnage / 1000 * 10) / 10}`} unit="t" hint="tonnage lifted" color={tiles.lav} />
         <Stat label="SESSIONS" value={`${weekSessions}`} unit="" hint="this week" color={tiles.peach} />
         <Stat label="SPORT" value={`${weekKcal}`} unit="kcal" hint="this week" color={tiles.pink} />
+      </View>
+
+      {/* Training load — acute:chronic workload ratio (injury sweet-spot) */}
+      <View style={{ backgroundColor: loadColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <AppText variant="caption" color={loadColor.ink} style={{ letterSpacing: 1.2 }}>TRAINING LOAD · ACUTE:CHRONIC</AppText>
+          <AppText variant="h2" color={loadColor.ink}>{acwr.ratio || '—'}</AppText>
+        </View>
+        <View style={{ height: 12, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 10, position: 'relative' }}>
+          {/* green sweet-spot band: 0.8–1.3 on a 0–2 scale */}
+          <View style={{ position: 'absolute', left: '40%', width: '25%', top: 0, bottom: 0, borderRadius: 99, backgroundColor: colors.accent, opacity: 0.35 }} />
+          <View style={{ position: 'absolute', left: `${Math.min(98, (acwr.ratio / 2) * 100)}%`, width: 3, top: -3, bottom: -3, borderRadius: 99, backgroundColor: colors.ink }} />
+        </View>
+        <AppText variant="title" color={loadColor.ink} style={{ marginTop: 8, textAlign: 'center' }}>{acwr.label}</AppText>
+        <AppText variant="caption" color={loadColor.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 17 }}>{acwr.note}</AppText>
+        {detailed && (
+          <AppText variant="caption" color={loadColor.ink} style={{ marginTop: 6, opacity: 0.85 }}>
+            acute {acwr.acute} (7d) · chronic {acwr.chronic}/wk (28d avg) · ratio = acute ÷ chronic · sweet spot 0.8–1.3
+          </AppText>
+        )}
       </View>
 
       {e1rmTrend.length > 0 ? (
