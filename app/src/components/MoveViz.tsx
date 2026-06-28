@@ -289,14 +289,16 @@ function Deadlift({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
     const L = 27 * s;
     return { transform: [{ translateX: L * (Math.cos(a) - Math.cos(a0)) }, { translateY: L * (Math.sin(a) - Math.sin(a0)) }] };
   });
-  const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
+  // legs straighten slightly as the bar rises — subtle, so the lower body isn't frozen
+  const thighL = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${74 + lift(phase.value) * 8}deg` }] }; });
+  const shinL = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${10 - lift(phase.value) * 8}deg` }] }; });
   const hipX = 48 * s, hipY = 54 * s;
   return (
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
-      {/* legs (near-static; the hip hinge is the motion) */}
-      <Bone x={hipX} y={hipY} len={21 * s} w={11 * s} color={fg} rot={stat(74)}>
-        <Bone x={0} y={0} len={21 * s} w={11 * s} color={fg} rot={stat(10)} />
+      {/* legs extend a touch with the pull (knees pass under the bar) */}
+      <Bone x={hipX} y={hipY} len={21 * s} w={11 * s} color={fg} rot={thighL}>
+        <Bone x={0} y={0} len={21 * s} w={11 * s} color={fg} rot={shinL} />
       </Bone>
       {/* torso hinge from the hip */}
       <Bone x={hipX} y={hipY} len={27 * s} w={11 * s} color={fg} rot={torso} />
