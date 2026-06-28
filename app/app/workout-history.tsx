@@ -11,6 +11,9 @@ import { computeAcwr, relativeStrength } from '../src/data/health-metrics';
 import { useAppState } from '../src/store/app';
 
 const DAY = 86400000;
+// × bodyweight only means something on free-weight compounds — not machines or
+// bodyweight lifts (where logged weight is added/assisted load, not total).
+const freeWeight = (eq?: string) => eq === 'barbell' || eq === 'dumbbell';
 
 export default function WorkoutHistory() {
   const { colors, tiles } = useTheme();
@@ -129,7 +132,7 @@ export default function WorkoutHistory() {
           <Card>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <AppText variant="title">{selEx?.name ?? sel}</AppText>
-              <AppText variant="caption" color={colors.accentText}>best {Math.round(best)} kg · {relativeStrength(best, body.weightKg)}× BW</AppText>
+              <AppText variant="caption" color={colors.accentText}>best {Math.round(best)} kg e1RM{freeWeight(selEx?.equipment) ? ` · ${relativeStrength(best, body.weightKg)}× BW` : ''}</AppText>
             </View>
             <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 6 }}>
               {selSessions.length} sessions · estimated 1RM by session
@@ -173,7 +176,7 @@ export default function WorkoutHistory() {
               return (
                 <View key={p.k} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
                   <AppText variant="caption" color={colors.ink}>{e?.emoji} {e?.name ?? p.k}</AppText>
-                  <AppText variant="caption" color={colors.accentText}>{Math.round(p.best)} kg · {relativeStrength(p.best, body.weightKg)}× BW</AppText>
+                  <AppText variant="caption" color={colors.accentText}>{Math.round(p.best)} kg{freeWeight(e?.equipment) ? ` · ${relativeStrength(p.best, body.weightKg)}× BW` : ''}</AppText>
                 </View>
               );
             })}

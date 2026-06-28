@@ -64,7 +64,9 @@ export default function Workout() {
   const [sportKey, setSportKey] = useState(SPORTS[0].key);
   const [minutes, setMinutes] = useState(45);
   const [pace, setPace] = useState(6); // min/km, for GPS sports
-  const [weight, setWeight] = useState(body.weightKg);
+  // Derive from the (async-loaded) body profile live; only snapshot once the user overrides.
+  const [weightOverride, setWeightOverride] = useState<number | null>(null);
+  const weight = weightOverride ?? body.weightKg;
   const sport = SPORTS.find((sp) => sp.key === sportKey) ?? SPORTS[0];
 
   const r = readiness(s);
@@ -236,7 +238,7 @@ export default function Workout() {
             {detailed && (
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 2, borderTopColor: colors.border, paddingTop: 10, marginTop: 4 }}>
                 <AppText variant="caption" color={colors.textMuted}>Your weight</AppText>
-                <Stepper label="kg" value={weight} onMinus={() => setWeight((w) => Math.max(35, w - 1))} onPlus={() => setWeight((w) => w + 1)} colors={colors} />
+                <Stepper label="kg" value={weight} onMinus={() => setWeightOverride(Math.max(35, weight - 1))} onPlus={() => setWeightOverride(weight + 1)} colors={colors} />
               </View>
             )}
           </Card>
