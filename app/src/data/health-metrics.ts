@@ -105,6 +105,22 @@ export function hydrationGlasses(weightKg: number, activityFactor = 1.2, hot = f
   return Math.max(6, Math.min(16, Math.round(ml / 250)));
 }
 
+/**
+ * DOTS strength score — normalizes a powerlifting total (kg) for bodyweight & sex
+ * so lifters of different sizes compare fairly. ~300 = solid trained, 500+ elite.
+ * Coefficients: the 2020 DOTS polynomial.
+ */
+export function dotsScore(totalKg: number, bodyweightKg: number, sex: 'male' | 'female'): number {
+  if (totalKg <= 0 || bodyweightKg <= 0) return 0;
+  const c =
+    sex === 'female'
+      ? [-57.96288, 13.6175032, -0.1126655495, 0.0005158568, -0.0000010706659]
+      : [-307.75076, 24.0900756, -0.1918759221, 0.0007391293, -0.000000207624];
+  const bw = Math.min(Math.max(bodyweightKg, 40), 210); // polynomial valid ~40–210 kg
+  const denom = c[0] + c[1] * bw + c[2] * bw ** 2 + c[3] * bw ** 3 + c[4] * bw ** 4;
+  return denom !== 0 ? Math.round((500 / denom) * totalKg) : 0;
+}
+
 /** Estimated VO₂max (ml/kg/min) from the HR ratio — Uth–Sørensen–Overgaard–Pedersen (2004). */
 export function vo2maxEstimate(maxHr: number, restingHr: number): number {
   if (restingHr <= 0) return 0;

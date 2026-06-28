@@ -7,7 +7,7 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
 import { EXERCISES, SPORTS, MUSCLE_LABEL, type Muscle } from '../src/data/workouts';
-import { computeAcwr, relativeStrength } from '../src/data/health-metrics';
+import { computeAcwr, dotsScore, relativeStrength } from '../src/data/health-metrics';
 import { useAppState } from '../src/store/app';
 
 const DAY = 86400000;
@@ -65,6 +65,10 @@ export default function WorkoutHistory() {
     .map((k) => ({ k, best: gym.filter((s) => s.exKey === k).reduce((m, s) => Math.max(m, s.e1rm ?? 0), 0) }))
     .filter((p) => p.best > 0)
     .sort((a, b) => b.best - a.best);
+
+  // DOTS strength score from the big-3 e1RM total, normalized for bodyweight + sex
+  const big3 = ['squat', 'bench', 'deadlift'].reduce((sum, k) => sum + (prs.find((p) => p.k === k)?.best ?? 0), 0);
+  const dots = dotsScore(big3, body.weightKg, body.sex);
 
   return (
     <Screen>
@@ -164,6 +168,21 @@ export default function WorkoutHistory() {
               </View>
             ))}
           </Card>
+        </>
+      )}
+
+      {dots > 0 && (
+        <>
+          <SectionHeader title="Strength score" />
+          <View style={{ backgroundColor: tiles.peach.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <AppText variant="caption" color={tiles.peach.ink} style={{ letterSpacing: 1.2 }}>DOTS · BIG 3</AppText>
+              <AppText variant="h2" color={tiles.peach.ink}>{dots}</AppText>
+            </View>
+            <AppText variant="caption" color={tiles.peach.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 17 }}>
+              From your best squat + bench + deadlift e1RM ({Math.round(big3)} kg) at {body.weightKg} kg.{detailed ? ' DOTS normalizes total for bodyweight & sex — ~300 solid, 500+ elite.' : ''}
+            </AppText>
+          </View>
         </>
       )}
 
