@@ -8,7 +8,7 @@ import { useTheme } from '../../src/design-system/theme';
 import { useHealth } from '../../src/store/health';
 import { useAppState } from '../../src/store/app';
 import { DEMO_SUMMARY } from '../../src/integrations/demo';
-import { hoursMinutes, sleepStages, sleepScore, sleepWindow, sleepNeedMin, weekdayName, windDownTimes } from '../../src/data/derive';
+import { hoursMinutes, sleepStages, sleepScore, sleepWindow, sleepNeedMin, weekdayName, windDownTimes, cycleBedtimes } from '../../src/data/derive';
 
 const STAGE_COLORS = { deep: '#8E81D6', rem: '#A99DE0', light: '#8FCBAA', awake: '#E0B070' };
 
@@ -30,6 +30,9 @@ export default function Sleep() {
   const idealInBed = Math.round(needMin * 1.06);
   const idealBed = sleepWindow(idealInBed).bed; // bedtime to hit the need
   const windDown = windDownTimes(idealInBed); // caffeine/meal/screen cut-offs from that bedtime
+  const cycles = cycleBedtimes(7); // cycle-aligned bedtimes for a ~7:00 wake
+  // Highlight the option closest to the screen's age-personalized need (not a fixed 7.5h).
+  const cycleHighlight = cycles.reduce((best, c, i) => (Math.abs(c.cycles * 90 - needMin) < Math.abs(cycles[best].cycles * 90 - needMin) ? i : best), 0);
   const deepPct = asleep > 0 ? Math.round((stages.deep / asleep) * 100) : 0;
   const remPct = asleep > 0 ? Math.round((stages.rem / asleep) * 100) : 0;
 
@@ -133,6 +136,24 @@ export default function Sleep() {
             Caffeine’s ~5–6 h half-life means an afternoon coffee is still ~25% active at bedtime. 6 h before is the followable floor; 8 h is ideal. Meals ~3 h, screens ~1 h.
           </AppText>
         )}
+      </Card>
+
+      <Card>
+        <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 8 }}>SLEEP CYCLES · FOR A ~7:00 WAKE</AppText>
+        <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+          {cycles.map((c, i) => {
+            const on = i === cycleHighlight;
+            return (
+              <View key={c.cycles} style={{ flex: 1, alignItems: 'center', backgroundColor: on ? tiles.lav.bg : colors.navBg, borderRadius: radii.lg, paddingVertical: 12 }}>
+                <AppText variant="caption" color={on ? tiles.lav.ink : colors.textMuted} style={{ fontSize: 9, letterSpacing: 0.5 }}>{c.cycles} CYCLES · {c.hours}h</AppText>
+                <AppText variant="title" color={on ? tiles.lav.ink : colors.ink} style={{ marginTop: 3 }}>{c.time}</AppText>
+              </View>
+            );
+          })}
+        </View>
+        <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
+          Wake between ~90-min cycles, not mid-deep-sleep — why 7½ h can beat 8. Highlighted is closest to your {hoursMinutes(needMin)} need. Cycles are an average (70–120 min), so treat these as a guide.{detailed ? ' Includes ~15 min to drift off.' : ''}
+        </AppText>
       </Card>
 
       {detailed && (

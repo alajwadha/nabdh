@@ -59,6 +59,25 @@ export function sleepWindow(inBedMin: number, wakeHour = 7): { bed: string; wake
 }
 
 /**
+ * Bedtimes that complete whole ~90-minute sleep cycles before a fixed wake time, so
+ * you wake between cycles (light sleep) rather than mid-deep-sleep. Includes ~15 min
+ * to fall asleep. Cycle length is an average (real cycles run 70–120 min), so this is
+ * guidance, not a guarantee — but aligning to it is why "more sleep" can feel worse.
+ */
+export function cycleBedtimes(
+  wakeHour = 7,
+  cycleCounts = [6, 5, 4],
+  latencyMin = 15,
+  cycleMin = 90,
+): { cycles: number; hours: number; time: string }[] {
+  return cycleCounts.map((n) => ({
+    cycles: n,
+    hours: Math.round((n * cycleMin) / 60 * 10) / 10,
+    time: clockFromMins(wakeHour * 60 - (n * cycleMin + latencyMin)),
+  }));
+}
+
+/**
  * Evening wind-down cut-off times relative to a target bedtime. Caffeine has a
  * ~5–6 h half-life, so an afternoon karak/qahwa still has ~25% onboard at bedtime —
  * the Sleep Foundation advises stopping ~8 h before sleep. Heavy meals ~3 h before
