@@ -722,6 +722,9 @@ function CalfRaise({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
   const ankle = useDerivedValue(() => { 'worklet'; return { x: ankX, y: ankBotY - riseY * p(phase.value) }; });
   const instepRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(ankle.value.y - ballY, ankle.value.x - ballX)}rad` }] }; });
   const instepLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((ankle.value.x - ballX) ** 2 + (ankle.value.y - ballY) ** 2) }; });
+  // heel: droops an extra bit below the step at the bottom (the deep stretch) and rises
+  // above it on the toes — its own swing, deeper than the body lift alone.
+  const heel = useAnimatedStyle(() => { 'worklet'; const q = p(phase.value); return { transform: [{ translateY: (4 - 16 * q) * s }, { rotate: `${20 - q * 30}deg` }] }; });
   return (
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.08, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
@@ -741,9 +744,9 @@ function CalfRaise({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
         <View style={{ position: 'absolute', left: 46 * s, top: 36 * s, width: 7 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
         <View style={{ position: 'absolute', left: 60 * s, top: 36 * s, width: 7 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
         <View style={{ position: 'absolute', left: 44 * s, top: 18 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
-        {/* heel, dropped below the step at the bottom and rising above it on the toes */}
-        <View style={{ position: 'absolute', left: 42 * s, top: 84 * s, width: 14 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '20deg' }] }} />
       </Animated.View>
+      {/* heel, dropped below the step at the bottom (deep stretch) and rising above on toes */}
+      <Animated.View style={[{ position: 'absolute', left: 42 * s, top: 84 * s, width: 14 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }, heel]} />
     </View>
   );
 }
