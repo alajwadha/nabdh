@@ -105,6 +105,17 @@ export function hydrationGlasses(weightKg: number, activityFactor = 1.2, hot = f
   return Math.max(6, Math.min(16, Math.round(ml / 250)));
 }
 
+/** Estimated VO₂max (ml/kg/min) from the HR ratio — Uth–Sørensen–Overgaard–Pedersen (2004). */
+export function vo2maxEstimate(maxHr: number, restingHr: number): number {
+  if (restingHr <= 0) return 0;
+  return Math.round(15.3 * (maxHr / restingHr));
+}
+
+/** Rough adult cardio-fitness band for a VO₂max value. */
+export function vo2Band(v: number): string {
+  return v >= 52 ? 'excellent' : v >= 44 ? 'very good' : v >= 36 ? 'good' : v >= 30 ? 'fair' : 'below average';
+}
+
 export function bmi(weightKg: number, heightCm: number): { value: number; band: string } {
   const v = heightCm > 0 ? weightKg / (heightCm / 100) ** 2 : 0;
   const band = v < 18.5 ? 'Underweight' : v < 25 ? 'Healthy' : v < 30 ? 'Overweight' : 'Obese';

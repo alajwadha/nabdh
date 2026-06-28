@@ -7,7 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
@@ -23,6 +23,7 @@ export default function Body() {
   const b = bmi(body.weightKg, body.heightCm);
   const mhr = maxHr(body.age);
   const zones = hrZones(body.age);
+  const vo2 = s?.restingHeartRate != null ? vo2maxEstimate(mhr, s.restingHeartRate) : null;
   const energyBmr = bmr(body.weightKg, body.heightCm, body.age, body.sex);
   const activity = ACTIVITY_LEVELS.find((a) => a.key === body.activity) ?? ACTIVITY_LEVELS[2];
   const energyTdee = tdee(energyBmr, activity.factor);
@@ -60,6 +61,17 @@ export default function Body() {
             <Vital label="BLOOD O₂" value={s?.spo2} unit="%" color={tiles.blue} />
           </View>
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 6, marginLeft: 2 }}>From your last overnight sync.</AppText>
+          {vo2 != null && (
+            <View style={{ backgroundColor: tiles.mint.bg, borderRadius: radii.xl, padding: spacing.lg, marginTop: spacing.md }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <AppText variant="caption" color={tiles.mint.ink} style={{ letterSpacing: 1.2 }}>EST. VO₂ MAX · CARDIO FITNESS</AppText>
+                <AppText variant="h2" color={tiles.mint.ink}>{vo2} <AppText variant="caption" color={tiles.mint.ink}>ml/kg/min</AppText></AppText>
+              </View>
+              <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', marginTop: 4 }}>
+                {vo2Band(vo2)} cardio fitness.{detailed ? ` 15.3 × max HR ${mhr} ÷ resting ${s?.restingHeartRate} (Uth 2004) — an estimate.` : ''}
+              </AppText>
+            </View>
+          )}
         </View>
       ) : (
         <Card>
