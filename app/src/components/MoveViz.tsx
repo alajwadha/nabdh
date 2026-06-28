@@ -1094,7 +1094,7 @@ function Football({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
     const L = Math.max(0, Math.min(1, (p - 0.25) / 0.4)); // launch progress
     const flying = p < 0.7;
     const op = p < 0.6 ? 1 : p < 0.7 ? 1 - (p - 0.6) / 0.1 : p < 0.8 ? 0 : p < 0.9 ? (p - 0.8) / 0.1 : 1;
-    return { opacity: op, transform: [{ translateX: flying ? L * 42 * s : 0 }, { translateY: flying ? -L * 48 * s : 0 }] };
+    return { opacity: op, transform: [{ translateX: flying ? L * 38 * s : 0 }, { translateY: flying ? -L * 48 * s : 0 }] };
   });
   const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
   return (
