@@ -237,6 +237,9 @@ function Bench({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
   const press = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 chest → 1 locked out
   const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-60 - press(phase.value) * 20}deg` }] }; });
   const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-40 + press(phase.value) * 36}deg` }] }; });
+  // Convention: a "stays-horizontal" object on rotating bones must counter-rotate by the
+  // negated cumulative bone angle. Bar world-angle = uarm+farm = −100 + p·16, so cancel it.
+  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${100 - press(phase.value) * 16}deg` }] }; });
   const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
   return (
     <View style={{ width: size, height: size }}>
@@ -255,9 +258,12 @@ function Bench({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
       {/* pressing arm: upper arm → forearm → barbell */}
       <Bone x={36 * s} y={64 * s} len={17 * s} w={9 * s} color={fg} rot={uarm}>
         <Bone x={0} y={0} len={16 * s} w={9 * s} color={fg} rot={farm}>
-          <View style={{ position: 'absolute', left: -15 * s, top: -3 * s, width: 42 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
-          <View style={{ position: 'absolute', left: -19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
-          <View style={{ position: 'absolute', left: 19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+          {/* barbell counter-rotates to stay level in world space through the press */}
+          <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: 0, height: 0 }, bar]}>
+            <View style={{ position: 'absolute', left: -15 * s, top: -3 * s, width: 42 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+            <View style={{ position: 'absolute', left: -19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+            <View style={{ position: 'absolute', left: 19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+          </Animated.View>
         </Bone>
       </Bone>
     </View>
