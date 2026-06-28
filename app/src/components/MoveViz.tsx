@@ -57,6 +57,7 @@ const DURATION: Record<string, number> = {
   walking: 1050, // an unhurried stride
   basketball: 650, // one dribble bounce
   football: 1100, // wind-up, strike, follow-through
+  hiit: 520, // fast high-knees cadence
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -136,6 +137,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Basketball phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'football' ? (
         <Football phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'hiit' ? (
+        <HighKnees phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -1110,6 +1113,48 @@ function Football({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
       <Bone x={54 * s} y={56 * s} len={23 * s} w={11 * s} color={fg} rot={stat(-97)} />
       <View style={{ position: 'absolute', left: 42 * s, top: 13 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
       <Bone x={55 * s} y={37 * s} len={18 * s} w={7 * s} color={fg} rot={stat(58)} />
+    </View>
+  );
+}
+
+// --- HIIT (high knees): running in place, knees driving up HIGH (thigh to horizontal) in
+// alternation, arms pumping hard (sprinter carry), with a springy bounce on each drive.
+// Fast cadence — clearly more intense than the walk/run.
+function HighKnees({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  // driveA: leg A knee fully UP at phase 0.25 (the reduce-motion still), down at 0.75
+  const thighA = useAnimatedStyle(() => { 'worklet'; const d = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${100 - d * 100}deg` }] }; });
+  const shinA = useAnimatedStyle(() => { 'worklet'; const d = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${-4 + d * 94}deg` }] }; });
+  const thighB = useAnimatedStyle(() => { 'worklet'; const d = (1 - Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${100 - d * 100}deg` }] }; });
+  const shinB = useAnimatedStyle(() => { 'worklet'; const d = (1 - Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${-4 + d * 94}deg` }] }; });
+  // arms pump opposite: front arm forward when leg A is up, back arm back (sprinter carry)
+  const uFront = useAnimatedStyle(() => { 'worklet'; const d = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${90 - (d - 0.5) * 40}deg` }] }; });
+  const uBack = useAnimatedStyle(() => { 'worklet'; const d = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${90 + (d - 0.5) * 40}deg` }] }; });
+  const fore = { transform: [{ rotate: '-115deg' }] }; // bent elbow, fist up by the chest
+  // springy bounce up on each knee drive
+  const bob = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: -Math.abs(Math.sin(phase.value * 2 * Math.PI)) * 2.5 * s }] }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.12, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, bob]}>
+        {/* back-pump arm + planted/driving leg B (behind) */}
+        <Bone x={53 * s} y={35 * s} len={12 * s} w={7 * s} color={fg} rot={uBack}>
+          <Bone x={0} y={0} len={11 * s} w={6 * s} color={fg} rot={fore} />
+        </Bone>
+        <Bone x={56 * s} y={56 * s} len={18 * s} w={9 * s} color={fg} rot={thighB}>
+          <Bone x={0} y={0} len={17 * s} w={8 * s} color={fg} rot={shinB} />
+        </Bone>
+        {/* torso + head */}
+        <Bone x={56 * s} y={56 * s} len={22 * s} w={11 * s} color={fg} rot={{ transform: [{ rotate: '-95deg' }] }} />
+        <View style={{ position: 'absolute', left: 44 * s, top: 12 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+        {/* driving leg A (front) + front-pump arm */}
+        <Bone x={56 * s} y={56 * s} len={18 * s} w={9 * s} color={fg} rot={thighA}>
+          <Bone x={0} y={0} len={17 * s} w={8 * s} color={fg} rot={shinA} />
+        </Bone>
+        <Bone x={55 * s} y={35 * s} len={12 * s} w={7 * s} color={fg} rot={uFront}>
+          <Bone x={0} y={0} len={11 * s} w={6 * s} color={fg} rot={fore} />
+        </Bone>
+      </Animated.View>
     </View>
   );
 }

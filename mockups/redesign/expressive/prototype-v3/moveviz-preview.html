@@ -206,6 +206,20 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .bb .farm{left:13px;top:0;width:11px;height:7px;transform-origin:left center;transform:rotate(-5deg)}
 .bb .hand{left:9px;top:-2px;width:7px;height:7px} /* child of forearm */
 .bb .barm{left:50px;top:40px;width:7px;height:16px;transform-origin:top center;transform:rotate(20deg)} /* off arm */
+/* HIIT — high knees: one knee driven up high (thigh horizontal), other planted, arms pumping */
+.hi{position:relative;width:116px;height:116px}
+.hi b{position:absolute;border-radius:99px;background:var(--grn)}
+.hi .ground{left:9px;right:9px;bottom:14px;height:3px;background:var(--navbg)}
+.hi .thB{left:56px;top:52px;width:18px;height:8px;transform-origin:left center;transform:rotate(100deg)} /* planted leg */
+.hi .shB{left:18px;top:0;width:17px;height:8px;transform-origin:left center;transform:rotate(-4deg)}
+.hi .torso{left:56px;top:50px;width:22px;height:11px;transform-origin:left center;transform:rotate(-95deg)}
+.hi .head{left:44px;top:12px;width:16px;height:16px}
+.hi .uA{left:55px;top:32px;width:12px;height:7px;transform-origin:left center;transform:rotate(70deg)} /* front-pump arm */
+.hi .fA{left:12px;top:0;width:11px;height:6px;transform-origin:left center;transform:rotate(-115deg)}
+.hi .uB{left:53px;top:32px;width:12px;height:7px;transform-origin:left center;transform:rotate(110deg)} /* back-pump arm */
+.hi .fB{left:12px;top:0;width:11px;height:6px;transform-origin:left center;transform:rotate(-115deg)}
+.hi .thA{left:56px;top:52px;width:18px;height:8px;transform-origin:left center;transform:rotate(0deg)} /* high knee (thigh horizontal) */
+.hi .shA{left:18px;top:0;width:17px;height:8px;transform-origin:left center;transform:rotate(90deg)}
 /* walking: calm upright stride — smaller leg/arm swing than the runner, little bob */
 .wk{position:relative;width:116px;height:116px}
 .wk b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -345,13 +359,16 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">⚽ Football</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · WALKING</div>
- <div class="stage"><div class="wk">
+ <div class="lbl">WORKOUT · SPORT · HIIT</div>
+ <div class="stage"><div class="hi">
   <b class="ground"></b>
-  <b class="armB"></b><b class="legB"></b><b class="legF"></b>
-  <b class="torso"></b><b class="head"></b><b class="armF"></b>
+  <b class="uB"><b class="fB"></b></b>
+  <b class="thB"><b class="shB"></b></b>
+  <b class="torso"></b><b class="head"></b>
+  <b class="thA"><b class="shA"></b></b>
+  <b class="uA"><b class="fA"></b></b>
  </div></div>
- <div class="name">🚶 Walking</div>
+ <div class="name">🔥 HIIT · High knees</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
