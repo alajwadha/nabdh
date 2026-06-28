@@ -66,6 +66,8 @@ export default function Session() {
 
   const ex = exercises[idx];
   const isBodyweight = ex?.equipment === 'bodyweight';
+  const isTimed = ex?.key === 'plank'; // measured in seconds, not reps
+  const repUnit = isTimed ? 'sec' : 'reps';
   const incr = ex ? progressionIncrement(ex.muscle, ex.key) : 2.5;
 
   // Suggested target for the current exercise (from history via double-progression, else a sane default).
@@ -75,14 +77,15 @@ export default function Session() {
     const last = lastFor(ex.key);
     const tgt = last?.sets?.length ? suggestProgression(last.sets, incr, rr.floor, rr.ceil) : null;
     const w = tgt?.weight ?? (isBodyweight ? 0 : ex.equipment === 'barbell' ? 40 : 20);
-    return { weight: w, reps: tgt?.reps ?? rr.floor };
-  }, [ex, lastFor, incr, isBodyweight]);
+    return { weight: w, reps: tgt?.reps ?? (isTimed ? 45 : rr.floor) };
+  }, [ex, lastFor, incr, isBodyweight, isTimed]);
 
-  // Reset the draft to the target whenever we move to a new exercise.
+  // Reset the draft to the target on a new exercise — and re-sync if the target itself
+  // changes (e.g. history finishes loading from storage just after mount).
   useEffect(() => {
     setWeight(target.weight);
     setReps(target.reps);
-  }, [idx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ex?.key, target.weight, target.reps]);
 
   // Rest countdown.
   useEffect(() => {
@@ -103,7 +106,7 @@ export default function Session() {
 
   const sets = logged[idx];
   const logSet = () => {
-    if (reps <= 0) return;
+    if (reps <= 0 || (!isBodyweight && weight <= 0)) return; // a loaded lift needs a weight
     setLogged((all) => all.map((s, i) => (i === idx ? [...s, { weight, reps }] : s)));
     setRest({ left: restSeconds(reps), total: restSeconds(reps) });
   };
@@ -154,7 +157,7 @@ export default function Session() {
             <AppText variant="h2">{ex.name}</AppText>
             <AppText variant="caption" color={colors.textMuted}>{MUSCLE_LABEL[ex.muscle]} · {ex.equipment}</AppText>
             <AppText variant="caption" color={colors.accentText} style={{ marginTop: 4 }}>
-              Target {isBodyweight ? `${target.reps} reps` : `${target.weight} kg × ${target.reps}`}
+              Target {isBodyweight ? `${target.reps} ${repUnit}` : `${target.weight} kg × ${target.reps}`}
             </AppText>
           </View>
         </View>
@@ -167,7 +170,7 @@ export default function Session() {
                 <View style={{ width: 22, height: 22, borderRadius: 7, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' }}>
                   <AppText variant="caption" color={colors.accentInk}>{i + 1}</AppText>
                 </View>
-                <AppText variant="body" color={colors.textSecondary}>{isBodyweight ? `${s.reps} reps` : `${s.weight} kg × ${s.reps}`}</AppText>
+                <AppText variant="body" color={colors.textSecondary}>{isBodyweight ? `${s.reps} ${repUnit}` : `${s.weight} kg × ${s.reps}`}</AppText>
               </View>
             ))}
             <Pressable onPress={undoSet} hitSlop={6}><AppText variant="caption" color={colors.textMuted}>Undo last set</AppText></Pressable>
