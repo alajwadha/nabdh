@@ -55,6 +55,7 @@ const DURATION: Record<string, number> = {
   boxing: 900, // a jab then a cross (one each per cycle)
   yoga: 2600, // a slow cat→cow→cat breath
   walking: 1050, // an unhurried stride
+  basketball: 650, // one dribble bounce
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -130,6 +131,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Boxing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'yoga' ? (
         <Yoga phase={phase} size={size} fg={fg} equip={equip} />
+      ) : kind === 'basketball' ? (
+        <Basketball phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -1026,6 +1029,48 @@ function Yoga({ phase, size, fg, equip }: { phase: SharedValue<number>; size: nu
       <Bone x={shX} y={shY} len={13 * s} w={7 * s} color={fg} rot={neck}>
         <View style={{ position: 'absolute', left: -7.5 * s, top: -7.5 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
       </Bone>
+    </View>
+  );
+}
+
+// --- Basketball: a side-view dribble. The ball (equip) bounces between the hand and the
+// floor; the forearm pushes down as the ball rises to meet it, and the body dips slightly
+// in sync. One bounce per cycle.
+function Basketball({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const bounce = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 ball up at hand → 1 ball on floor
+  const ball = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: bounce(phase.value) * 25 * s }] }; });
+  // forearm pushes down (toward the ball) as the ball rises; lifts as it falls
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-3 - bounce(phase.value) * 28}deg` }] }; });
+  // body dips a touch on the push
+  const dip = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: (1.5 - bounce(phase.value) * 1.5) * s }] }; });
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.16, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* the ball — authored at its top (by the hand), bounces down to the floor */}
+      <Animated.View style={[{ position: 'absolute', left: 69 * s, top: 51 * s, width: 18 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }, ball]} />
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, dip]}>
+        {/* far leg (dimmed for depth) + near leg, both bent in an athletic crouch */}
+        <View style={{ position: 'absolute', left: 0, top: 0, width: size, height: size, opacity: 0.7 }}>
+          <Bone x={50 * s} y={62 * s} len={17 * s} w={9 * s} color={fg} rot={stat(86)}>
+            <Bone x={0} y={0} len={16 * s} w={9 * s} color={fg} rot={stat(-8)} />
+          </Bone>
+        </View>
+        <Bone x={53 * s} y={62 * s} len={17 * s} w={9 * s} color={fg} rot={stat(95)}>
+          <Bone x={0} y={0} len={16 * s} w={9 * s} color={fg} rot={stat(-12)} />
+        </Bone>
+        {/* off arm, torso, head */}
+        <Bone x={53 * s} y={44 * s} len={15 * s} w={7 * s} color={fg} rot={stat(108)} />
+        <Bone x={52 * s} y={62 * s} len={20 * s} w={11 * s} color={fg} rot={stat(-79)} />
+        <View style={{ position: 'absolute', left: 46 * s, top: 20 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+        {/* dribbling arm: upper arm fixed, forearm pushes the ball */}
+        <Bone x={57 * s} y={43 * s} len={13 * s} w={8 * s} color={fg} rot={stat(25)}>
+          <Bone x={0} y={0} len={11 * s} w={7 * s} color={fg} rot={farm}>
+            <View style={{ position: 'absolute', left: -3 * s, top: -3 * s, width: 7 * s, height: 7 * s, borderRadius: 99, backgroundColor: fg }} />
+          </Bone>
+        </Bone>
+      </Animated.View>
     </View>
   );
 }

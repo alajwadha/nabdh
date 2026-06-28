@@ -180,6 +180,21 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* basketball: side-view dribble — ball mid-bounce, arm reaching down, athletic crouch */
+.bb{position:relative;width:116px;height:116px}
+.bb b{position:absolute;border-radius:99px;background:var(--grn)}
+.bb .ground{left:8px;right:8px;bottom:18px;height:3px;background:var(--navbg)}
+.bb .ball{position:absolute;left:69px;top:69px;width:18px;height:18px;border-radius:99px;background:var(--mut)}
+.bb .head{left:46px;top:20px;width:16px;height:16px}
+.bb .torso{left:52px;top:56px;width:20px;height:11px;transform-origin:left center;transform:rotate(-79deg)}
+.bb .thN{left:53px;top:62px;width:17px;height:9px;transform-origin:left center;transform:rotate(95deg)}
+.bb .shN{left:17px;top:0;width:16px;height:9px;transform-origin:left center;transform:rotate(-12deg)}
+.bb .thF{left:50px;top:62px;width:17px;height:9px;transform-origin:left center;transform:rotate(86deg)}
+.bb .shF{left:17px;top:0;width:16px;height:9px;transform-origin:left center;transform:rotate(-8deg)}
+.bb .uarm{left:57px;top:39px;width:13px;height:8px;transform-origin:left center;transform:rotate(25deg)}
+.bb .farm{left:13px;top:0;width:11px;height:7px;transform-origin:left center;transform:rotate(-5deg)}
+.bb .hand{left:9px;top:-2px;width:7px;height:7px} /* child of forearm */
+.bb .barm{left:50px;top:40px;width:7px;height:16px;transform-origin:top center;transform:rotate(20deg)} /* off arm */
 /* walking: calm upright stride — smaller leg/arm swing than the runner, little bob */
 .wk{position:relative;width:116px;height:116px}
 .wk b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -299,14 +314,15 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .hp .plate{left:56px;top:40px;width:23px;height:23px;border-radius:99px;background:var(--grn)} /* loaded plate, edge-on */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · BOXING</div>
- <div class="stage"><div class="bx">
-  <b class="ground"></b>
-  <b class="legB"></b><b class="legF"></b><b class="torso"></b><b class="head"></b>
-  <b class="uarmB"><b class="foreB"><b class="glove"></b></b></b>
-  <b class="uarmA"><b class="foreA"><b class="glove"></b></b></b>
+ <div class="lbl">WORKOUT · SPORT · BASKETBALL</div>
+ <div class="stage"><div class="bb">
+  <b class="ground"></b><b class="ball"></b>
+  <b class="thF"><b class="shF"></b></b>
+  <b class="barm"></b>
+  <b class="thN"><b class="shN"></b></b><b class="torso"></b><b class="head"></b>
+  <b class="uarm"><b class="farm"><b class="hand"></b></b></b>
  </div></div>
- <div class="name">🥊 Boxing</div>
+ <div class="name">🏀 Basketball</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · SPORT · YOGA</div>
