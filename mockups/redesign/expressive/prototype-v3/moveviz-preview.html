@@ -180,6 +180,15 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* plank: forearm on the ground, straight body to the toes (forearm-plank pose; pushes to high plank) */
+.pl{position:relative;width:116px;height:116px}
+.pl b{position:absolute;border-radius:99px;background:var(--grn)}
+.pl .ground{left:8px;right:8px;top:77px;height:3px;background:var(--navbg)}
+.pl .body{left:40px;top:59px;width:57px;height:11px;transform-origin:left center;transform:rotate(12deg)} /* shoulder→toe straight line */
+.pl .uarm{left:40px;top:60px;width:12px;height:8px;transform-origin:left center;transform:rotate(90deg)} /* shoulder→elbow, straight down */
+.pl .fore{left:40px;top:72px;width:14px;height:8px;transform-origin:left center;transform:rotate(180deg)} /* elbow→hand, flat on the ground */
+.pl .head{left:21px;top:52px;width:17px;height:17px}
+.pl .foot{left:92px;top:72px;width:9px;height:7px;border-radius:2px} /* toes on the ground */
 /* calf raise: ball of foot on a step edge, heel DROPPED below the step (bottom/stretch pose) */
 .cf{position:relative;width:116px;height:116px}
 .cf b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -230,14 +239,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🦵 Calf raise</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · TRICEPS PUSHDOWN</div>
- <div class="stage"><div class="tri">
-  <b class="ground"></b><div class="pulley"></div><b class="cable"></b>
-  <b class="legF"></b><b class="legB"></b><b class="torso"></b><b class="head"></b>
-  <b class="uarm"></b><b class="forearm"></b>
-  <b class="pbar"></b>
+ <div class="lbl">WORKOUT · CORE · PLANK</div>
+ <div class="stage"><div class="pl">
+  <b class="ground"></b>
+  <b class="body"></b><b class="foot"></b>
+  <b class="uarm"></b><b class="fore"></b><b class="head"></b>
  </div></div>
- <div class="name">💪 Triceps pushdown</div>
+ <div class="name">🧘 Plank</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>

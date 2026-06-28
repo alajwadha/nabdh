@@ -47,6 +47,7 @@ const DURATION: Record<string, number> = {
   triext: 1200, // extend down and let it rise
   hipthrust: 1500, // drive the hips up to lockout and lower
   calfraise: 1300, // rise onto the toes and lower the heel below the step
+  plank: 2200, // a slow push from forearm plank up to high plank and back
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -108,6 +109,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <HipThrust phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'calfraise' ? (
         <CalfRaise phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'plank' ? (
+        <Plank phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -747,6 +750,45 @@ function CalfRaise({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
       </Animated.View>
       {/* heel, dropped below the step at the bottom (deep stretch) and rising above on toes */}
       <Animated.View style={[{ position: 'absolute', left: 42 * s, top: 84 * s, width: 14 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }, heel]} />
+    </View>
+  );
+}
+
+// --- Plank: forearm plank that slowly pushes up to a high plank and back. The toes are
+// fixed; the body is one straight line that pivots about the toes as the shoulder rises;
+// the arm goes from forearm-flat (elbow on the ground) to straight (high plank) via IK.
+function Plank({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const toeX = 96 * s, toeY = 76 * s; // toes planted on the ground (fixed)
+  const sh0x = 40 * s, sh0y = 64 * s; // shoulder at the forearm-plank pose (translate anchor)
+  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 forearm plank → 1 high plank
+  // shoulder rises and drifts forward; the hand contact shifts back under the shoulder
+  const sh = useDerivedValue(() => { 'worklet'; const q = p(phase.value); return { x: (40 + 2 * q) * s, y: (64 - 13 * q) * s }; });
+  const hand = useDerivedValue(() => { 'worklet'; const q = p(phase.value); return { x: (26 + 12 * q) * s, y: 76 * s }; });
+  // arm IK solved in WORLD coords (translation-invariant), applied inside the follow group
+  const ik = useDerivedValue(() => { 'worklet'; return solve2Bar(sh.value.x, sh.value.y, hand.value.x, hand.value.y, 12 * s, 14 * s, -1); });
+  // straight body line = a stretch-bone from the fixed toe to the rising shoulder
+  const bodyRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(sh.value.y - toeY, sh.value.x - toeX)}rad` }] }; });
+  const bodyLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((sh.value.x - toeX) ** 2 + (sh.value.y - toeY) ** 2) }; });
+  const follow = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateX: sh.value.x - sh0x }, { translateY: sh.value.y - sh0y }] }; });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
+  const fore = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, top: 77 * s, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* toes on the ground */}
+      <View style={{ position: 'absolute', left: 92 * s, top: 72 * s, width: 9 * s, height: 7 * s, borderRadius: 2 * s, backgroundColor: fg }} />
+      {/* straight body line: toe → shoulder (pivot at the fixed toe, animated length) */}
+      <Animated.View style={[{ position: 'absolute', left: toeX, top: toeY, width: 0, height: 0 }, bodyRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -5.5 * s, height: 11 * s, borderRadius: 99, backgroundColor: fg }, bodyLen]} />
+      </Animated.View>
+      {/* upper body rides the rising shoulder: head + arm (forearm-flat → straight) */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, follow]}>
+        <View style={{ position: 'absolute', left: 21 * s, top: 52 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+        <Bone x={sh0x} y={sh0y} len={12 * s} w={8 * s} color={fg} rot={uarm}>
+          <Bone x={0} y={0} len={14 * s} w={8 * s} color={fg} rot={fore} />
+        </Bone>
+      </Animated.View>
     </View>
   );
 }
