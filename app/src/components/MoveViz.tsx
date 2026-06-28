@@ -695,7 +695,9 @@ function HipThrust({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
             <View style={{ position: 'absolute', left: -3 * s, top: -3 * s, width: 14 * s, height: 7 * s, borderRadius: 3 * s, backgroundColor: fg }} />
           </Bone>
         </Bone>
-        {/* loaded barbell on the hips — plate seen edge-on, riding the same hip point */}
+        {/* loaded barbell on the hips — a shaft across the hips + the plate edge-on, so it
+            reads as a loaded bar (not a body bulge), riding the same hip point */}
+        <View style={{ position: 'absolute', left: hip0x - 19 * s, top: hip0y - 2.5 * s, width: 39 * s, height: 5 * s, borderRadius: 99, backgroundColor: fg }} />
         <View style={{ position: 'absolute', left: hip0x - 11.5 * s, top: hip0y - 11.5 * s, width: 23 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
       </Animated.View>
     </View>
