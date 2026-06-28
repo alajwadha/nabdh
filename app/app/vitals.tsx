@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Screen, Sheet } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, Sheet } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { Icon, type IconName } from '../src/components/Icon';
@@ -30,7 +30,7 @@ function Stepper({ value, unit, step, onStep, accent }: { value: number; unit: s
 function VitalCard({ icon, tint, title, latest, sub, children }: { icon: IconName; tint: string; title: string; latest: string; sub: string; children: React.ReactNode }) {
   const { colors } = useTheme();
   return (
-    <View style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, gap: spacing.md, shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 }}>
+    <Card style={{ gap: spacing.md }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: tint, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name={icon} size={20} color={colors.ink} />
@@ -44,7 +44,7 @@ function VitalCard({ icon, tint, title, latest, sub, children }: { icon: IconNam
         </View>
       </View>
       {children}
-    </View>
+    </Card>
   );
 }
 
@@ -98,7 +98,7 @@ export default function Vitals() {
       </VitalCard>
 
       {/* MEDICATIONS */}
-      <View style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, gap: spacing.sm, shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 }}>
+      <Card style={{ gap: spacing.sm }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>MEDICATIONS & SUPPLEMENTS</AppText>
           <Pressable onPress={() => setAddOpen(true)} hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -117,7 +117,10 @@ export default function Vitals() {
               </View>
               <View style={{ flex: 1 }}>
                 <AppText variant="title">{m.name}{m.dose ? <AppText variant="caption" color={colors.textMuted}>  {m.dose}</AppText> : null}</AppText>
-                <AppText variant="caption" color={colors.textMuted}>{m.schedule}{streak > 0 ? `  ·  ${streak}-day streak 🔥` : ''}</AppText>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <AppText variant="caption" color={colors.textMuted}>{m.schedule}{streak > 0 ? `  ·  ${streak}-day streak` : ''}</AppText>
+                  {streak > 0 && <Icon name="flame" size={11} color={colors.textMuted} />}
+                </View>
               </View>
               <Pressable onPress={() => toggleMedToday(m.id)} onLongPress={() => removeMed(m.id)} style={{ width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: taken ? colors.accent : colors.border, backgroundColor: taken ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
                 {taken && <Icon name="check" size={18} color={colors.accentInk} />}
@@ -126,7 +129,7 @@ export default function Vitals() {
           );
         })}
         {meds.length > 0 && <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 2 }}>Tap to mark taken today · long-press to remove</AppText>}
-      </View>
+      </Card>
 
       {/* log sheets */}
       <Sheet visible={openLog === 'weight'} onClose={() => setOpenLog(null)}>

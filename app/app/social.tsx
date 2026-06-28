@@ -1,6 +1,6 @@
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Screen, SectionHeader } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, SectionHeader } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { Icon } from '../src/components/Icon';
@@ -108,7 +108,7 @@ export default function Social() {
       )}
 
       {/* leaderboard */}
-      <View style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 }}>
+      <Card style={{ gap: 0 }}>
         <SectionHeader title="Leaderboard · active minutes" />
         {ranked.map((f, i) => (
           <View key={f.id}>
@@ -116,7 +116,7 @@ export default function Social() {
             <Row rank={i + 1} friend={f} />
           </View>
         ))}
-      </View>
+      </Card>
 
       {/* challenges */}
       <SectionHeader title="Challenges" />
@@ -124,7 +124,7 @@ export default function Social() {
         const tint = tintMap[c.tint];
         const pct = c.goal > 0 ? Math.round((c.progress / c.goal) * 100) : 0;
         return (
-          <View key={c.id} style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, gap: spacing.md, shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 }}>
+          <Card key={c.id} style={{ gap: spacing.md }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
               <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: tint.bg, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name={c.icon} size={22} color={tint.ink} />
@@ -164,7 +164,7 @@ export default function Social() {
                 <Button label="Join" variant="line" style={{ paddingVertical: 8, paddingHorizontal: spacing.lg }} onPress={() => toggleJoin(c.id)} />
               </View>
             )}
-          </View>
+          </Card>
         );
       })}
 

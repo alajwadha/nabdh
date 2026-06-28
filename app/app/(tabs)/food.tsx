@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { AppText, Card, Screen } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
+import { Icon } from '../../src/components/Icon';
 import { CoachCard } from '../../src/components/Dashboard';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
@@ -57,9 +58,11 @@ export default function Food() {
           })}
         </Pressable>
       </View>
-      <AppText variant="caption" color={colors.textMuted}>
-        {weekdayName()} · budget {budget.toLocaleString()} kcal · 🔥 {DEMO_IDENTITY.foodStreakDays}-day streak
-      </AppText>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+        <AppText variant="caption" color={colors.textMuted}>{weekdayName()} · budget {budget.toLocaleString()} kcal ·</AppText>
+        <Icon name="flame" size={12} color={colors.textMuted} />
+        <AppText variant="caption" color={colors.textMuted}>{DEMO_IDENTITY.foodStreakDays}-day streak</AppText>
+      </View>
 
       <Card>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>

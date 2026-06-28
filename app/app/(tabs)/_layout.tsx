@@ -8,6 +8,7 @@ import { AppText, Sheet } from '../../src/design-system/components';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
 import { useAppState } from '../../src/store/app';
+import { Icon, type IconName } from '../../src/components/Icon';
 
 const TAB_LABELS: Record<string, string> = {
   index: 'tab.today',
@@ -16,12 +17,12 @@ const TAB_LABELS: Record<string, string> = {
   coach: 'tab.coach',
 };
 
-function QuickMenuRow({ icon, bg, title, subtitle, onPress }: { icon: string; bg: string; title: string; subtitle: string; onPress: () => void }) {
+function QuickMenuRow({ icon, bg, title, subtitle, onPress }: { icon: IconName; bg: string; title: string; subtitle: string; onPress: () => void }) {
   const { colors } = useTheme();
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}>
       <View style={{ width: 44, height: 44, borderRadius: 15, backgroundColor: bg, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText style={{ fontSize: 19 }}>{icon}</AppText>
+        <Icon name={icon} size={20} color={colors.ink} />
       </View>
       <View style={{ flex: 1 }}>
         <AppText variant="title">{title}</AppText>
@@ -66,17 +67,15 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
           onPress={() => setMenu(true)}
           style={{ width: 56, height: 56, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' }}
         >
-          <AppText color="#fff" style={{ fontSize: 26, fontWeight: '700', lineHeight: 28 }}>
-            ＋
-          </AppText>
+          <Icon name="plus" size={26} color="#fff" stroke={2.4} />
         </Pressable>
       </View>
 
       <Sheet visible={menu} onClose={() => setMenu(false)}>
-        <QuickMenuRow icon="📷" bg={tiles.mint.bg} title={t('quick.snap')} subtitle={t('quick.snapSub')} onPress={() => { setMenu(false); router.navigate('/(tabs)/food'); }} />
-        <QuickMenuRow icon="🏋️" bg={tiles.lav.bg} title={t('quick.workout')} subtitle={t('quick.workoutSub')} onPress={() => { setMenu(false); router.navigate('/workout'); }} />
-        <QuickMenuRow icon="💧" bg={tiles.blue.bg} title={t('quick.water')} subtitle={t('quick.waterSub')} onPress={() => { addWater(); setMenu(false); }} />
-        <QuickMenuRow icon="💬" bg={tiles.peach.bg} title={t('quick.coach')} subtitle={t('quick.coachSub')} onPress={() => { setMenu(false); router.navigate('/(tabs)/coach'); }} />
+        <QuickMenuRow icon="utensils" bg={tiles.mint.bg} title={t('quick.snap')} subtitle={t('quick.snapSub')} onPress={() => { setMenu(false); router.navigate('/(tabs)/food'); }} />
+        <QuickMenuRow icon="dumbbell" bg={tiles.lav.bg} title={t('quick.workout')} subtitle={t('quick.workoutSub')} onPress={() => { setMenu(false); router.navigate('/workout'); }} />
+        <QuickMenuRow icon="droplet" bg={tiles.blue.bg} title={t('quick.water')} subtitle={t('quick.waterSub')} onPress={() => { addWater(); setMenu(false); }} />
+        <QuickMenuRow icon="message-circle" bg={tiles.peach.bg} title={t('quick.coach')} subtitle={t('quick.coachSub')} onPress={() => { setMenu(false); router.navigate('/(tabs)/coach'); }} />
       </Sheet>
     </>
   );

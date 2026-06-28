@@ -36,7 +36,7 @@ export default function Programs() {
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
               <View style={{ width: 46, height: 46, borderRadius: radii.md, backgroundColor: tint.bg, alignItems: 'center', justifyContent: 'center' }}>
-                <AppText style={{ fontSize: 22 }}>{p.emoji}</AppText>
+                <Icon name={p.icon} size={22} color={tint.ink} />
               </View>
               <View style={{ flex: 1 }}>
                 <AppText variant="title">{p.name}</AppText>

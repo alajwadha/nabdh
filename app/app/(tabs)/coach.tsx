@@ -12,6 +12,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Constants from 'expo-constants';
 import { AppText, Chip } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
+import { Icon } from '../../src/components/Icon';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
 import { useAppState } from '../../src/store/app';
@@ -126,7 +127,7 @@ export default function Coach() {
                 justifyContent: 'center',
               }}
             >
-              <AppText style={{ fontSize: 20 }}>🫀</AppText>
+              <Icon name="heart-pulse" size={22} color="#fff" />
             </View>
             <View>
               <AppText variant="title">مدربك الصحي</AppText>

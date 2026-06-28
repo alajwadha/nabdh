@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Screen, SegmentedControl } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, SegmentedControl } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { Icon } from '../src/components/Icon';
@@ -118,7 +118,7 @@ export default function Export() {
       />
 
       {/* checklist */}
-      <View style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 }}>
+      <Card style={{ gap: 0 }}>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 6 }}>INCLUDE</AppText>
         {SECTIONS.map((s, i) => {
           const n = recordCount(s.key, data);
@@ -145,7 +145,7 @@ export default function Export() {
             </Pressable>
           );
         })}
-      </View>
+      </Card>
 
       {/* summary + action */}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 4 }}>

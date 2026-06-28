@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
-import { AppText, Button, Screen, SegmentedControl } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, SegmentedControl } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { Icon, type IconName } from '../src/components/Icon';
@@ -229,9 +229,9 @@ export default function Track() {
       )}
 
       {/* route trace */}
-      <View style={{ backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, height: 230, overflow: 'hidden', shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3, alignItems: 'center', justifyContent: 'center' }}>
+      <Card style={{ height: 230, overflow: 'hidden', padding: 0, gap: 0, alignItems: 'center', justifyContent: 'center' }}>
         <RouteTrace pts={points} width={300} height={230} />
-      </View>
+      </Card>
 
       {/* primary metric — distance */}
       <View style={{ alignItems: 'center', marginTop: spacing.sm }}>
@@ -240,7 +240,7 @@ export default function Track() {
       </View>
 
       {/* secondary metrics */}
-      <View style={{ flexDirection: 'row', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.xl, paddingVertical: spacing.lg, shadowColor: '#3A2E1A', shadowOpacity: 0.1, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 3 }}>
+      <Card style={{ flexDirection: 'row', padding: 0, paddingVertical: spacing.lg, gap: 0 }}>
         <Metric value={fmtClock(elapsed)} label="TIME" />
         {isRide ? (
           <Metric value={kmh ? kmh.toFixed(1) : '—'} label="KM/H" />
@@ -248,7 +248,7 @@ export default function Track() {
           <Metric value={status === 'tracking' ? fmtPace(curPace || avgPace) : fmtPace(avgPace)} label="PACE /KM" />
         )}
         <Metric value={String(kcal)} label="KCAL" />
-      </View>
+      </Card>
       {status !== 'idle' && (
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: spacing.xl }}>
           <AppText variant="caption" color={colors.textMuted}>Avg pace {fmtPace(avgPace)}/km</AppText>

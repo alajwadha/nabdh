@@ -4,6 +4,7 @@ import { AppText } from '../design-system/components';
 import { radii, spacing } from '../design-system';
 import { useTheme } from '../design-system/theme';
 import { BarChart, LineChart } from './Charts';
+import { Icon } from './Icon';
 import { METRICS, type DeltaKind, type MetricDef } from '../data/metrics';
 import type { MetricKey } from '../store/app';
 import { useHealth } from '../store/health';
@@ -21,7 +22,7 @@ function InsightRow({ text }: { text: string }) {
   return (
     <View style={{ flexDirection: 'row', gap: spacing.md, backgroundColor: colors.navOn, borderRadius: radii.xl, padding: spacing.lg }}>
       <View style={{ width: 35, height: 35, borderRadius: 18, backgroundColor: colors.yellow, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText style={{ fontSize: 16 }}>💡</AppText>
+        <Icon name="zap" size={17} color="#1F1C17" />
       </View>
       <AppText variant="body" color={colors.navOnText} style={{ flex: 1, fontSize: 12.5, lineHeight: 19 }}>
         {text}
@@ -98,7 +99,7 @@ function FullDetail({ def }: { def: MetricDef }) {
       </View>
       {/* Honest empty state in place of the old fabricated stat tiles + canned insight */}
       <View style={{ backgroundColor: colors.navOn, borderRadius: radii.xl, padding: spacing.lg, flexDirection: 'row', gap: spacing.md }}>
-        <AppText style={{ fontSize: 16 }}>📈</AppText>
+        <Icon name="trending-up" size={18} color={colors.navOnText} />
         <AppText variant="caption" color={colors.navOnText} style={{ flex: 1, lineHeight: 18 }}>
           Your daily highs and lows, 28-day baseline and personalised insights for {d.title.toLowerCase()} appear here once your device has synced a few days of history.
         </AppText>
