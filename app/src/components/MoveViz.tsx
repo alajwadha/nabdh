@@ -41,6 +41,7 @@ const DURATION: Record<string, number> = {
   ohp: 1400, // press from the shoulders to overhead
   rowing: 1900, // drive, swing and pull, then recover
   cycling: 900, // one pedal revolution
+  pullup: 1500, // pull up to the bar and lower
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -90,6 +91,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Rowing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'cycling' ? (
         <Cycling phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'pullup' ? (
+        <Pullup phase={phase} size={size} fg={fg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -487,6 +490,40 @@ function Cycling({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; s
       <Bone x={hx} y={hy} len={22 * s} w={8 * s} color={fg} rot={thighA}>
         <Bone x={0} y={0} len={22 * s} w={8 * s} color={fg} rot={shinA}><View style={foot} /></Bone>
       </Bone>
+    </View>
+  );
+}
+
+// --- Pull-up: hands fixed on the bar, the body rises as the arms (IK) bend, then lowers
+function Pullup({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
+  // the whole body translates up by the pull; the arm IK targets the fixed bar in local
+  // coords (which slides down relative to the rising body), so the hand stays on the bar.
+  const body = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { transform: [{ translateY: -14 * p * s }] }; });
+  const ik = useDerivedValue(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return legIK(58 * s, 52 * s, 58 * s, (24 + 14 * p) * s, 14 * s, 13 * s, 1); });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.thigh}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.shinRel}deg` }] }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* fixed pull-up bar + supports */}
+      <View style={{ position: 'absolute', left: 28 * s, top: 22 * s, width: 60 * s, height: 5 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 28 * s, top: 22 * s, width: 5 * s, height: 16 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 83 * s, top: 22 * s, width: 5 * s, height: 16 * s, borderRadius: 99, backgroundColor: equip }} />
+      {/* body rises with the pull */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, body]}>
+        <View style={{ position: 'absolute', left: 50 * s, top: 37 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 53 * s, top: 52 * s, width: 10 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg }} />
+        <Bone x={58 * s} y={78 * s} len={18 * s} w={9 * s} color={fg} rot={stat(82)}>
+          <Bone x={0} y={0} len={18 * s} w={9 * s} color={fg} rot={stat(-14)} />
+        </Bone>
+        {/* arm: shoulder → IK → hand on the bar */}
+        <Bone x={58 * s} y={52 * s} len={14 * s} w={8 * s} color={fg} rot={uarm}>
+          <Bone x={0} y={0} len={13 * s} w={8 * s} color={fg} rot={farm}>
+            <View style={{ position: 'absolute', left: 11 * s, top: -3 * s, width: 8 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+          </Bone>
+        </Bone>
+      </Animated.View>
     </View>
   );
 }
