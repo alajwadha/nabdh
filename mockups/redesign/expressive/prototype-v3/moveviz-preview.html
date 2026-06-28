@@ -28,6 +28,20 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 /* emoji-pulse fallback — the sport's own emoji, gently pulsing */
 .pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+/* lat pulldown: seated, pulling a cable bar down to the chest (mid-pull pose) */
+.lat{position:relative;width:116px;height:116px}
+.lat b{position:absolute;border-radius:99px;background:var(--grn)}
+.lat .pulley{position:absolute;left:50px;top:6px;width:16px;height:16px;border:4px solid var(--mut);border-radius:99px}
+.lat .cable{left:56px;top:14px;width:4px;height:26px;background:var(--mut)}
+.lat .pbar{left:42px;top:38px;width:34px;height:5px;background:var(--mut)}
+.lat .seat{left:34px;top:78px;width:22px;height:6px;background:var(--mut)}
+.lat .pad{left:48px;top:71px;width:24px;height:6px;background:var(--mut)}
+.lat .head{left:42px;top:34px;width:16px;height:16px}
+.lat .torso{left:48px;top:50px;width:10px;height:26px}
+.lat .thigh{left:46px;top:76px;width:22px;height:9px;transform-origin:left center;transform:rotate(8deg)}
+.lat .shin{left:22px;top:0;width:20px;height:9px;transform-origin:left center;transform:rotate(72deg)}
+.lat .uarm{left:52px;top:50px;width:12px;height:8px;transform-origin:left center;transform:rotate(4deg)}
+.lat .farm{left:12px;top:0;width:12px;height:8px;transform-origin:left center;transform:rotate(-119deg)}
 /* bicep curl: standing, upper arm at side, forearm curling a dumbbell up */
 .cu{position:relative;width:116px;height:116px}
 .cu b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -155,18 +169,6 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · CYCLING</div>
- <div class="stage"><div class="cy">
-  <div class="wheel wR"></div><div class="wheel wF"></div>
-  <div class="tube chainstay"></div><div class="tube seattube"></div><div class="tube downtube"></div><div class="tube fork"></div><div class="tube toptube"></div>
-  <b class="crank"></b>
-  <b class="thighB"><b class="shinB"><b class="footB"></b></b></b>
-  <b class="torso"></b><b class="head"></b><b class="arm"></b>
-  <b class="thighA"><b class="shinA"><b class="footA"></b></b></b>
- </div></div>
- <div class="name">🚴 Cycling</div>
-</div>
-<div class="card">
  <div class="lbl">WORKOUT · GYM · PULL-UP</div>
  <div class="stage"><div class="pu">
   <b class="bar"></b><b class="postL"></b><b class="postR"></b>
@@ -185,6 +187,17 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   <b class="dbbar"></b><b class="dbL"></b><b class="dbR"></b>
  </div></div>
  <div class="name">💪 Bicep curl</div>
+</div>
+<div class="card">
+ <div class="lbl">WORKOUT · GYM · LAT PULLDOWN</div>
+ <div class="stage"><div class="lat">
+  <div class="pulley"></div><b class="cable"></b><b class="seat"></b><b class="pad"></b>
+  <b class="thigh"><b class="shin"></b></b>
+  <b class="torso"></b><b class="head"></b>
+  <b class="uarm"><b class="farm"></b></b>
+  <b class="pbar"></b>
+ </div></div>
+ <div class="name">🦵 Lat pulldown</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>

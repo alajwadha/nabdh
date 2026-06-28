@@ -43,6 +43,7 @@ const DURATION: Record<string, number> = {
   cycling: 900, // one pedal revolution
   pullup: 1500, // pull up to the bar and lower
   dbcurl: 1300, // curl up and lower
+  latpull: 1500, // pull the bar down and let it rise
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -96,6 +97,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Pullup phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'dbcurl' ? (
         <Curl phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'latpull' ? (
+        <LatPulldown phase={phase} size={size} fg={fg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -556,6 +559,42 @@ function Curl({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numbe
           <View style={{ position: 'absolute', left: 6 * s, top: -6 * s, width: 7 * s, height: 13 * s, borderRadius: 2 * s, backgroundColor: fg }} />
         </Animated.View>
       </Bone>
+    </View>
+  );
+}
+
+// --- Lat pulldown: seated, pull the cable bar down to the chest; arm by IK, bar+cable
+//     attach to the KNOWN hand target (no forward kinematics needed).
+function LatPulldown({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
+  // hand path: high-narrow (top) → chest (bottom). p: 0 top → 1 chest.
+  const ik = useDerivedValue(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return solve2Bar(52 * s, 50 * s, (60 - p * 2) * s, (28 + p * 24) * s, 12 * s, 12 * s, 1); });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
+  // bar + cable follow the same known hand target (bar stays level — not nested in the arm)
+  const bar = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { transform: [{ translateX: -p * 2 * s }, { translateY: p * 24 * s }] }; });
+  const cable = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { height: (14 + p * 24) * s }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* machine: top pulley, seat, thigh pad */}
+      <View style={{ position: 'absolute', left: 50 * s, top: 6 * s, width: 16 * s, height: 16 * s, borderRadius: 99, borderWidth: 4 * s, borderColor: equip }} />
+      <View style={{ position: 'absolute', left: 34 * s, top: 78 * s, width: 22 * s, height: 6 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 48 * s, top: 71 * s, width: 24 * s, height: 6 * s, borderRadius: 99, backgroundColor: equip }} />
+      {/* cable from the pulley down to the bar (animated length) */}
+      <Animated.View style={[{ position: 'absolute', left: 57 * s, top: 14 * s, width: 4 * s, borderRadius: 99, backgroundColor: equip }, cable]} />
+      {/* seated rider */}
+      <View style={{ position: 'absolute', left: 42 * s, top: 34 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 48 * s, top: 50 * s, width: 10 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg }} />
+      <Bone x={46 * s} y={76 * s} len={22 * s} w={9 * s} color={fg} rot={stat(8)}>
+        <Bone x={0} y={0} len={20 * s} w={9 * s} color={fg} rot={stat(72)} />
+      </Bone>
+      {/* pulling arm */}
+      <Bone x={52 * s} y={50 * s} len={12 * s} w={8 * s} color={fg} rot={uarm}>
+        <Bone x={0} y={0} len={12 * s} w={8 * s} color={fg} rot={farm} />
+      </Bone>
+      {/* the wide bar (authored at the top, translates down to the chest) */}
+      <Animated.View style={[{ position: 'absolute', left: 42 * s, top: 26 * s, width: 34 * s, height: 5 * s, borderRadius: 99, backgroundColor: equip }, bar]} />
     </View>
   );
 }
