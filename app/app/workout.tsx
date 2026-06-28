@@ -19,6 +19,8 @@ import {
   distanceKm,
   e1rm,
   metCalories,
+  sweatLossLiters,
+  rehydrationGlasses,
   platesPerSide,
   restRecommendation,
   warmupRamp,
@@ -58,10 +60,13 @@ export default function Workout() {
   const [sportKey, setSportKey] = useState(SPORTS[0].key);
   const [minutes, setMinutes] = useState(45);
   const [pace, setPace] = useState(6); // min/km, for GPS sports
+  // Heat defaults to the sport's setting (indoor sports → off); null = follow that default until toggled.
+  const [heatOverride, setHeatOverride] = useState<boolean | null>(null);
   // Derive from the (async-loaded) body profile live; only snapshot once the user overrides.
   const [weightOverride, setWeightOverride] = useState<number | null>(null);
   const weight = weightOverride ?? body.weightKg;
   const sport = SPORTS.find((sp) => sp.key === sportKey) ?? SPORTS[0];
+  const outdoorHeat = heatOverride ?? !sport.indoor; // outdoor by default for the Gulf, except indoor-coded sports
 
   const r = computeReadiness(s);
   const advice = adjustForReadiness(r);
@@ -93,6 +98,8 @@ export default function Workout() {
   const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
   const cals = metCalories(sportMet, minutes, weight);
   const dist = sport.gps ? distanceKm(minutes, pace) : 0;
+  const sweatL = sweatLossLiters(sportMet, minutes, weight, outdoorHeat);
+  const rehydrate = rehydrationGlasses(sweatL);
   // Only predict distances within ~0.4×–3× the logged distance (Riegel's reliable range).
   const raceTargets = [
     { km: 5, label: '5K' },
@@ -247,7 +254,7 @@ export default function Workout() {
             {SPORTS.map((sp) => {
               const on = sp.key === sportKey;
               return (
-                <Pressable key={sp.key} onPress={() => { setSportKey(sp.key); setSavedMsg(null); }} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
+                <Pressable key={sp.key} onPress={() => { setSportKey(sp.key); setSavedMsg(null); setHeatOverride(null); }} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
                   <AppText variant="caption" color={on ? '#fff' : colors.ink}>{sp.emoji} {sp.name}</AppText>
                 </Pressable>
               );
@@ -288,6 +295,29 @@ export default function Workout() {
               🏁 At this pace → {raceTargets.map((d) => `${d.label} ${fmtDur(riegelTime(minutes, dist, d.km))}`).join(' · ')}
             </AppText>
           )}
+
+          {/* Sweat / rehydration — Gulf-heat aware */}
+          <View style={{ backgroundColor: tiles.blue.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>HYDRATION</AppText>
+              <Pressable onPress={() => setHeatOverride(!outdoorHeat)} style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 3 }}>
+                {(['Indoor', 'Outdoor'] as const).map((t, i) => {
+                  const on = outdoorHeat === (i === 1);
+                  return (
+                    <View key={t} style={{ paddingVertical: 5, paddingHorizontal: 11, borderRadius: 99, backgroundColor: on ? colors.navOn : 'transparent' }}>
+                      <AppText variant="caption" color={on ? colors.navOnText : colors.textMuted} style={{ fontSize: 10 }}>{t}</AppText>
+                    </View>
+                  );
+                })}
+              </Pressable>
+            </View>
+            <AppText variant="title" color={tiles.blue.ink} style={{ marginTop: 6 }}>
+              ~{sweatL} L lost · sip ~{rehydrate} glasses over 2–3 hrs
+            </AppText>
+            <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 4, opacity: 0.85, lineHeight: 16 }}>
+              Estimated from your effort{outdoorHeat ? ' and the outdoor heat (~35% higher)' : ''} — replace ~1.5× the fluid lost, paced not chugged.{detailed ? ` Est. ${Math.round((sweatL / (minutes / 60)) * 100) / 100} L/hr from MET ${Math.round(sportMet * 10) / 10} at ${weight} kg — weigh in/out to dial it in.` : ''}
+            </AppText>
+          </View>
         </>
       )}
 

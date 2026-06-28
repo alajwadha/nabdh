@@ -30,6 +30,7 @@ export type Sport = {
   met: number; // metabolic equivalent (moderate effort)
   emoji: string;
   gps?: boolean; // distance-based (running, cycling…)
+  indoor?: boolean; // typically played indoors/AC — don't assume Gulf outdoor heat
 };
 
 // --- 1RM estimators ---------------------------------------------------------
@@ -59,6 +60,26 @@ export function totalReps(sets: SetEntry[]): number {
 /** kcal = MET × weightKg × hours. */
 export function metCalories(met: number, minutes: number, weightKg = DEFAULT_WEIGHT_KG): number {
   return Math.round(met * weightKg * (minutes / 60));
+}
+
+/**
+ * Estimated sweat / fluid loss for a session (litres). Sweat rate scales with
+ * metabolic heat (MET) and body mass, and climbs sharply in Gulf outdoor heat —
+ * a flat number would badly under-serve a padel match at 42 °C. Grounded in ACSM
+ * ranges (~0.5 L/hr easy → ~1.5–2 L/hr vigorous; heat pushes higher). An estimate,
+ * not a substitute for weighing in/out.
+ */
+export function sweatLossLiters(met: number, minutes: number, weightKg = DEFAULT_WEIGHT_KG, hot = false): number {
+  const ratePerHr = Math.max(0.3, Math.min(2.5, 0.3 + (met - 3) * 0.18)) * (weightKg / 75) * (hot ? 1.35 : 1);
+  return Math.round(ratePerHr * (minutes / 60) * 10) / 10;
+}
+
+/**
+ * Fluid to drink to rehydrate after a session, in 250 ml glasses. ACSM guidance is
+ * to replace ~1.5× the fluid lost (urine losses during recovery), spread over hours.
+ */
+export function rehydrationGlasses(litersLost: number): number {
+  return Math.max(0, Math.round((litersLost * 1.5 * 1000) / 250));
 }
 /**
  * Running MET from pace (min/km), ACSM running equation:
@@ -241,15 +262,15 @@ export const SPORTS: Sport[] = [
   { key: 'running', name: 'Running', nameAr: 'جري', met: 9.8, emoji: '🏃', gps: true },
   { key: 'walking', name: 'Walking', nameAr: 'مشي', met: 3.5, emoji: '🚶', gps: true },
   { key: 'cycling', name: 'Cycling', nameAr: 'دراجة', met: 7.5, emoji: '🚴', gps: true },
-  { key: 'swimming', name: 'Swimming', nameAr: 'سباحة', met: 7.0, emoji: '🏊' },
+  { key: 'swimming', name: 'Swimming', nameAr: 'سباحة', met: 7.0, emoji: '🏊', indoor: true },
   { key: 'football', name: 'Football', nameAr: 'كرة قدم', met: 7.0, emoji: '⚽' },
-  { key: 'basketball', name: 'Basketball', nameAr: 'سلة', met: 6.5, emoji: '🏀' },
-  { key: 'hiit', name: 'HIIT', nameAr: 'هيت', met: 8.0, emoji: '🔥' },
-  { key: 'jumprope', name: 'Jump rope', nameAr: 'حبل', met: 11.0, emoji: '🪢' },
-  { key: 'squash', name: 'Squash', nameAr: 'إسكواش', met: 12.0, emoji: '🎾' },
-  { key: 'boxing', name: 'Boxing', nameAr: 'ملاكمة', met: 9.0, emoji: '🥊' },
-  { key: 'yoga', name: 'Yoga', nameAr: 'يوغا', met: 2.5, emoji: '🧘' },
-  { key: 'rowing', name: 'Rowing', nameAr: 'تجديف', met: 7.0, emoji: '🚣' },
+  { key: 'basketball', name: 'Basketball', nameAr: 'سلة', met: 6.5, emoji: '🏀', indoor: true },
+  { key: 'hiit', name: 'HIIT', nameAr: 'هيت', met: 8.0, emoji: '🔥', indoor: true },
+  { key: 'jumprope', name: 'Jump rope', nameAr: 'حبل', met: 11.0, emoji: '🪢', indoor: true },
+  { key: 'squash', name: 'Squash', nameAr: 'إسكواش', met: 12.0, emoji: '🎾', indoor: true },
+  { key: 'boxing', name: 'Boxing', nameAr: 'ملاكمة', met: 9.0, emoji: '🥊', indoor: true },
+  { key: 'yoga', name: 'Yoga', nameAr: 'يوغا', met: 2.5, emoji: '🧘', indoor: true },
+  { key: 'rowing', name: 'Rowing', nameAr: 'تجديف', met: 7.0, emoji: '🚣', indoor: true },
 ];
 
 export const MUSCLE_LABEL: Record<Muscle, string> = {
