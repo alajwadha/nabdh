@@ -24,7 +24,8 @@ import { useTheme } from '../design-system/theme';
  *  • The loop PAUSES when the app backgrounds, and honours the OS "reduce motion"
  *    setting (renders a static mid-pose instead of looping). The Sports card unmounts
  *    on tab switch, so off-screen costs nothing.
- *  • Movements are authored in a 116px box and scaled by `size/116`.
+ *  • CONVENTION: every movement is a SIDE-VIEW profile (facing right), authored in a
+ *    116px box and scaled by `size/116`, so the library stays visually consistent.
  * Anything without a bespoke figure falls back to the sport's own emoji gently pulsing
  * — clearly "this sport, motion coming" rather than an anonymous ring.
  */
@@ -134,7 +135,8 @@ function Runner({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
  */
 function Bone({ x, y, len, w, color, rot, children }: {
   x: number; y: number; len: number; w: number; color: string;
-  rot: ReturnType<typeof useAnimatedStyle>; children?: ReactNode;
+  // animated style (worklet) for moving joints, or a plain transform for static ones
+  rot: ReturnType<typeof useAnimatedStyle> | { transform: { rotate: string }[] }; children?: ReactNode;
 }) {
   return (
     <Animated.View style={[{ position: 'absolute', left: x, top: y, width: 0, height: 0 }, rot]}>
@@ -149,14 +151,16 @@ function LegPress({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
   const s = size / 116;
   // e: 0 = knee bent (foot near), 1 = leg extended (foot pressed away)
   const thigh = useAnimatedStyle(() => {
+    'worklet';
     const e = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2;
     return { transform: [{ rotate: `${-20 + e * 14}deg` }] };
   });
   const shin = useAnimatedStyle(() => {
+    'worklet';
     const e = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2;
     return { transform: [{ rotate: `${16 - e * 14}deg` }] };
   });
-  const torso = useAnimatedStyle(() => ({ transform: [{ rotate: '-12deg' }] }));
+  const torso = { transform: [{ rotate: '-12deg' }] }; // static — no worklet needed
   return (
     <View style={{ width: size, height: size }}>
       {/* ground */}
@@ -168,7 +172,8 @@ function LegPress({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
       {/* jointed leg: thigh → shin → footplate */}
       <Bone x={46 * s} y={62 * s} len={24 * s} w={9 * s} color={fg} rot={thigh}>
         <Bone x={0} y={0} len={24 * s} w={9 * s} color={fg} rot={shin}>
-          <View style={{ position: 'absolute', left: 0, top: -17 * s, width: 8 * s, height: 34 * s, borderRadius: 5 * s, backgroundColor: fg }} />
+          {/* footplate — wider so it reads as the machine's platform, not a stick */}
+          <View style={{ position: 'absolute', left: -2 * s, top: -18 * s, width: 11 * s, height: 36 * s, borderRadius: 5 * s, backgroundColor: fg }} />
         </Bone>
       </Bone>
     </View>
