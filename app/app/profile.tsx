@@ -120,6 +120,7 @@ export default function Profile() {
         <Row icon="dumbbell" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
         <Row icon="map-pin" label="Track outdoors (GPS)" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/track')} />
         <Row icon="thermometer" label="Heat & training" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/heat')} />
+        <Row icon="sunrise" label="Your day (prayer plan)" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/day-plan')} />
         <Row icon="heart-pulse" label="Heart-rate zones" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/hr-zones')} />
         <Row icon="zap" label="Shortcuts & voice" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/shortcuts')} />
         <Row icon="moon-star" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />

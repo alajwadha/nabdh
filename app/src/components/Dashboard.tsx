@@ -4,6 +4,7 @@ import { Pressable, View, type ViewStyle } from 'react-native';
 import { AppText } from '../design-system/components';
 import { radii, spacing, type TileColor } from '../design-system';
 import { useTheme } from '../design-system/theme';
+import { PRAYERS, shortLabel } from '../data/prayer';
 import { EnergyCurve } from './Charts';
 
 /** A colored hero card (used by the insight carousel and elsewhere). */
@@ -124,24 +125,18 @@ export function PrayerStrip({
   highlight: 'asr' | 'maghrib';
 }) {
   const { colors } = useTheme();
-  const prayers: [string, string, 'asr' | 'maghrib' | ''][] = [
-    ['FAJR', '4:12', ''],
-    ['DHUHR', '11:54', ''],
-    ['ASR', '3:18', 'asr'],
-    ['MAGHRIB', '6:42', 'maghrib'],
-    ['ISHA', '8:12', ''],
-  ];
+  // Single source of truth — same prayer times the planner and fasting timer read.
   return (
     <View style={{ flexDirection: 'row', gap: 6, backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.lg, padding: 8 }}>
-      {prayers.map(([name, time, k]) => {
-        const on = k === highlight;
+      {PRAYERS.map((p) => {
+        const on = p.key === highlight;
         return (
-          <View key={name} style={{ flex: 1, alignItems: 'center', borderRadius: radii.sm, paddingVertical: 7, backgroundColor: on ? colors.accent : 'transparent' }}>
+          <View key={p.key} style={{ flex: 1, alignItems: 'center', borderRadius: radii.sm, paddingVertical: 7, backgroundColor: on ? colors.accent : 'transparent' }}>
             <AppText variant="caption" color={on ? '#fff' : colors.textMuted} style={{ fontSize: 9, letterSpacing: 0.6 }}>
-              {name}
+              {p.label.toUpperCase()}
             </AppText>
             <AppText variant="caption" color={on ? '#fff' : colors.ink} style={{ fontSize: 11.5, marginTop: 3 }}>
-              {time}
+              {shortLabel(p.time)}
             </AppText>
           </View>
         );
