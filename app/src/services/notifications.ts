@@ -91,3 +91,29 @@ export async function syncReminders(reminders: Reminder[], hydration: Hydration)
     /* notifications are best-effort; never throw into the UI */
   }
 }
+
+/** One-off notification at a specific time (e.g. "fast complete"). Returns the id to cancel
+ * with, or null if unavailable. Best-effort — never throws. */
+export async function scheduleAt(at: Date, title: string, body: string): Promise<string | null> {
+  if (!N) return null;
+  try {
+    if (!(await ensureNotificationPermission())) return null;
+    const seconds = Math.round((at.getTime() - Date.now()) / 1000);
+    if (seconds < 1) return null;
+    return await N.scheduleNotificationAsync({
+      content: { title, body },
+      trigger: { type: N.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds },
+    });
+  } catch {
+    return null;
+  }
+}
+
+export async function cancelScheduled(id: string | null): Promise<void> {
+  if (!N || !id) return;
+  try {
+    await N.cancelScheduledNotificationAsync(id);
+  } catch {
+    /* no-op */
+  }
+}

@@ -14,6 +14,7 @@ import { HealthLogsProvider } from '../src/store/health-logs';
 import { CycleProvider } from '../src/store/cycle';
 import { MindfulProvider } from '../src/store/mindful';
 import { SocialProvider } from '../src/store/social';
+import { FastingProvider } from '../src/store/fasting';
 import { initialHref, subscribe } from '../src/services/quickActions';
 import '../src/i18n';
 
@@ -82,7 +83,9 @@ export default function RootLayout() {
                     <CycleProvider>
                       <MindfulProvider>
                         <SocialProvider>
-                          <RootNavigator />
+                          <FastingProvider>
+                            <RootNavigator />
+                          </FastingProvider>
                         </SocialProvider>
                       </MindfulProvider>
                     </CycleProvider>

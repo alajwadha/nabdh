@@ -115,6 +115,7 @@ export default function Profile() {
         <Row icon="heart-pulse" label="Body & metrics" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/body')} />
         <Row icon="bell" label="Reminders" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/reminders')} />
         <Row icon="wind" label="Breathe" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/breathe")} />
+        <Row icon="timer" label="Fasting timer" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/fasting")} />
         <Row icon="users" label="Friends & challenges" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/social")} />
         <Row icon="dumbbell" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
         <Row icon="map-pin" label="Track outdoors (GPS)" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/track')} />
