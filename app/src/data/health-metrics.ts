@@ -78,13 +78,15 @@ export type HrZone = { z: number; lo: number; hi: number; name: string };
 export function hrZones(age: number): HrZone[] {
   const m = maxHr(age);
   const p = (f: number) => Math.round(m * f);
-  return [
+  const z: HrZone[] = [
     { z: 1, lo: p(0.5), hi: p(0.6), name: 'Recovery' },
     { z: 2, lo: p(0.6), hi: p(0.7), name: 'Endurance' },
     { z: 3, lo: p(0.7), hi: p(0.8), name: 'Tempo' },
     { z: 4, lo: p(0.8), hi: p(0.9), name: 'Threshold' },
     { z: 5, lo: p(0.9), hi: m, name: 'VO₂ max' },
   ];
+  for (let i = 1; i < z.length; i++) z[i].lo = z[i - 1].hi + 1; // non-overlapping bands
+  return z;
 }
 
 export function bmi(weightKg: number, heightCm: number): { value: number; band: string } {
