@@ -171,7 +171,7 @@ export function PlanList({
           style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 12, borderBottomWidth: i === items.length - 1 ? 0 : 2, borderBottomColor: colors.border }}
         >
           <View style={{ width: 23, height: 23, borderRadius: 9, borderWidth: 2.5, borderColor: t.done ? colors.accent : colors.border, backgroundColor: t.done ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
-            {t.done && <AppText color="#fff" style={{ fontSize: 13, fontWeight: '800', lineHeight: 15 }}>✓</AppText>}
+            {t.done && <Icon name="check" size={14} color="#fff" stroke={3} />}
           </View>
           <AppText variant="title" style={{ flex: 1, textDecorationLine: t.done ? 'line-through' : 'none', color: t.done ? colors.textMuted : colors.ink }}>
             {labelFor(t.labelKey)}

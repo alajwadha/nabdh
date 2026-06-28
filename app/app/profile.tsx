@@ -40,9 +40,9 @@ function Row({ icon, label, right, onPress, last }: { icon: IconName; label: str
   );
 }
 
-const PERMS: Record<'apple' | 'fitbit', { name: string; rows: [string, string][] }> = {
-  apple: { name: 'Apple Health', rows: [['👟', 'Steps & distance'], ['❤️', 'Heart rate & resting HR'], ['📈', 'Heart rate variability'], ['😴', 'Sleep analysis'], ['🩸', 'Blood oxygen'], ['🔥', 'Active energy']] },
-  fitbit: { name: 'Fitbit Air', rows: [['👟', 'Activity & steps'], ['❤️', 'Heart rate'], ['😴', 'Sleep stages'], ['🔥', 'Calories']] },
+const PERMS: Record<'apple' | 'fitbit', { name: string; rows: [IconName, string][] }> = {
+  apple: { name: 'Apple Health', rows: [['footprints', 'Steps & distance'], ['heart', 'Heart rate & resting HR'], ['activity', 'Heart rate variability'], ['moon', 'Sleep analysis'], ['heart-pulse', 'Blood oxygen'], ['flame', 'Active energy']] },
+  fitbit: { name: 'Fitbit Air', rows: [['footprints', 'Activity & steps'], ['heart', 'Heart rate'], ['moon', 'Sleep stages'], ['flame', 'Calories']] },
 };
 
 export default function Profile() {
@@ -80,11 +80,11 @@ export default function Profile() {
     ['Mama', 'M', 0.96, '#C2562C'],
     ['Faisal', 'F', 0.61, '#4A3F9E'],
   ];
-  const badges: [string, string, boolean][] = [
-    ['🔥', '12-day food streak', true],
-    ['🌙', '7 nights on time', true],
-    ['🚶', '100k steps week', true],
-    ['🏆', '30-day streak', false],
+  const badges: [IconName, string, boolean][] = [
+    ['flame', '12-day food streak', true],
+    ['moon', '7 nights on time', true],
+    ['footprints', '100k steps week', true],
+    ['trophy', '30-day streak', false],
   ];
 
   return (
@@ -149,9 +149,10 @@ export default function Profile() {
       </Group>
 
       <Group title="PRIVACY & DATA">
-        <View style={{ backgroundColor: tiles.mint.bg, borderRadius: 14, padding: 13, marginVertical: 10 }}>
-          <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', lineHeight: 18 }}>
-            🛡 Your health data is processed and stored in the Kingdom (Dammam · me-central2). It never leaves the region unless you opt in to a Pro model.
+        <View style={{ backgroundColor: tiles.mint.bg, borderRadius: 14, padding: 13, marginVertical: 10, flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+          <Icon name="shield" size={16} color={tiles.mint.ink} />
+          <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', lineHeight: 18, flex: 1 }}>
+            Your health data is processed and stored in the Kingdom (Dammam · me-central2). It never leaves the region unless you opt in to a Pro model.
           </AppText>
         </View>
         <Row icon="download" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/export')} />
@@ -176,10 +177,10 @@ export default function Profile() {
 
       <Group title="ACHIEVEMENTS">
         <View style={{ flexDirection: 'row', gap: spacing.md, paddingVertical: spacing.md }}>
-          {badges.map(([emoji, label, earned]) => (
+          {badges.map(([icon, label, earned]) => (
             <View key={label} style={{ width: 70, alignItems: 'center', opacity: earned ? 1 : 0.4 }}>
               <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: earned ? tiles.gold.bg : colors.navBg, alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
-                <AppText style={{ fontSize: 24 }}>{emoji}</AppText>
+                <Icon name={icon} size={24} color={earned ? tiles.gold.ink : colors.textMuted} />
               </View>
               <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 9.5, textAlign: 'center', lineHeight: 12 }}>{label}</AppText>
             </View>
@@ -194,15 +195,16 @@ export default function Profile() {
           <View style={{ gap: spacing.md }}>
             <AppText variant="h2">Connect {PERMS[connect].name}</AppText>
             <AppText variant="caption" color={colors.textMuted}>Choose what Nabdh can read. You can change this anytime.</AppText>
-            <View style={{ backgroundColor: tiles.mint.bg, borderRadius: 14, padding: 13 }}>
-              <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', lineHeight: 18 }}>
-                🛡 Data is processed and stored in-Kingdom (Dammam · me-central2). Raw samples stay on your device.
+            <View style={{ backgroundColor: tiles.mint.bg, borderRadius: 14, padding: 13, flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+              <Icon name="shield" size={16} color={tiles.mint.ink} />
+              <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', lineHeight: 18, flex: 1 }}>
+                Data is processed and stored in-Kingdom (Dammam · me-central2). Raw samples stay on your device.
               </AppText>
             </View>
             {PERMS[connect].rows.map(([icon, label]) => (
               <View key={label} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 11, borderBottomWidth: 2, borderBottomColor: colors.border }}>
                 <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-                  <AppText style={{ fontSize: 15 }}>{icon}</AppText>
+                  <Icon name={icon} size={17} color={colors.textSecondary} />
                 </View>
                 <AppText variant="title" style={{ flex: 1 }}>{label}</AppText>
                 <Toggle on />

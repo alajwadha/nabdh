@@ -10,6 +10,7 @@ import {
 import { AppText } from '../design-system/components';
 import { spacing } from '../design-system';
 import { useTheme } from '../design-system/theme';
+import { Icon, type IconName } from './Icon';
 import { Hero } from './Dashboard';
 
 const W = Math.min(Dimensions.get('window').width, 393) - spacing.xl * 2;
@@ -36,8 +37,9 @@ export function InsightHero({
       {s}
     </AppText>
   );
-  const tag = (s: string) => (
-    <View style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 99, paddingVertical: 5, paddingHorizontal: 10, marginBottom: 9 }}>
+  const tag = (s: string, icon?: IconName) => (
+    <View style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 99, paddingVertical: 5, paddingHorizontal: 10, marginBottom: 9 }}>
+      {icon && <Icon name={icon} size={11} color="#fff" />}
       <AppText variant="caption" color="#fff" style={{ fontSize: 10, letterSpacing: 1 }}>
         {s}
       </AppText>
@@ -70,7 +72,7 @@ export function InsightHero({
       bg: '#4A3F9E',
       render: () => (
         <View>
-          {tag('⚠ HEADS-UP')}
+          {tag('HEADS-UP', 'triangle-alert')}
           {L('PREDICTIVE')}
           {B("3rd night of low HRV. Tomorrow's energy will dip — go light today and it rebounds by Saturday.")}
           <AppText variant="caption" color="#fff" style={{ marginTop: 10 }}>
@@ -85,11 +87,16 @@ export function InsightHero({
       render: () => (
         <View>
           {L("TODAY'S FOCUS · RECOVER")}
-          <View style={{ marginTop: 9, gap: 5 }}>
-            {['🍽  Protein lunch — done ✓', '🚶  Easy 30-min walk after Asr', '🌙  Lights out by 11:15'].map((s) => (
-              <AppText key={s} variant="caption" color="#fff" style={{ fontSize: 12 }}>
-                {s}
-              </AppText>
+          <View style={{ marginTop: 9, gap: 7 }}>
+            {([
+              ['utensils', 'Protein lunch — done'],
+              ['footprints', 'Easy 30-min walk after Asr'],
+              ['moon', 'Lights out by 11:15'],
+            ] as [IconName, string][]).map(([icon, s]) => (
+              <View key={s} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Icon name={icon} size={13} color="#fff" />
+                <AppText variant="caption" color="#fff" style={{ fontSize: 12 }}>{s}</AppText>
+              </View>
             ))}
           </View>
         </View>
@@ -100,7 +107,7 @@ export function InsightHero({
       bg: '#C2562C',
       render: () => (
         <View>
-          {tag('🌡 RIYADH · 43°C')}
+          {tag('RIYADH · 43°C', 'thermometer')}
           {L('PLAN AROUND THE HEAT')}
           {B('Peak heat 1–4 PM. Move your walk to after Asr (3:18) — cooler, and your steps land best then anyway.')}
         </View>

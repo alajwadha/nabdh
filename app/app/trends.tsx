@@ -79,7 +79,7 @@ export default function Trends() {
         </Card>
       ))}
 
-      <Button label="✨ See your weekly recap" variant="solid" onPress={() => router.navigate('/wrapped')} />
+      <Button label="See your weekly recap" variant="solid" onPress={() => router.navigate('/wrapped')} />
     </Screen>
   );
 }

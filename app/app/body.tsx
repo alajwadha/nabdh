@@ -249,7 +249,7 @@ export default function Body() {
               </AppText>
             ) : proj.atTarget ? (
               <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.9, lineHeight: 17 }}>
-                You’re at your target 🎉 — switch your goal to Maintain to hold it.
+                You’re at your target — switch your goal to Maintain to hold it.
               </AppText>
             ) : !proj.reachable ? (
               <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.9, lineHeight: 17 }}>

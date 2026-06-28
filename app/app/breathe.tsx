@@ -136,7 +136,7 @@ export default function Breathe() {
         <View style={{ position: 'absolute', alignItems: 'center' }}>
           {active || done ? (
             <>
-              <AppText variant="metric" color="#fff" style={{ fontSize: 56, lineHeight: 60 }}>{done ? '✓' : secLeft}</AppText>
+              {done ? <Icon name="check" size={52} color="#fff" stroke={2.5} /> : <AppText variant="metric" color="#fff" style={{ fontSize: 56, lineHeight: 60 }}>{secLeft}</AppText>}
               <AppText variant="title" color="rgba(255,255,255,0.95)">{done ? 'Done' : curStep.label}</AppText>
             </>
           ) : (

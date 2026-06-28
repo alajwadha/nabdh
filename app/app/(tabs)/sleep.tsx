@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { AppText, Card, Screen } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
+import { Icon, type IconName } from '../../src/components/Icon';
 import { CoachCard, MetricTile, TileGrid } from '../../src/components/Dashboard';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
@@ -118,9 +119,10 @@ export default function Sleep() {
       </TileGrid>
 
       <View style={{ backgroundColor: tiles.mint.bg, borderRadius: radii.xl, padding: spacing.lg }}>
-        <AppText variant="title" color={tiles.mint.ink}>
-          Tonight’s window 🌙
-        </AppText>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+          <Icon name="moon" size={17} color={tiles.mint.ink} />
+          <AppText variant="title" color={tiles.mint.ink}>Tonight’s window</AppText>
+        </View>
         <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', marginTop: 3, lineHeight: 18 }}>
           Lights out by {idealBed} to get {hoursMinutes(needMin)} before a ~7:00 wake — {debtMin > 0 ? `clears the ${hoursMinutes(debtMin)} debt and pushes HRV back up.` : 'you’re on track; keep the rhythm steady.'}
         </AppText>
@@ -128,9 +130,9 @@ export default function Sleep() {
 
       <Card style={{ gap: 2 }}>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 4 }}>WIND-DOWN · FOR {idealBed} LIGHTS-OUT</AppText>
-        <WindRow icon="☕️" label="Last qahwa / karak" value={windDown.caffeine} colors={colors} />
-        <WindRow icon="🍽️" label="Last heavy meal" value={windDown.meal} colors={colors} />
-        <WindRow icon="📵" label="Dim screens" value={windDown.screens} colors={colors} last />
+        <WindRow icon="coffee" label="Last qahwa / karak" value={windDown.caffeine} colors={colors} />
+        <WindRow icon="utensils" label="Last heavy meal" value={windDown.meal} colors={colors} />
+        <WindRow icon="smartphone" label="Dim screens" value={windDown.screens} colors={colors} last />
         {detailed && (
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
             Caffeine’s ~5–6 h half-life means an afternoon coffee is still ~25% active at bedtime. 6 h before is the followable floor; 8 h is ideal. Meals ~3 h, screens ~1 h.
@@ -183,10 +185,10 @@ function DRow({ label, value, colors, last }: { label: string; value: string; co
   );
 }
 
-function WindRow({ icon, label, value, colors, last }: { icon: string; label: string; value: string; colors: ReturnType<typeof useTheme>['colors']; last?: boolean }) {
+function WindRow({ icon, label, value, colors, last }: { icon: IconName; label: string; value: string; colors: ReturnType<typeof useTheme>['colors']; last?: boolean }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
-      <AppText style={{ fontSize: 16 }}>{icon}</AppText>
+      <View style={{ width: 26, alignItems: 'center' }}><Icon name={icon} size={16} color={colors.textSecondary} /></View>
       <AppText variant="caption" color={colors.ink} style={{ flex: 1, fontWeight: '600' }}>{label}</AppText>
       <AppText variant="title" style={{ fontSize: 14 }}>by {value}</AppText>
     </View>

@@ -103,7 +103,7 @@ export default function Workout() {
     if (mode === 'gym') addSession({ kind: 'gym', exKey, sets, volume: vol, e1rm: best, readiness: r });
     else addSession({ kind: 'sport', sportKey, minutes, kcal: cals, distanceKm: dist, readiness: r });
     // Stay on the screen so the user SEES the payoff: updated best, ticked-up trend.
-    setSavedMsg(mode === 'gym' ? (wasPr ? 'Saved — new e1RM PR 💪' : 'Saved ✓') : `Logged ${sport.name} ✓`);
+    setSavedMsg(mode === 'gym' ? (wasPr ? 'Saved — new e1RM PR' : 'Saved') : `Logged ${sport.name}`);
   };
 
   const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
@@ -233,15 +233,21 @@ export default function Workout() {
                     })}
                   </View>
                 </View>
-                <AppText variant="caption" color={colors.textMuted}>
-                  🏋️ Per side @ {topWeight} kg: {plates.length ? plates.join(' · ') : 'just the bar'}{loaded !== topWeight ? ` (≈ ${loaded} kg loadable)` : ''}
-                </AppText>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6 }}>
+                  <Icon name="dumbbell" size={13} color={colors.textMuted} />
+                  <AppText variant="caption" color={colors.textMuted} style={{ flex: 1 }}>
+                    Per side @ {topWeight} kg: {plates.length ? plates.join(' · ') : 'just the bar'}{loaded !== topWeight ? ` (≈ ${loaded} kg loadable)` : ''}
+                  </AppText>
+                </View>
               </View>
             )}
             {detailed && warmup.length > 0 && (
-              <AppText variant="caption" color={colors.textMuted} style={{ paddingBottom: 8 }}>
-                🔥 Warm-up: {warmup.map((w) => `${w.weight}×${w.reps}`).join(' · ')}
-              </AppText>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingBottom: 8 }}>
+                <Icon name="flame" size={13} color={colors.textMuted} />
+                <AppText variant="caption" color={colors.textMuted} style={{ flex: 1 }}>
+                  Warm-up: {warmup.map((w) => `${w.weight}×${w.reps}`).join(' · ')}
+                </AppText>
+              </View>
             )}
           </Card>
 
@@ -258,9 +264,16 @@ export default function Workout() {
                   <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>
                     PROGRESSION
                   </AppText>
-                  <AppText variant="title" style={{ marginTop: 2 }}>
-                    best {Math.round(prevBest)} kg{isPr ? '  ·  🏆 PR today' : ''}
-                  </AppText>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2 }}>
+                    <AppText variant="title">best {Math.round(prevBest)} kg</AppText>
+                    {isPr && (
+                      <>
+                        <AppText variant="title" color={colors.textMuted}>·</AppText>
+                        <Icon name="trophy" size={13} color="#C79A2E" />
+                        <AppText variant="title">PR today</AppText>
+                      </>
+                    )}
+                  </View>
                   {!!last && (
                     <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 2 }}>
                       last {last.at.slice(5, 10)}: {(last.sets ?? []).map((st) => `${st.weight}×${st.reps}`).join(' · ')}
@@ -339,9 +352,12 @@ export default function Workout() {
             </AppText>
           )}
           {detailed && sport.key === 'running' && raceTargets.length > 0 && (
-            <AppText variant="caption" color={colors.textMuted}>
-              🏁 At this pace → {raceTargets.map((d) => `${d.label} ${fmtDur(riegelTime(minutes, dist, d.km))}`).join(' · ')}
-            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6 }}>
+              <Icon name="flag" size={13} color={colors.textMuted} />
+              <AppText variant="caption" color={colors.textMuted} style={{ flex: 1 }}>
+                At this pace → {raceTargets.map((d) => `${d.label} ${fmtDur(riegelTime(minutes, dist, d.km))}`).join(' · ')}
+              </AppText>
+            </View>
           )}
 
           {/* Sweat / rehydration — Gulf-heat aware */}
