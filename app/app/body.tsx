@@ -68,7 +68,7 @@ export default function Body() {
                 <AppText variant="h2" color={tiles.mint.ink}>{vo2} <AppText variant="caption" color={tiles.mint.ink}>ml/kg/min</AppText></AppText>
               </View>
               <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', marginTop: 4 }}>
-                {vo2Band(vo2)} cardio fitness.{detailed ? ` 15.3 × max HR ${mhr} ÷ resting ${s?.restingHeartRate} (Uth 2004) — an estimate.` : ''}
+                {vo2Band(vo2, body.age, body.sex)} for your age &amp; sex.{detailed ? ` 15.3 × age-estimated max HR ${mhr} ÷ resting ${s?.restingHeartRate} (Uth 2004) — a ballpark.` : ''}
               </AppText>
             </View>
           )}

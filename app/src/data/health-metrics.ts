@@ -111,9 +111,14 @@ export function vo2maxEstimate(maxHr: number, restingHr: number): number {
   return Math.round(15.3 * (maxHr / restingHr));
 }
 
-/** Rough adult cardio-fitness band for a VO₂max value. */
-export function vo2Band(v: number): string {
-  return v >= 52 ? 'excellent' : v >= 44 ? 'very good' : v >= 36 ? 'good' : v >= 30 ? 'fair' : 'below average';
+/**
+ * Cardio-fitness band, age/sex-adjusted (VO₂max declines ~4 ml/kg per decade, and
+ * female norms run lower) so a fit older user isn't mislabeled "fair".
+ */
+export function vo2Band(v: number, age = 30, sex: 'male' | 'female' = 'male'): string {
+  const adj = (age - 30) * 0.4 + (sex === 'female' ? 6 : 0); // older/female → lower thresholds
+  const t = (x: number) => x - adj;
+  return v >= t(52) ? 'excellent' : v >= t(44) ? 'very good' : v >= t(36) ? 'good' : v >= t(30) ? 'fair' : 'below average';
 }
 
 export function bmi(weightKg: number, heightCm: number): { value: number; band: string } {
