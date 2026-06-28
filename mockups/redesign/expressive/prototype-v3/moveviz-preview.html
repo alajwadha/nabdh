@@ -180,6 +180,16 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* yoga (cat-cow): on hands and knees, spine arched UP (cat pose), head tucked down */
+.yg{position:relative;width:116px;height:116px}
+.yg b{position:absolute;border-radius:99px;background:var(--grn)}
+.yg .mat{position:absolute;left:8px;right:8px;top:88px;height:3px;background:var(--mut);border-radius:99px}
+.yg .arm{left:76px;top:53px;width:30px;height:9px;transform-origin:left center;transform:rotate(86deg)} /* shoulder→hand */
+.yg .thigh{left:40px;top:53px;width:30px;height:9px;transform-origin:left center;transform:rotate(101deg)} /* hip→knee */
+.yg .shin{left:34px;top:82px;width:18px;height:8px;transform-origin:left center;transform:rotate(176deg)} /* knee→back along the mat */
+.yg .spineB{left:40px;top:52px;width:20px;height:10px;transform-origin:left center;transform:rotate(-33deg)} /* hip→mid-spine (up) */
+.yg .spineF{left:76px;top:52px;width:22px;height:10px;transform-origin:left center;transform:rotate(-150deg)} /* shoulder→mid-spine (up) */
+.yg .head{left:79px;top:58px;width:15px;height:15px} /* tucked down (cat) */
 /* boxing: side-view stance, guard up, lead arm throwing a jab (rear arm in guard) */
 .bx{position:relative;width:116px;height:116px}
 .bx b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -288,14 +298,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🥊 Boxing</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · JUMP ROPE</div>
- <div class="stage"><div class="jr">
-  <b class="ground"></b>
-  <b class="legB"></b><b class="legF"></b><b class="torso"></b>
-  <b class="armB"></b><b class="armF"></b><b class="head"></b>
-  <div class="ropewrap"><div class="ropeclip"><div class="ropering"></div></div></div><div class="grip gripL"></div><div class="grip gripR"></div>
+ <div class="lbl">WORKOUT · SPORT · YOGA</div>
+ <div class="stage"><div class="yg">
+  <b class="mat"></b>
+  <b class="arm"></b><b class="thigh"></b><b class="shin"></b>
+  <b class="spineB"></b><b class="spineF"></b><b class="head"></b>
  </div></div>
- <div class="name">🤸 Jump rope</div>
+ <div class="name">🧘 Yoga</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · SPORT · SWIMMING</div>

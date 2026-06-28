@@ -53,6 +53,7 @@ const DURATION: Record<string, number> = {
   jumprope: 620, // one rope revolution = one hop
   swimming: 1500, // one freestyle stroke cycle (both arms)
   boxing: 900, // a jab then a cross (one each per cycle)
+  yoga: 2600, // a slow cat→cow→cat breath
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -124,6 +125,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Swimming phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'boxing' ? (
         <Boxing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'yoga' ? (
+        <Yoga phase={phase} size={size} fg={fg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -948,6 +951,44 @@ function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
           <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreA}><View style={glove} /></Bone>
         </Bone>
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Yoga (cat-cow): on hands and knees, the spine (two segments meeting at a travelling
+// mid-point) arches UP (cat) then dips DOWN (cow) while the head nods. Calm and cyclic. The
+// −0.25 offset lands the reduce-motion still on the iconic arched cat pose.
+function Yoga({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  const hipX = 40 * s, hipY = 57 * s, shX = 76 * s, shY = 57 * s;
+  // mid-spine travels: cat (arched up, y≈46) at phase 0.25 → cow (dipped, y≈64) at 0.75
+  const my = useDerivedValue(() => { 'worklet'; return (55 - 9 * Math.cos((phase.value - 0.25) * 2 * Math.PI)) * s; });
+  const spineBRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(my.value - hipY, 17 * s)}rad` }] }; });
+  const spineBLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.hypot(17 * s, my.value - hipY) }; });
+  const spineFRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(my.value - shY, -19 * s)}rad` }] }; });
+  const spineFLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.hypot(19 * s, my.value - shY) }; });
+  // head nods: tucked down (+40°) at cat, lifted (−20°) at cow
+  const neck = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${10 + 30 * Math.cos((phase.value - 0.25) * 2 * Math.PI)}deg` }] }; });
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* mat */}
+      <View style={{ position: 'absolute', left: size * 0.07, right: size * 0.07, top: 88 * s, height: 3 * s, borderRadius: 99, backgroundColor: equip }} />
+      {/* planted limbs: arm (shoulder→hand), thigh (hip→knee), shin (knee→back along the mat) */}
+      <Bone x={shX} y={shY} len={30 * s} w={9 * s} color={fg} rot={stat(86)} />
+      <Bone x={hipX} y={hipY} len={30 * s} w={9 * s} color={fg} rot={stat(101)} />
+      <Bone x={34 * s} y={86 * s} len={18 * s} w={8 * s} color={fg} rot={stat(176)} />
+      {/* spine: two stretch-bones from the fixed hip & shoulder up to the travelling mid-spine */}
+      <Animated.View style={[{ position: 'absolute', left: hipX, top: hipY, width: 0, height: 0 }, spineBRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -5 * s, height: 10 * s, borderRadius: 99, backgroundColor: fg }, spineBLen]} />
+      </Animated.View>
+      <Animated.View style={[{ position: 'absolute', left: shX, top: shY, width: 0, height: 0 }, spineFRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -5 * s, height: 10 * s, borderRadius: 99, backgroundColor: fg }, spineFLen]} />
+      </Animated.View>
+      {/* head on a nodding neck from the shoulder */}
+      <Bone x={shX} y={shY} len={13 * s} w={7 * s} color={fg} rot={neck}>
+        <View style={{ position: 'absolute', left: -7.5 * s, top: -7.5 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
+      </Bone>
     </View>
   );
 }
