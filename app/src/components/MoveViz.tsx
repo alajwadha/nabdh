@@ -61,6 +61,7 @@ const DURATION: Record<string, number> = {
   pushup: 1500, // lower the chest then press back up
   legext: 1400, // extend the knee straight then lower
   legcurl: 1400, // curl the shin down-and-back then release
+  chestpress: 1400, // press the handle forward then return
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -132,6 +133,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <LegExtension phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'legcurl' ? (
         <LegCurl phase={phase} size={size} fg={fg} equip={equip} />
+      ) : kind === 'chestpress' ? (
+        <ChestPress phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'padel' || kind === 'tennis' ? (
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'jumprope' ? (
@@ -952,6 +955,36 @@ function LegCurl({ phase, size, fg, equip }: { phase: SharedValue<number>; size:
       </Bone>
       {/* thigh-holding pad on top (this machine's tell — the leg extension has none) */}
       <View style={{ position: 'absolute', left: 50 * s, top: 49 * s, width: 20 * s, height: 6 * s, borderRadius: 99, backgroundColor: equip }} />
+    </View>
+  );
+}
+
+// --- Chest press (machine): seated upright against a seat pad (equip), the arm pressing a
+// handle (equip) FORWARD from the chest (folded) to near-full extension, then back. Reduce-
+// motion still = the arm extended forward at the press.
+function ChestPress({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  // press p: 1 (extended forward) at phase 0.25 → 0 (folded at the chest) at 0.75
+  const uarm = useAnimatedStyle(() => { 'worklet'; const p = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${150 - p * 145}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; const p = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${-130 + p * 130}deg` }] }; });
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* machine seat: back pad + bottom */}
+      <View style={{ position: 'absolute', left: 37 * s, top: 38 * s, width: 7 * s, height: 32 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 39 * s, top: 68 * s, width: 22 * s, height: 7 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      {/* seated lifter: thigh→shin (sitting), torso upright, head */}
+      <Bone x={46 * s} y={66 * s} len={20 * s} w={10 * s} color={fg} rot={stat(2)}>
+        <Bone x={0} y={0} len={22 * s} w={9 * s} color={fg} rot={stat(86)} />
+      </Bone>
+      <Bone x={46 * s} y={66 * s} len={24 * s} w={11 * s} color={fg} rot={stat(-95)} />
+      <View style={{ position: 'absolute', left: 42 * s, top: 24 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* pressing arm: upper arm → forearm → vertical handle (equip) */}
+      <Bone x={47 * s} y={43 * s} len={13 * s} w={8 * s} color={fg} rot={uarm}>
+        <Bone x={0} y={0} len={13 * s} w={7 * s} color={fg} rot={farm}>
+          <View style={{ position: 'absolute', left: -2 * s, top: -8 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }} />
+        </Bone>
+      </Bone>
     </View>
   );
 }
