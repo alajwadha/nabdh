@@ -191,6 +191,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .fb .head{left:42px;top:13px;width:16px;height:16px}
 .fb .armB{left:51px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(42deg)}
 .fb .armF{left:55px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(-30deg)}
+/* leg curl: seated, thigh held by a top pad, shin CURLED DOWN-and-back (opposite of leg ext) */
+.lc{position:relative;width:116px;height:116px}
+.lc b{position:absolute;border-radius:99px;background:var(--grn)}
+.lc .seatback{position:absolute;left:31px;top:32px;width:7px;height:32px;background:var(--mut);border-radius:3px}
+.lc .seatbot{position:absolute;left:33px;top:63px;width:26px;height:7px;background:var(--mut);border-radius:3px}
+.lc .thighpad{position:absolute;left:50px;top:49px;width:20px;height:6px;background:var(--mut);border-radius:99px} /* holds the thigh down — unique to the curl machine */
+.lc .torso{left:44px;top:60px;width:24px;height:11px;transform-origin:left center;transform:rotate(-100deg)}
+.lc .head{left:32px;top:22px;width:16px;height:16px}
+.lc .arm{left:44px;top:43px;width:7px;height:18px;transform-origin:top center;transform:rotate(22deg)}
+.lc .thigh{left:44px;top:60px;width:28px;height:10px;transform-origin:left center;transform:rotate(0deg)}
+.lc .shin{left:28px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(125deg)} /* curled down-and-back */
+.lc .roller{left:17px;top:-3px;width:15px;height:15px;border-radius:99px;background:var(--mut)} /* child of shin: ankle pad behind the ankle */
 /* leg extension: seated, thigh horizontal, shin extended UP to straight, ankle roller (mut) */
 .le{position:relative;width:116px;height:116px}
 .le b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -377,16 +389,14 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🦵 Leg extension</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · HIIT</div>
- <div class="stage"><div class="hi">
-  <b class="ground"></b>
-  <b class="uB"><b class="fB"></b></b>
-  <b class="thB"><b class="shB"></b></b>
-  <b class="torso"></b><b class="head"></b>
-  <b class="thA"><b class="shA"></b></b>
-  <b class="uA"><b class="fA"></b></b>
+ <div class="lbl">WORKOUT · GYM · LEG CURL</div>
+ <div class="stage"><div class="lc">
+  <b class="seatback"></b><b class="seatbot"></b>
+  <b class="torso"></b><b class="head"></b><b class="arm"></b>
+  <b class="thigh"><b class="shin"><b class="roller"></b></b></b>
+  <b class="thighpad"></b>
  </div></div>
- <div class="name">🔥 HIIT · High knees</div>
+ <div class="name">🦵 Leg curl</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
