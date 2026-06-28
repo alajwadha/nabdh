@@ -44,6 +44,7 @@ const DURATION: Record<string, number> = {
   pullup: 1500, // pull up to the bar and lower
   dbcurl: 1300, // curl up and lower
   latpull: 1500, // pull the bar down and let it rise
+  triext: 1200, // extend down and let it rise
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -99,6 +100,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Curl phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'latpull' ? (
         <LatPulldown phase={phase} size={size} fg={fg} equip={equip} />
+      ) : kind === 'triext' ? (
+        <Pushdown phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -604,6 +607,47 @@ function LatPulldown({ phase, size, fg, equip }: { phase: SharedValue<number>; s
       </Bone>
       {/* the wide bar (authored at the top, translates down to the chest) */}
       <Animated.View style={[{ position: 'absolute', left: 42 * s, top: 26 * s, width: 34 * s, height: 5 * s, borderRadius: 99, backgroundColor: equip }, bar]} />
+    </View>
+  );
+}
+
+// Triceps-pushdown forearm tip (FK), used to anchor the cable to the bar.
+function triHand(p: number, s: number): { x: number; y: number } {
+  'worklet';
+  const th = ((-10 + p * 98) * Math.PI) / 180;
+  return { x: 54 * s + 18 * s * Math.cos(th), y: 52 * s + 18 * s * Math.sin(th) };
+}
+
+// --- Triceps pushdown: standing at a cable, upper arm pinned, forearm extends down -----
+function Pushdown({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 top (bent) → 1 extended (down)
+  const forearm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-10 + p(phase.value) * 98}deg` }] }; });
+  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${10 - p(phase.value) * 98}deg` }] }; }); // counter-rotate → bar level
+  const flyX = 64 * s, flyY = 12 * s; // pulley centre
+  const cableRot = useAnimatedStyle(() => { 'worklet'; const h = triHand(p(phase.value), s); return { transform: [{ rotate: `${Math.atan2(h.y - flyY, h.x - flyX)}rad` }] }; });
+  const cableLen = useAnimatedStyle(() => { 'worklet'; const h = triHand(p(phase.value), s); return { width: Math.sqrt((h.x - flyX) ** 2 + (h.y - flyY) ** 2) }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* top pulley + cable to the bar */}
+      <View style={{ position: 'absolute', left: 56 * s, top: 4 * s, width: 16 * s, height: 16 * s, borderRadius: 99, borderWidth: 4 * s, borderColor: equip }} />
+      <Animated.View style={[{ position: 'absolute', left: flyX, top: flyY, width: 0, height: 0 }, cableRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -1.5 * s, height: 3 * s, borderRadius: 99, backgroundColor: equip }, cableLen]} />
+      </Animated.View>
+      {/* standing figure */}
+      <View style={{ position: 'absolute', left: 54 * s, top: 62 * s, width: 9 * s, height: 28 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 62 * s, width: 9 * s, height: 28 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-5deg' }] }} />
+      <View style={{ position: 'absolute', left: 50 * s, top: 30 * s, width: 10 * s, height: 32 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 46 * s, top: 14 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* upper arm pinned vertical at the side */}
+      <View style={{ position: 'absolute', left: 53 * s, top: 32 * s, width: 9 * s, height: 21 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* forearm extends down; the bar (equip, machine) counter-rotates level at its end */}
+      <Bone x={54 * s} y={52 * s} len={18 * s} w={8 * s} color={fg} rot={forearm}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: 0, height: 0 }, bar]}>
+          <View style={{ position: 'absolute', left: -10 * s, top: -2.5 * s, width: 20 * s, height: 5 * s, borderRadius: 99, backgroundColor: equip }} />
+        </Animated.View>
+      </Bone>
     </View>
   );
 }
