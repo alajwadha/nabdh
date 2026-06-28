@@ -48,7 +48,7 @@ const PERMS: Record<'apple' | 'fitbit', { name: string; rows: [string, string][]
 export default function Profile() {
   const { colors, tiles, mode, toggle } = useTheme();
   const { signOut } = useAuth();
-  const { ramadan, setRamadan, showPrayers, setShowPrayers } = useAppState();
+  const { ramadan, setRamadan, showPrayers, setShowPrayers, body } = useAppState();
   const identity = useIdentity();
   const { setSummary } = useHealth();
   const router = useRouter();
@@ -111,6 +111,7 @@ export default function Profile() {
       <Group title="YOUR DAY">
         <Row icon="sliders-horizontal" label="Customize Today" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/(tabs)')} />
         <Row icon="scale" label="Vitals & meds" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/vitals")} />
+        {body.sex === 'female' && <Row icon="calendar" label="Cycle" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/cycle")} />}
         <Row icon="heart-pulse" label="Body & metrics" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/body')} />
         <Row icon="bell" label="Reminders" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/reminders')} />
         <Row icon="dumbbell" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
