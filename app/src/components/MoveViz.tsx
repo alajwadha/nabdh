@@ -59,6 +59,7 @@ const DURATION: Record<string, number> = {
   football: 1100, // wind-up, strike, follow-through
   hiit: 520, // fast high-knees cadence
   pushup: 1500, // lower the chest then press back up
+  legext: 1400, // extend the knee straight then lower
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -126,6 +127,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Plank phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'pushup' ? (
         <Pushup phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'legext' ? (
+        <LegExtension phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'padel' || kind === 'tennis' ? (
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'jumprope' ? (
@@ -889,6 +892,33 @@ function Pushup({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
           <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={fore} />
         </Bone>
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Leg extension: seated upright on a machine (seat = equip), thigh fixed horizontal; the
+// shin swings from hanging down up to straight (knee extends), an ankle roller (equip) riding
+// the shin end. Reduce-motion still = the locked-out top.
+function LegExtension({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  // extension e: 1 (locked out, shin horizontal) at phase 0.25 → 0 (hanging down) at 0.75
+  const shin = useAnimatedStyle(() => { 'worklet'; const e = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ rotate: `${92 - e * 90}deg` }] }; });
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* machine seat: back + bottom pad */}
+      <View style={{ position: 'absolute', left: 31 * s, top: 33 * s, width: 7 * s, height: 33 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 33 * s, top: 64 * s, width: 31 * s, height: 7 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      {/* seated lifter: torso leaning back, head, a hand gripping the seat */}
+      <Bone x={44 * s} y={62 * s} len={24 * s} w={11 * s} color={fg} rot={stat(-100)} />
+      <View style={{ position: 'absolute', left: 34 * s, top: 23 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      <Bone x={44 * s} y={45 * s} len={18 * s} w={7 * s} color={fg} rot={stat(112)} />
+      {/* thigh fixed horizontal; shin extends; ankle roller (equip) at its end */}
+      <Bone x={44 * s} y={62 * s} len={28 * s} w={10 * s} color={fg} rot={stat(0)}>
+        <Bone x={0} y={0} len={24 * s} w={9 * s} color={fg} rot={shin}>
+          <View style={{ position: 'absolute', left: -7.5 * s, top: -7.5 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: equip }} />
+        </Bone>
+      </Bone>
     </View>
   );
 }

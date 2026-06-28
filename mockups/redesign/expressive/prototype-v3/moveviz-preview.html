@@ -191,6 +191,17 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .fb .head{left:42px;top:13px;width:16px;height:16px}
 .fb .armB{left:51px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(42deg)}
 .fb .armF{left:55px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(-30deg)}
+/* leg extension: seated, thigh horizontal, shin extended UP to straight, ankle roller (mut) */
+.le{position:relative;width:116px;height:116px}
+.le b{position:absolute;border-radius:99px;background:var(--grn)}
+.le .seatback{position:absolute;left:31px;top:33px;width:7px;height:33px;background:var(--mut);border-radius:3px}
+.le .seatbot{position:absolute;left:33px;top:64px;width:31px;height:7px;background:var(--mut);border-radius:3px}
+.le .torso{left:44px;top:62px;width:24px;height:11px;transform-origin:left center;transform:rotate(-100deg)}
+.le .head{left:34px;top:23px;width:16px;height:16px}
+.le .arm{left:44px;top:45px;width:7px;height:18px;transform-origin:top center;transform:rotate(22deg)}
+.le .thigh{left:44px;top:62px;width:28px;height:10px;transform-origin:left center;transform:rotate(0deg)}
+.le .shin{left:28px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(2deg)} /* extended (knee straight) */
+.le .roller{left:17px;top:-3px;width:15px;height:15px;border-radius:99px;background:var(--mut)} /* child of shin: ankle pad */
 /* push-up: hands + toes planted, straight body, arms BENT at the bottom (chest low) */
 .pp{position:relative;width:116px;height:116px}
 .pp b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -357,13 +368,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">💪 Push-up</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · FOOTBALL</div>
- <div class="stage"><div class="fb">
-  <b class="ground"></b><b class="ball"></b>
-  <b class="plant"></b><b class="armB"></b>
-  <b class="kick"></b><b class="torso"></b><b class="head"></b><b class="armF"></b>
+ <div class="lbl">WORKOUT · GYM · LEG EXTENSION</div>
+ <div class="stage"><div class="le">
+  <b class="seatback"></b><b class="seatbot"></b>
+  <b class="torso"></b><b class="head"></b><b class="arm"></b>
+  <b class="thigh"><b class="shin"><b class="roller"></b></b></b>
  </div></div>
- <div class="name">⚽ Football</div>
+ <div class="name">🦵 Leg extension</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · SPORT · HIIT</div>
