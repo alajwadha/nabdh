@@ -611,22 +611,24 @@ function LatPulldown({ phase, size, fg, equip }: { phase: SharedValue<number>; s
   );
 }
 
-// Triceps-pushdown forearm tip (FK), used to anchor the cable to the bar.
+// Triceps-pushdown forearm tip (FK): forearm starts clearly bent (−45°) and extends to
+// straight down (88°), so the read is an unmistakable bent→straight pushdown.
 function triHand(p: number, s: number): { x: number; y: number } {
   'worklet';
-  const th = ((-10 + p * 98) * Math.PI) / 180;
+  const th = ((-45 + p * 133) * Math.PI) / 180;
   return { x: 54 * s + 18 * s * Math.cos(th), y: 52 * s + 18 * s * Math.sin(th) };
 }
 
 // --- Triceps pushdown: standing at a cable, upper arm pinned, forearm extends down -----
 function Pushdown({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
-  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 top (bent) → 1 extended (down)
-  const forearm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-10 + p(phase.value) * 98}deg` }] }; });
-  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${10 - p(phase.value) * 98}deg` }] }; }); // counter-rotate → bar level
+  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 bent (up) → 1 extended (down)
+  const forearm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-45 + p(phase.value) * 133}deg` }] }; });
+  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${45 - p(phase.value) * 133}deg` }] }; }); // counter-rotate → bar level
   const flyX = 64 * s, flyY = 12 * s; // pulley centre
-  const cableRot = useAnimatedStyle(() => { 'worklet'; const h = triHand(p(phase.value), s); return { transform: [{ rotate: `${Math.atan2(h.y - flyY, h.x - flyX)}rad` }] }; });
-  const cableLen = useAnimatedStyle(() => { 'worklet'; const h = triHand(p(phase.value), s); return { width: Math.sqrt((h.x - flyX) ** 2 + (h.y - flyY) ** 2) }; });
+  const hand = useDerivedValue(() => { 'worklet'; return triHand(p(phase.value), s); }); // solve-once FK tip
+  const cableRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(hand.value.y - flyY, hand.value.x - flyX)}rad` }] }; });
+  const cableLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((hand.value.x - flyX) ** 2 + (hand.value.y - flyY) ** 2) }; });
   return (
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
