@@ -6,7 +6,7 @@ import { LineChart } from '../src/components/Charts';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
-import { EXERCISES, SPORTS, MUSCLE_LABEL, type Muscle } from '../src/data/workouts';
+import { EXERCISES, SPORTS, MUSCLE_LABEL, percentLoads, type Muscle } from '../src/data/workouts';
 import { computeAcwr, dotsScore, relativeStrength, strengthStandard, STRENGTH_LEVELS, type StrengthLevel } from '../src/data/health-metrics';
 import { useAppState } from '../src/store/app';
 
@@ -164,6 +164,23 @@ export default function WorkoutHistory() {
               <LineChart data={e1rmTrend} color={colors.accentText} height={120} />
             ) : (
               <AppText variant="caption" color={colors.textMuted}>Log another session to see the trend.</AppText>
+            )}
+            {/* ≥2 sessions, same bar the trend chart uses — never prescribe loads off a one-set estimate */}
+            {detailed && e1rmTrend.length > 1 && best > 0 && selEx?.equipment !== 'bodyweight' && (
+              <View style={{ marginTop: 12, borderTopWidth: 2, borderTopColor: colors.border, paddingTop: 10 }}>
+                <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 6 }}>TRAINING LOADS · %1RM</AppText>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7 }}>
+                  {percentLoads(best).map((r) => (
+                    <View key={r.pct} style={{ width: '31%', backgroundColor: colors.navBg, borderRadius: radii.md, paddingVertical: 8, paddingHorizontal: 9 }}>
+                      <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10 }}>{r.pct}% · ×{r.reps}</AppText>
+                      <AppText variant="caption" color={colors.ink} style={{ fontWeight: '800' }}>{r.kg} kg</AppText>
+                    </View>
+                  ))}
+                </View>
+                <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 7, lineHeight: 15 }}>
+                  Working weight at each intensity, with the reps it typically allows — from your estimated 1RM.
+                </AppText>
+              </View>
             )}
           </Card>
         </>

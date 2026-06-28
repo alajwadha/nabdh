@@ -119,6 +119,21 @@ export function workingWeight(oneRm: number, reps: number, factor = 1): number {
   return Math.round(base * factor * 2) / 2;
 }
 
+/**
+ * %1RM training-load table — maps common training intensities to a working weight
+ * and the reps that intensity typically allows (Epley inverse: reps ≈ 30·(1/pct−1)).
+ * The staple programming reference in Strong/Boostcamp/Hevy. Weights round to 2.5 kg.
+ */
+export function percentLoads(oneRm: number): { pct: number; kg: number; reps: number }[] {
+  if (oneRm <= 0) return [];
+  const pcts = [0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65];
+  return pcts.map((p) => ({
+    pct: Math.round(p * 100),
+    kg: Math.round((oneRm * p) / 2.5) * 2.5,
+    reps: Math.max(1, Math.round(30 * (1 / p - 1))),
+  }));
+}
+
 /** Rest-between-sets guidance from the working rep range (heavier/fewer → longer rest). */
 export function restRecommendation(reps: number): string {
   if (reps <= 0) return '';
