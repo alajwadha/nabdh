@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Icon } from '../src/components/Icon';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Card, Screen, SectionHeader } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, SectionHeader, SegmentedControl } from '../src/design-system/components';
 import { Sparkline } from '../src/components/Charts';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
@@ -173,14 +173,12 @@ export default function Workout() {
       </View>
 
       {/* mode switch */}
-      <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}>
-        {(['gym', 'sports'] as const).map((m) => (
-          <Pressable key={m} onPress={() => { setMode(m); setSavedMsg(null); }} style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 11, borderRadius: 99, backgroundColor: mode === m ? colors.navOn : 'transparent' }}>
-            <Icon name={m === 'gym' ? 'dumbbell' : 'activity'} size={15} color={mode === m ? colors.navOnText : colors.textMuted} />
-            <AppText variant="caption" color={mode === m ? colors.navOnText : colors.textMuted}>{m === 'gym' ? 'Gym' : 'Sports'}</AppText>
-          </Pressable>
-        ))}
-      </View>
+      <SegmentedControl
+        dark
+        value={mode}
+        onChange={(m) => { setMode(m); setSavedMsg(null); }}
+        options={[{ value: 'gym', label: 'Gym', icon: 'dumbbell' }, { value: 'sports', label: 'Sports', icon: 'activity' }]}
+      />
 
       {mode === 'gym' ? (
         <>

@@ -1,6 +1,6 @@
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Screen } from '../src/design-system/components';
+import { AppText, Screen, PressCard } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { MoveViz } from '../src/components/MoveViz';
@@ -29,10 +29,10 @@ export default function Programs() {
         const tint = tints[i % tints.length];
         const figures = p.exKeys.slice(0, 4).map((k) => EXERCISES.find((e) => e.key === k)).filter(Boolean);
         return (
-          <Pressable
+          <PressCard
             key={p.key}
             onPress={() => router.push({ pathname: '/session', params: { program: p.key } })}
-            style={{ backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, gap: spacing.sm }}
+            style={{ gap: spacing.sm }}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
               <View style={{ width: 46, height: 46, borderRadius: radii.md, backgroundColor: tint.bg, alignItems: 'center', justifyContent: 'center' }}>
@@ -53,7 +53,7 @@ export default function Programs() {
                 </View>
               ))}
             </View>
-          </Pressable>
+          </PressCard>
         );
       })}
     </Screen>

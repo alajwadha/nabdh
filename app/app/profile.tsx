@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Screen, Sheet } from '../src/design-system/components';
+import { AppText, Button, Screen, Sheet, Toggle } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAuth } from '../src/auth/AuthProvider';
@@ -216,14 +216,6 @@ export default function Profile() {
   );
 }
 
-function Toggle({ on }: { on: boolean }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ width: 46, height: 27, borderRadius: 99, backgroundColor: on ? colors.accent : colors.border, justifyContent: 'center' }}>
-      <View style={{ width: 21, height: 21, borderRadius: 99, backgroundColor: '#fff', marginLeft: on ? 22 : 3 }} />
-    </View>
-  );
-}
 
 function Status({ text, colors }: { text: string; colors: ReturnType<typeof useTheme>['colors'] }) {
   return (

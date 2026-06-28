@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Screen } from '../src/design-system/components';
+import { AppText, Screen, Toggle } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
@@ -10,14 +10,6 @@ import { Icon, type IconName } from '../src/components/Icon';
 
 const RICON: Record<ReminderKey, IconName> = { workout: 'dumbbell', meal_log: 'utensils', steps: 'footprints', sleep: 'moon', weigh_in: 'scale' };
 
-function Toggle({ on }: { on: boolean }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ width: 46, height: 27, borderRadius: 99, backgroundColor: on ? colors.accent : colors.border, justifyContent: 'center' }}>
-      <View style={{ width: 21, height: 21, borderRadius: 99, backgroundColor: '#fff', marginLeft: on ? 22 : 3 }} />
-    </View>
-  );
-}
 
 function fmt(time: string) {
   const [h, m] = time.split(':').map((n) => parseInt(n, 10));

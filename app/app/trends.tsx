@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Card, Screen } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, SegmentedControl } from '../src/design-system/components';
 import { Sparkline } from '../src/components/Charts';
 import { Icon } from '../src/components/Icon';
 import { radii, spacing } from '../src/design-system';
@@ -46,15 +46,12 @@ export default function Trends() {
         <AppText variant="title" color="#fff">›</AppText>
       </Pressable>
 
-      <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4, alignSelf: 'flex-start' }}>
-        {(['W', 'M', '6M'] as const).map((r) => (
-          <Pressable key={r} onPress={() => setRange(r)} style={{ paddingVertical: 8, paddingHorizontal: 18, borderRadius: 99, backgroundColor: range === r ? colors.navOn : 'transparent' }}>
-            <AppText variant="caption" color={range === r ? colors.navOnText : colors.textMuted}>
-              {r === 'W' ? 'Week' : r === 'M' ? 'Month' : '6 months'}
-            </AppText>
-          </Pressable>
-        ))}
-      </View>
+      <SegmentedControl
+        dark
+        value={range}
+        onChange={setRange}
+        options={[{ value: 'W', label: 'Week' }, { value: 'M', label: 'Month' }, { value: '6M', label: '6 months' }]}
+      />
 
       <View style={{ backgroundColor: tiles.gold.bg, borderRadius: radii.lg, padding: spacing.lg }}>
         <AppText variant="title" color={tiles.gold.ink}>

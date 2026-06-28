@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="pjs-local.css"><style>
+:root{--bg:#F7F1E8;--card:#FFFBF4;--bord:#EDE5D3;--navbg:#EFE8DA;--grn:#2E7D5B;--mut:#80796C;--ink:#1F1C17;--navon:#211E1A;--navtx:#FFF8EC}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+body{background:#cfc7b6;display:flex;justify-content:center;padding:28px}
+.phone{width:392px;background:var(--bg);border-radius:34px;padding:24px;box-shadow:0 30px 90px rgba(20,16,10,.22)}
+.h1{font-size:26px;font-weight:800;letter-spacing:-.5px;color:var(--ink);margin-bottom:18px}
+.lbl{font-size:11px;letter-spacing:1.4px;font-weight:800;color:var(--mut);margin:18px 0 10px}
+.card{background:var(--card);border:1px solid var(--bord);border-radius:22px;padding:18px;box-shadow:0 12px 28px rgba(31,28,23,.06)}
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.rl{font-size:16px;font-weight:700;color:var(--ink)}
+.tog{width:46px;height:27px;border-radius:99px;display:flex;align-items:center}
+.tog.on{background:var(--grn);justify-content:flex-end} .tog.off{background:var(--bord)}
+.knob{width:21px;height:21px;border-radius:99px;background:#fff;margin:0 3px;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.seg{position:relative;display:flex;background:var(--navbg);border-radius:99px;padding:4px;margin-bottom:12px}
+.seg .ind{position:absolute;top:4px;bottom:4px;border-radius:99px;background:var(--navon)}
+.seg .s{flex:1;text-align:center;padding:9px 0;font-size:12.5px;font-weight:700;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px}
+.seg .s.on{color:var(--navtx)} .seg .s.off{color:var(--mut)}
+</style></head><body><div class="phone">
+<div class="h1">Components</div>
+
+<div class="lbl">ANIMATED TOGGLE (one shared component)</div>
+<div class="card">
+<div class="row"><div class="rl">Workout reminder</div><div class="tog on"><div class="knob"></div></div></div>
+<div class="row" style="border-top:1px solid var(--bord)"><div class="rl">Wind down</div><div class="tog off"><div class="knob"></div></div></div>
+</div>
+
+<div class="lbl">SEGMENTED CONTROL (sliding pill indicator)</div>
+<div class="seg"><div class="ind" style="left:calc(4px + (100% - 8px)/3);width:calc((100% - 8px)/3)"></div>
+<div class="s off">Week</div><div class="s on">Month</div><div class="s off">6 months</div></div>
+
+<div class="seg"><div class="ind" style="left:4px;width:calc((100% - 8px)/2)"></div>
+<div class="s on"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFF8EC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></svg> Gym</div><div class="s off"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#80796C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg> Sports</div></div>
+
+<div style="font-size:12px;font-weight:600;color:var(--mut);margin-top:6px;line-height:18px">Toggle thumb springs across with a soft shadow · the segmented pill slides between options · cards spring on press. One source of truth, used app-wide.</div>
+</div></body></html>

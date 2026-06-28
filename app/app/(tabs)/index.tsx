@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { AppText, Card, Screen, SectionHeader, Sheet } from '../../src/design-system/components';
+import { AppText, Card, Screen, SectionHeader, Sheet, Toggle } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
 import { InsightHero } from '../../src/components/InsightHero';
 import {
@@ -199,11 +199,3 @@ export default function Today() {
   );
 }
 
-function Toggle({ on }: { on: boolean }) {
-  const { colors } = useTheme();
-  return (
-    <View style={{ width: 46, height: 27, borderRadius: 99, backgroundColor: on ? colors.accent : colors.border, justifyContent: 'center' }}>
-      <View style={{ width: 21, height: 21, borderRadius: 99, backgroundColor: '#fff', marginLeft: on ? 22 : 3 }} />
-    </View>
-  );
-}
