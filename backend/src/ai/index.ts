@@ -45,8 +45,7 @@ aiRouter.post('/coach', async (req: Request, res: Response) => {
 
   const provider = (process.env.AI_PROVIDER ?? 'vertex').toLowerCase();
   try {
-    const reply =
-      provider === 'groq' ? await callGroq(system, messages) : await callVertex(system, messages);
+    const reply = await callProvider(provider, system, messages);
     if (reply == null) return res.status(503).json({ error: `${provider}_unconfigured` });
     return res.json({ reply });
   } catch (e) {
@@ -109,4 +108,87 @@ async function callGroq(system: string, messages: ChatMsg[]): Promise<string | n
   if (!r.ok) throw new Error(`groq ${r.status}`);
   const data = (await r.json()) as { choices?: { message?: { content?: string } }[] };
   return data.choices?.[0]?.message?.content ?? '';
+}
+
+/** Dispatch to the configured provider. Returns null if that provider has no key. */
+function callProvider(
+  provider: string,
+  system: string,
+  messages: ChatMsg[],
+): Promise<string | null> {
+  switch (provider) {
+    case 'groq':
+      return callGroq(system, messages);
+    case 'anthropic':
+    case 'claude':
+      return callAnthropic(system, messages);
+    case 'openai':
+    case 'gpt':
+      return callOpenAI(system, messages);
+    case 'gemini':
+      return callGeminiDirect(system, messages);
+    default:
+      return callVertex(system, messages);
+  }
+}
+
+// --- BYO "Pro" providers (all US-hosted → cross-border, opt-in only). Keys from env. ---
+
+async function callAnthropic(system: string, messages: ChatMsg[]): Promise<string | null> {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) return null;
+  const model = process.env.ANTHROPIC_MODEL ?? 'claude-haiku-4-5-20251001';
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({ model, max_tokens: 320, system, messages }),
+  });
+  if (!r.ok) throw new Error(`anthropic ${r.status}`);
+  const data = (await r.json()) as { content?: { text?: string }[] };
+  return data.content?.[0]?.text ?? '';
+}
+
+async function callOpenAI(system: string, messages: ChatMsg[]): Promise<string | null> {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  const model = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model,
+      max_tokens: 320,
+      messages: [{ role: 'system', content: system }, ...messages],
+    }),
+  });
+  if (!r.ok) throw new Error(`openai ${r.status}`);
+  const data = (await r.json()) as { choices?: { message?: { content?: string } }[] };
+  return data.choices?.[0]?.message?.content ?? '';
+}
+
+async function callGeminiDirect(system: string, messages: ChatMsg[]): Promise<string | null> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  const model = process.env.GEMINI_MODEL ?? 'gemini-2.5-flash';
+  const contents = messages.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+  while (contents.length && contents[0].role === 'model') contents.shift();
+  const r = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents }),
+    },
+  );
+  if (!r.ok) throw new Error(`gemini ${r.status}`);
+  const data = (await r.json()) as {
+    candidates?: { content?: { parts?: { text?: string }[] } }[] };
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 }
