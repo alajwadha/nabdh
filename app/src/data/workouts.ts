@@ -1,0 +1,137 @@
+// Workout calculations + catalogs. The numbers here are the moat vs Hevy/Strong/
+// Fitbod/JEFIT: those log lifts and estimate 1RM/volume, but none adjust today's
+// training to your recovery. Nabdh does (adjustForReadiness below).
+//
+// Calorie math uses the compendium MET model: kcal = MET × weightKg × hours.
+// 1RM uses Epley/Brzycki. All transparent so the "detailed" view can show the why.
+
+export const DEFAULT_WEIGHT_KG = 80;
+
+export type Equipment = 'machine' | 'barbell' | 'dumbbell' | 'cable' | 'bodyweight';
+export type Muscle = 'chest' | 'back' | 'legs' | 'shoulders' | 'arms' | 'core' | 'glutes';
+
+export type Exercise = {
+  key: string;
+  name: string;
+  nameAr: string;
+  muscle: Muscle;
+  equipment: Equipment;
+  emoji: string;
+};
+
+export type SetEntry = { weight: number; reps: number };
+
+export type Sport = {
+  key: string;
+  name: string;
+  nameAr: string;
+  met: number; // metabolic equivalent (moderate effort)
+  emoji: string;
+  gps?: boolean; // distance-based (running, cycling…)
+};
+
+// --- 1RM estimators ---------------------------------------------------------
+export function epley(weight: number, reps: number): number {
+  return reps <= 1 ? weight : weight * (1 + reps / 30);
+}
+export function brzycki(weight: number, reps: number): number {
+  return reps <= 1 ? weight : reps >= 37 ? weight : (weight * 36) / (37 - reps);
+}
+/** Estimated 1RM — average of Epley & Brzycki, rounded to 0.5 kg. */
+export function e1rm(weight: number, reps: number): number {
+  if (weight <= 0 || reps <= 0) return 0;
+  return Math.round(((epley(weight, reps) + brzycki(weight, reps)) / 2) * 2) / 2;
+}
+export function bestE1rm(sets: SetEntry[]): number {
+  return sets.reduce((best, s) => Math.max(best, e1rm(s.weight, s.reps)), 0);
+}
+/** Total volume load = Σ weight × reps. */
+export function volume(sets: SetEntry[]): number {
+  return sets.reduce((sum, s) => sum + s.weight * s.reps, 0);
+}
+export function totalReps(sets: SetEntry[]): number {
+  return sets.reduce((sum, s) => sum + s.reps, 0);
+}
+
+// --- Calorie / MET model ----------------------------------------------------
+/** kcal = MET × weightKg × hours. */
+export function metCalories(met: number, minutes: number, weightKg = DEFAULT_WEIGHT_KG): number {
+  return Math.round(met * weightKg * (minutes / 60));
+}
+/** Running MET from pace (min/km): faster pace → higher MET (rough ACSM fit). */
+export function runningMet(paceMinPerKm: number): number {
+  if (paceMinPerKm <= 0) return 9.8;
+  const speedKmh = 60 / paceMinPerKm;
+  // ~1 MET per km/h above rest, clamped to a sane range.
+  return Math.min(19, Math.max(6, speedKmh * 1.0 + 0.5));
+}
+/** Rough distance (km) for a steady-pace cardio session. */
+export function distanceKm(minutes: number, paceMinPerKm: number): number {
+  return paceMinPerKm > 0 ? Math.round((minutes / paceMinPerKm) * 10) / 10 : 0;
+}
+
+// --- Readiness-adjusted training (the differentiator) -----------------------
+export type LoadAdvice = {
+  factor: number; // multiply target load by this
+  tone: 'rest' | 'easy' | 'steady' | 'push';
+  label: string;
+  note: string;
+};
+export function adjustForReadiness(readiness: number): LoadAdvice {
+  if (readiness < 50)
+    return { factor: 0, tone: 'rest', label: 'Recover today', note: 'Readiness is low — swap lifting for mobility or an easy walk. Lifting now costs more than it gives.' };
+  if (readiness < 65)
+    return { factor: 0.9, tone: 'easy', label: 'Go ~10% lighter', note: 'Trim load ~10% and cut a set. Keep the movement, protect the recovery.' };
+  if (readiness < 80)
+    return { factor: 1.0, tone: 'steady', label: 'Train as planned', note: 'You\'re in a solid window — hit your normal working weights.' };
+  return { factor: 1.05, tone: 'push', label: 'Green light — push', note: 'Recovery is high. Add ~5% or a top set and chase a PR.' };
+}
+/** Suggest a working weight from a known 1RM at a target rep range. */
+export function workingWeight(oneRm: number, reps: number, factor = 1): number {
+  // Epley inverse: load = 1RM / (1 + reps/30)
+  const base = oneRm / (1 + reps / 30);
+  return Math.round(base * factor * 2) / 2;
+}
+
+// --- Catalogs ---------------------------------------------------------------
+export const EXERCISES: Exercise[] = [
+  { key: 'legpress', name: 'Leg press', nameAr: 'دفع الأرجل', muscle: 'legs', equipment: 'machine', emoji: '🦵' },
+  { key: 'chestpress', name: 'Chest press (machine)', nameAr: 'دفع الصدر', muscle: 'chest', equipment: 'machine', emoji: '🫁' },
+  { key: 'latpull', name: 'Lat pulldown', nameAr: 'سحب علوي', muscle: 'back', equipment: 'cable', emoji: '🔙' },
+  { key: 'legext', name: 'Leg extension', nameAr: 'تمديد الساق', muscle: 'legs', equipment: 'machine', emoji: '🦿' },
+  { key: 'legcurl', name: 'Leg curl', nameAr: 'ثني الساق', muscle: 'legs', equipment: 'machine', emoji: '🦵' },
+  { key: 'shoulderpress', name: 'Shoulder press', nameAr: 'دفع الكتف', muscle: 'shoulders', equipment: 'machine', emoji: '💪' },
+  { key: 'seatedrow', name: 'Seated cable row', nameAr: 'تجديف جالس', muscle: 'back', equipment: 'cable', emoji: '🚣' },
+  { key: 'squat', name: 'Barbell squat', nameAr: 'سكوات', muscle: 'legs', equipment: 'barbell', emoji: '🏋️' },
+  { key: 'deadlift', name: 'Deadlift', nameAr: 'رفعة مميتة', muscle: 'back', equipment: 'barbell', emoji: '🏋️' },
+  { key: 'bench', name: 'Bench press', nameAr: 'بنش بريس', muscle: 'chest', equipment: 'barbell', emoji: '🏋️' },
+  { key: 'ohp', name: 'Overhead press', nameAr: 'ضغط علوي', muscle: 'shoulders', equipment: 'barbell', emoji: '🏋️' },
+  { key: 'dbcurl', name: 'Dumbbell curl', nameAr: 'مرجحة بايسبس', muscle: 'arms', equipment: 'dumbbell', emoji: '💪' },
+  { key: 'triext', name: 'Triceps pushdown', nameAr: 'دفع تراي', muscle: 'arms', equipment: 'cable', emoji: '💪' },
+  { key: 'pullup', name: 'Pull-up', nameAr: 'عقلة', muscle: 'back', equipment: 'bodyweight', emoji: '🤸' },
+  { key: 'pushup', name: 'Push-up', nameAr: 'ضغط', muscle: 'chest', equipment: 'bodyweight', emoji: '🤸' },
+  { key: 'plank', name: 'Plank', nameAr: 'بلانك', muscle: 'core', equipment: 'bodyweight', emoji: '🧘' },
+  { key: 'hipthrust', name: 'Hip thrust', nameAr: 'دفع الورك', muscle: 'glutes', equipment: 'barbell', emoji: '🍑' },
+  { key: 'calfraise', name: 'Calf raise', nameAr: 'رفع السمانة', muscle: 'legs', equipment: 'machine', emoji: '🦵' },
+];
+
+export const SPORTS: Sport[] = [
+  { key: 'padel', name: 'Padel', nameAr: 'بادل', met: 7.0, emoji: '🎾' },
+  { key: 'tennis', name: 'Tennis', nameAr: 'تنس', met: 7.3, emoji: '🎾' },
+  { key: 'running', name: 'Running', nameAr: 'جري', met: 9.8, emoji: '🏃', gps: true },
+  { key: 'walking', name: 'Walking', nameAr: 'مشي', met: 3.5, emoji: '🚶', gps: true },
+  { key: 'cycling', name: 'Cycling', nameAr: 'دراجة', met: 7.5, emoji: '🚴', gps: true },
+  { key: 'swimming', name: 'Swimming', nameAr: 'سباحة', met: 7.0, emoji: '🏊' },
+  { key: 'football', name: 'Football', nameAr: 'كرة قدم', met: 7.0, emoji: '⚽' },
+  { key: 'basketball', name: 'Basketball', nameAr: 'سلة', met: 6.5, emoji: '🏀' },
+  { key: 'hiit', name: 'HIIT', nameAr: 'هيت', met: 8.0, emoji: '🔥' },
+  { key: 'jumprope', name: 'Jump rope', nameAr: 'حبل', met: 11.0, emoji: '🪢' },
+  { key: 'squash', name: 'Squash', nameAr: 'إسكواش', met: 12.0, emoji: '🎾' },
+  { key: 'boxing', name: 'Boxing', nameAr: 'ملاكمة', met: 9.0, emoji: '🥊' },
+  { key: 'yoga', name: 'Yoga', nameAr: 'يوغا', met: 2.5, emoji: '🧘' },
+  { key: 'rowing', name: 'Rowing', nameAr: 'تجديف', met: 7.0, emoji: '🚣' },
+];
+
+export const MUSCLE_LABEL: Record<Muscle, string> = {
+  chest: 'Chest', back: 'Back', legs: 'Legs', shoulders: 'Shoulders', arms: 'Arms', core: 'Core', glutes: 'Glutes',
+};

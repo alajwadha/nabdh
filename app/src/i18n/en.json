@@ -79,6 +79,8 @@
   "quick": {
     "snap": "Snap a plate",
     "snapSub": "AI reads Saudi & Gulf dishes",
+    "workout": "Log a workout",
+    "workoutSub": "gym sets or a sport",
     "water": "Add water",
     "waterSub": "+1 glass",
     "coach": "Ask the coach",

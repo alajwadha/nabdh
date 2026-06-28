@@ -74,6 +74,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
 
       <Sheet visible={menu} onClose={() => setMenu(false)}>
         <QuickMenuRow icon="📷" bg={tiles.mint.bg} title={t('quick.snap')} subtitle={t('quick.snapSub')} onPress={() => { setMenu(false); router.navigate('/(tabs)/food'); }} />
+        <QuickMenuRow icon="🏋️" bg={tiles.lav.bg} title={t('quick.workout')} subtitle={t('quick.workoutSub')} onPress={() => { setMenu(false); router.navigate('/workout'); }} />
         <QuickMenuRow icon="💧" bg={tiles.blue.bg} title={t('quick.water')} subtitle={t('quick.waterSub')} onPress={() => { addWater(); setMenu(false); }} />
         <QuickMenuRow icon="💬" bg={tiles.peach.bg} title={t('quick.coach')} subtitle={t('quick.coachSub')} onPress={() => { setMenu(false); router.navigate('/(tabs)/coach'); }} />
       </Sheet>
