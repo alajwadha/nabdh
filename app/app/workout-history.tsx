@@ -7,7 +7,7 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
 import { EXERCISES, SPORTS, MUSCLE_LABEL, percentLoads, trainingPaces, fmtPace, riegelTime, type Muscle } from '../src/data/workouts';
-import { computeAcwr, dotsScore, relativeStrength, strengthStandard, STRENGTH_LEVELS, type StrengthLevel } from '../src/data/health-metrics';
+import { computeAcwr, dotsScore, relativeStrength, strengthStandard, STRENGTH_LEVELS, trainingBalance, type StrengthLevel } from '../src/data/health-metrics';
 import { useAppState } from '../src/store/app';
 
 const DAY = 86400000;
@@ -59,6 +59,14 @@ export default function WorkoutHistory() {
   }
   const muscleRows = (Object.entries(muscleVol) as [Muscle, number][]).sort((a, b) => b[1] - a[1]);
   const maxMuscle = muscleRows.reduce((m, [, v]) => Math.max(m, v), 1);
+  // Balance is computed from working-SET counts (not tonnage) so heavier leg/back
+  // loads don't structurally bias the split — a set is effort-comparable across muscles.
+  const muscleSets: Partial<Record<Muscle, number>> = {};
+  for (const s of gym.filter((g) => inWindow(g.at, 30))) {
+    const m = EXERCISES.find((e) => e.key === s.exKey)?.muscle;
+    if (m) muscleSets[m] = (muscleSets[m] ?? 0) + (s.sets?.length ?? 0);
+  }
+  const balance = trainingBalance(muscleSets);
 
   // PRs
   const prs = exKeys
@@ -214,6 +222,35 @@ export default function WorkoutHistory() {
               </View>
             ))}
           </Card>
+
+          {(balance.pushPullStatus !== 'unknown' || balance.upperLowerStatus !== 'unknown') && (
+            <Card style={{ gap: spacing.md }}>
+              <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>TRAINING BALANCE · BY WORKING SETS</AppText>
+              {balance.pushPullStatus !== 'unknown' && (
+                <BalanceRow
+                  label="Push vs Pull"
+                  leftLabel="Push" rightLabel="Pull"
+                  left={balance.push} right={balance.pull}
+                  ok={balance.pushPullStatus === 'balanced'}
+                  note={balance.pushPullNote}
+                  colors={colors} tiles={tiles}
+                />
+              )}
+              {balance.upperLowerStatus !== 'unknown' && (
+                <BalanceRow
+                  label="Upper vs Lower"
+                  leftLabel="Upper" rightLabel="Lower"
+                  left={balance.upper} right={balance.lower}
+                  ok={balance.upperLowerStatus === 'balanced'}
+                  note={balance.upperLowerNote}
+                  colors={colors} tiles={tiles}
+                />
+              )}
+              <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10, lineHeight: 14 }}>
+                Push/pull counts chest, shoulders & back press/row work (not direct arm sets). A rough directional guide.
+              </AppText>
+            </Card>
+          )}
         </>
       )}
 
@@ -326,6 +363,33 @@ export default function WorkoutHistory() {
         </>
       )}
     </Screen>
+  );
+}
+
+function BalanceRow({ label, leftLabel, rightLabel, left, right, ok, note, colors, tiles }: {
+  label: string; leftLabel: string; rightLabel: string; left: number; right: number; ok: boolean; note: string;
+  colors: ReturnType<typeof useTheme>['colors']; tiles: ReturnType<typeof useTheme>['tiles'];
+}) {
+  const total = left + right;
+  const leftPct = total > 0 ? Math.round((left / total) * 100) : 50;
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+        <AppText variant="caption" color={colors.ink} style={{ fontWeight: '700' }}>{label}</AppText>
+        <View style={{ backgroundColor: ok ? tiles.mint.bg : tiles.gold.bg, borderRadius: 99, paddingVertical: 2, paddingHorizontal: 9 }}>
+          <AppText variant="caption" color={ok ? tiles.mint.ink : tiles.gold.ink} style={{ fontSize: 10, fontWeight: '800' }}>{ok ? 'Balanced' : 'Check'}</AppText>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', height: 10, borderRadius: 99, overflow: 'hidden' }}>
+        <View style={{ flex: Math.max(0.001, left), backgroundColor: colors.accent }} />
+        <View style={{ flex: Math.max(0.001, right), backgroundColor: tiles.lav.ink }} />
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+        <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10 }}>{leftLabel} {leftPct}%</AppText>
+        <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10 }}>{rightLabel} {100 - leftPct}%</AppText>
+      </View>
+      <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 5, lineHeight: 15 }}>{note}</AppText>
+    </View>
   );
 }
 

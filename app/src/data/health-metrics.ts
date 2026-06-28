@@ -1,4 +1,5 @@
 import type { WorkoutSession } from '../store/workouts';
+import type { Muscle } from './workouts';
 
 // Richer health calculations. Headline: the acute:chronic workload ratio (ACWR),
 // the sports-science measure behind Whoop/Athlytic/Gentler-Streak "strain" — it
@@ -287,4 +288,62 @@ export function macroEnergySplit(
     carbs: Math.round((carbsG * 4 * 100) / kcal),
     fat: Math.round((fatG * 9 * 100) / kcal),
   };
+}
+
+/**
+ * Training balance from recent WORKING-SET COUNTS by muscle (not tonnage — leg/back
+ * loads are inherently heavier, which would bias a kg-based split toward "lower").
+ * A set is effort-comparable across muscles. Two ratios that matter:
+ *  • Push (chest+shoulders) vs Pull (back) — desk-bound users under-pull, which
+ *    rounds the shoulders; the common cue is to pull at least as much as you push.
+ *  • Upper vs Lower — flags the classic skipped-leg-day imbalance.
+ * Returns 'unknown' until there's volume on a side, so we never scold someone for a
+ * partial week. Arms are left out of push/pull (we don't split biceps vs triceps)
+ * but counted in Upper, since the upper/lower split doesn't need that distinction.
+ */
+export type BalanceStatus = 'balanced' | 'pushDominant' | 'pullDominant' | 'lowerLagging' | 'upperLagging' | 'unknown';
+export type TrainingBalance = {
+  push: number; pull: number; pushPullStatus: BalanceStatus; pushPullNote: string;
+  upper: number; lower: number; lowerPct: number; upperLowerStatus: BalanceStatus; upperLowerNote: string;
+};
+
+export function trainingBalance(vol: Partial<Record<Muscle, number>>): TrainingBalance {
+  const g = (m: Muscle) => vol[m] ?? 0;
+  const push = g('chest') + g('shoulders');
+  const pull = g('back');
+  const upper = g('chest') + g('back') + g('shoulders') + g('arms');
+  const lower = g('legs') + g('glutes');
+
+  // Push vs pull — need volume on both sides to judge a ratio.
+  let pushPullStatus: BalanceStatus;
+  let pushPullNote: string;
+  if (push + pull === 0) {
+    pushPullStatus = 'unknown'; pushPullNote = 'Log some upper-body work to see your push-to-pull balance.';
+  } else if (pull === 0) {
+    pushPullStatus = 'pushDominant'; pushPullNote = 'All push, no pull yet — add rows or pulldowns for shoulder health.';
+  } else if (push === 0) {
+    pushPullStatus = 'pullDominant'; pushPullNote = 'All pull, no press yet — add some pushing to round it out.';
+  } else {
+    const ratio = push / pull;
+    if (ratio > 1.3) { pushPullStatus = 'pushDominant'; pushPullNote = 'Leans push-heavy — make sure rows, pulldowns and face-pulls keep pace for shoulder health.'; }
+    else if (ratio < 0.7) { pushPullStatus = 'pullDominant'; pushPullNote = 'Pull-heavy — good for posture; keep some pressing in too.'; }
+    else { pushPullStatus = 'balanced'; pushPullNote = 'Push and pull are well matched — great for shoulder health.'; }
+  }
+
+  // Upper vs lower — need total volume to judge the split.
+  const total = upper + lower;
+  const lowerPct = total > 0 ? Math.round((lower / total) * 100) : 0;
+  let upperLowerStatus: BalanceStatus;
+  let upperLowerNote: string;
+  if (total === 0) {
+    upperLowerStatus = 'unknown'; upperLowerNote = 'Log a few lifts to see your upper-to-lower split.';
+  } else if (lowerPct < 35) {
+    upperLowerStatus = 'lowerLagging'; upperLowerNote = `Legs are ${lowerPct}% of volume — don’t skip leg day.`;
+  } else if (lowerPct > 65) {
+    upperLowerStatus = 'upperLagging'; upperLowerNote = `Upper body is lagging at ${100 - lowerPct}% — add some pressing and pulling.`;
+  } else {
+    upperLowerStatus = 'balanced'; upperLowerNote = `Upper and lower are balanced (${lowerPct}% legs).`;
+  }
+
+  return { push, pull, pushPullStatus, pushPullNote, upper, lower, lowerPct, upperLowerStatus, upperLowerNote };
 }
