@@ -180,6 +180,20 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* boxing: side-view stance, guard up, lead arm throwing a jab (rear arm in guard) */
+.bx{position:relative;width:116px;height:116px}
+.bx b{position:absolute;border-radius:99px;background:var(--grn)}
+.bx .ground{left:8px;right:8px;bottom:10px;height:3px;background:var(--navbg)}
+.bx .legB{left:44px;top:67px;width:9px;height:33px;transform-origin:top center;transform:rotate(-16deg)}
+.bx .legF{left:50px;top:67px;width:9px;height:33px;transform-origin:top center;transform:rotate(18deg)}
+.bx .torso{left:48px;top:62px;width:24px;height:11px;transform-origin:left center;transform:rotate(-68deg)}
+.bx .head{left:53px;top:27px;width:15px;height:15px}
+/* rear arm in guard (bent, glove by the face); lead arm extended in a jab */
+.bx .uarmB{left:53px;top:44px;width:15px;height:8px;transform-origin:left center;transform:rotate(38deg)}
+.bx .foreB{left:15px;top:0;width:15px;height:7px;transform-origin:left center;transform:rotate(-147deg)}
+.bx .uarmA{left:57px;top:41px;width:15px;height:8px;transform-origin:left center;transform:rotate(-2deg)}
+.bx .foreA{left:15px;top:0;width:15px;height:7px;transform-origin:left center;transform:rotate(-3deg)}
+.bx .glove{left:11px;top:-5px;width:11px;height:11px;background:var(--mut)} /* child of forearm */
 /* swimming (freestyle): horizontal body at a waterline, arms windmilling (one pull, one recover) */
 .sw{position:relative;width:116px;height:116px}
 .sw b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -264,13 +278,14 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .hp .plate{left:56px;top:40px;width:23px;height:23px;border-radius:99px;background:var(--grn)} /* loaded plate, edge-on */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · PADEL / TENNIS</div>
- <div class="stage"><div class="te">
+ <div class="lbl">WORKOUT · SPORT · BOXING</div>
+ <div class="stage"><div class="bx">
   <b class="ground"></b>
-  <b class="legB"></b><b class="legF"></b><b class="torso"></b><b class="barm"></b><b class="head"></b>
-  <b class="uarm"><b class="fore"><b class="throat"></b><b class="rhead"></b></b></b>
+  <b class="legB"></b><b class="legF"></b><b class="torso"></b><b class="head"></b>
+  <b class="uarmB"><b class="foreB"><b class="glove"></b></b></b>
+  <b class="uarmA"><b class="foreA"><b class="glove"></b></b></b>
  </div></div>
- <div class="name">🎾 Padel / Tennis</div>
+ <div class="name">🥊 Boxing</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · SPORT · JUMP ROPE</div>

@@ -52,6 +52,7 @@ const DURATION: Record<string, number> = {
   tennis: 1150,
   jumprope: 620, // one rope revolution = one hop
   swimming: 1500, // one freestyle stroke cycle (both arms)
+  boxing: 900, // a jab then a cross (one each per cycle)
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -121,6 +122,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <JumpRope phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'swimming' ? (
         <Swimming phase={phase} size={size} fg={fg} equip={equip} />
+      ) : kind === 'boxing' ? (
+        <Boxing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -903,6 +906,43 @@ function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size
       <Bone x={69 * s} y={54 * s} len={12 * s} w={8 * s} color={fg} rot={uarmB}>
         <Bone x={0} y={0} len={12 * s} w={7 * s} color={fg} rot={elbow}><View style={hand} /></Bone>
       </Bone>
+    </View>
+  );
+}
+
+// --- Boxing: a side-view boxer in stance; the gloves (equip) drive between a guard point
+// (bent, by the face) and an extended punch, the arm solved by IK. The lead arm jabs in the
+// first half of the cycle, the rear arm crosses in the second — alternating, with a small bob.
+function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const U = 15 * s, F = 15 * s;
+  const ikA = useDerivedValue(() => { 'worklet'; const e = Math.max(0, Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(57 * s, 45 * s, (63 + e * 24) * s, (39 + e * 4) * s, U, F, 1); });
+  const ikB = useDerivedValue(() => { 'worklet'; const e = Math.max(0, -Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(53 * s, 48 * s, (60 + e * 24) * s, (43 + e * 3) * s, U, F, 1); });
+  const uarmA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.a}deg` }] }; });
+  const foreA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.bRel}deg` }] }; });
+  const uarmB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.a}deg` }] }; });
+  const foreB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.bRel}deg` }] }; });
+  const bob = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: 1.5 * s * Math.abs(Math.sin(phase.value * 2 * Math.PI)) }] }; });
+  const glove = { position: 'absolute' as const, left: -5 * s, top: -5 * s, width: 11 * s, height: 11 * s, borderRadius: 99, backgroundColor: equip };
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.09, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, bob]}>
+        {/* boxer's stance: two legs from the hips */}
+        <Bone x={46 * s} y={67 * s} len={32 * s} w={9 * s} color={fg} rot={stat(108)} />
+        <Bone x={50 * s} y={67 * s} len={32 * s} w={9 * s} color={fg} rot={stat(72)} />
+        {/* torso leaning forward + head tucked behind the guard */}
+        <Bone x={48 * s} y={67 * s} len={24 * s} w={11 * s} color={fg} rot={stat(-68)} />
+        <View style={{ position: 'absolute', left: 53 * s, top: 27 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
+        {/* rear arm (cross) drawn first, lead arm (jab) on top — each a bent arm to a glove */}
+        <Bone x={53 * s} y={48 * s} len={U} w={8 * s} color={fg} rot={uarmB}>
+          <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreB}><View style={glove} /></Bone>
+        </Bone>
+        <Bone x={57 * s} y={45 * s} len={U} w={8 * s} color={fg} rot={uarmA}>
+          <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreA}><View style={glove} /></Bone>
+        </Bone>
+      </Animated.View>
     </View>
   );
 }
