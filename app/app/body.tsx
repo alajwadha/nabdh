@@ -7,14 +7,14 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { ACTIVITY_LEVELS, bmi, bmr, calorieBudget, hrZones, maxHr, tdee } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
 export default function Body() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
-  const { body, setBody } = useAppState();
+  const { body, setBody, budget } = useAppState();
   const { summary } = useHealth();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [detailed, setDetailed] = useState(false);
@@ -26,7 +26,8 @@ export default function Body() {
   const energyBmr = bmr(body.weightKg, body.heightCm, body.age, body.sex);
   const activity = ACTIVITY_LEVELS.find((a) => a.key === body.activity) ?? ACTIVITY_LEVELS[2];
   const energyTdee = tdee(energyBmr, activity.factor);
-  const targetBudget = calorieBudget(energyTdee, body.goal, body.sex);
+  // The Daily target IS the store's Food budget — one number, never two that drift.
+  const deficitCapped = body.goal === 'cut' && energyTdee - 500 < budget;
   const bmiBandColor = b.band === 'Healthy' ? tiles.mint : b.band === 'Underweight' ? tiles.blue : b.band === 'Overweight' ? tiles.gold : tiles.pink;
   // BMI gauge on a 15–40 scale (severe obesity is common in-market — don't cap at 35)
   const bmiPos = Math.max(0, Math.min(100, ((b.value - 15) / 25) * 100));
@@ -120,14 +121,15 @@ export default function Body() {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 10 }}>
           <AppText variant="title" color={tiles.gold.ink}>Daily target</AppText>
-          <AppText variant="h2" color={tiles.gold.ink}>{targetBudget.toLocaleString()} <AppText variant="caption" color={tiles.gold.ink}>kcal</AppText></AppText>
+          <AppText variant="h2" color={tiles.gold.ink}>{budget.toLocaleString()} <AppText variant="caption" color={tiles.gold.ink}>kcal</AppText></AppText>
         </View>
         <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 4, opacity: 0.8 }}>
           An estimate (±10%) — trust your 2–3 week weight trend. This drives your Food budget.
+          {deficitCapped ? ' Your deficit is capped at a safe minimum.' : ''}
         </AppText>
         {detailed && (
           <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 4, opacity: 0.85 }}>
-            BMR {energyBmr.toLocaleString()} (Mifflin–St Jeor) × {activity.factor} = {energyTdee.toLocaleString()}{body.goal === 'cut' ? ' − 500' : body.goal === 'gain' ? ' + 300' : ''} → {targetBudget.toLocaleString()} kcal, floored at a safe minimum
+            BMR {energyBmr.toLocaleString()} (Mifflin–St Jeor) × {activity.factor} = {energyTdee.toLocaleString()}{body.goal === 'cut' ? ' − 500' : body.goal === 'gain' ? ' + 300' : ''} → {budget.toLocaleString()} kcal, floored at a safe minimum
           </AppText>
         )}
       </View>

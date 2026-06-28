@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TileColor } from '../design-system';
-import { ACTIVITY_LEVELS, bmr, calorieBudget, tdee, type Goal } from '../data/health-metrics';
+import { bmr, calorieBudget, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
 
 export type MetricKey =
   | 'rhr'
@@ -49,7 +49,7 @@ export type Body = {
   activity: string; // ActivityLevel key (see health-metrics)
   goal: Goal;
 };
-export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate', goal: 'cut' };
+export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate', goal: 'maintain' };
 
 const DEFAULT_TILES: MetricKey[] = ['rhr', 'hrv', 'sleep', 'steps'];
 
@@ -160,8 +160,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   // Calorie budget derives from the body profile (BMR → TDEE → goal, safe-floored)
   // so Body and Food agree instead of showing two contradictory numbers.
   const bmrVal = bmr(body.weightKg, body.heightCm, body.age, body.sex);
-  const actFactor = ACTIVITY_LEVELS.find((a) => a.key === body.activity)?.factor ?? 1.55;
-  const budget = calorieBudget(tdee(bmrVal, actFactor), body.goal, body.sex);
+  const budget = calorieBudget(tdee(bmrVal, resolveActivityFactor(body.activity)), body.goal, body.sex);
 
   const kcal = meals.reduce((sum, m) => sum + m.kcal, 0);
   const macros: Macros = meals.reduce(

@@ -115,6 +115,11 @@ export const ACTIVITY_LEVELS: ActivityLevel[] = [
   { key: 'athlete', label: 'Athlete', factor: 1.9 },
 ];
 
+/** Single source for an activity key → factor (so store + UI can't diverge). */
+export function resolveActivityFactor(key: string): number {
+  return ACTIVITY_LEVELS.find((a) => a.key === key)?.factor ?? 1.55;
+}
+
 /** Total daily energy expenditure = BMR × activity factor. */
 export function tdee(bmrValue: number, factor: number): number {
   return Math.round(bmrValue * factor);
