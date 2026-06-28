@@ -10,6 +10,8 @@ export type GlucoseEntry = { at: string; mgdl: number };
 export type Med = { id: string; name: string; dose?: string; schedule: string; takenDates: string[] };
 
 const KEY = 'nabdh.healthlogs';
+// NOTE: UTC day key. Fine for the Gulf (UTC+3 never rolls early); a future pass should
+// switch to a local-timezone day so streaks don't tick a day early west of UTC.
 export function dayKey(d = new Date()): string {
   return d.toISOString().slice(0, 10);
 }
@@ -43,7 +45,9 @@ type HealthLogsState = Logs & {
 };
 
 const Ctx = createContext<HealthLogsState | undefined>(undefined);
-const SEED: Logs = seed();
+// Demo data only in dev so the charts read live; production starts empty (and the user's
+// first log can't "freeze in" seeded vitals).
+const SEED: Logs = __DEV__ ? seed() : { weight: [], bp: [], glucose: [], meds: [] };
 
 export function HealthLogsProvider({ children }: { children: ReactNode }) {
   const [logs, setLogs] = useState<Logs>(SEED);
