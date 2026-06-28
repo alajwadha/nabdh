@@ -192,6 +192,15 @@ function Squat({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
   const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-100 - depth(phase.value) * 18}deg` }] }; });
   // body lowers as the knee folds, so the foot stays ~planted on the ground
   const body = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: depth(phase.value) * 14 * s }] }; });
+  // head + barbell follow the SHOULDER as the torso leans (so they don't float off the spine)
+  const headBar = useAnimatedStyle(() => {
+    'worklet';
+    const d = depth(phase.value);
+    const a0 = -100 * Math.PI / 180;
+    const a = (-100 - d * 18) * Math.PI / 180;
+    const L = 30 * s;
+    return { transform: [{ translateX: L * (Math.cos(a) - Math.cos(a0)) }, { translateY: L * (Math.sin(a) - Math.sin(a0)) }] };
+  });
 
   const hipX = 52 * s;
   const hipY = 50 * s;
@@ -207,11 +216,13 @@ function Squat({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
         </Bone>
         {/* torso up from the hip */}
         <Bone x={hipX} y={hipY} len={30 * s} w={10 * s} color={fg} rot={torso} />
-        {/* head + barbell across the shoulders (sit on top of the torso) */}
-        <View style={{ position: 'absolute', left: 34 * s, top: 12 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
-        <View style={{ position: 'absolute', left: 22 * s, top: 22 * s, width: 44 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
-        <View style={{ position: 'absolute', left: 20 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
-        <View style={{ position: 'absolute', left: 60 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+        {/* head + barbell across the shoulders — translate to follow the leaning shoulder */}
+        <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, headBar]}>
+          <View style={{ position: 'absolute', left: 34 * s, top: 12 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: 22 * s, top: 22 * s, width: 44 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: 20 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: 60 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+        </Animated.View>
       </Animated.View>
     </View>
   );
