@@ -56,6 +56,10 @@ export function searchDishes(q: string): Dish[] {
   return DISHES.filter((d) => norm(d.name).includes(t) || norm(d.ar).includes(t) || d.cat.includes(t));
 }
 
+export function dishById(id: string): Dish | undefined {
+  return DISHES.find((d) => d.id === id);
+}
+
 export const CAT_LABEL: Record<DishCat, string> = {
   main: 'Mains',
   breakfast: 'Breakfast',
