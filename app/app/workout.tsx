@@ -19,6 +19,7 @@ import {
   distanceKm,
   e1rm,
   metCalories,
+  platesPerSide,
   runningMet,
   totalReps,
   volume,
@@ -65,6 +66,7 @@ export default function Workout() {
 
   const vol = useMemo(() => volume(sets), [sets]);
   const best = useMemo(() => bestE1rm(sets), [sets]);
+  const topWeight = sets.reduce((m, st) => Math.max(m, st.weight), 0);
   const suggested = workingWeight(best || 80, 8, advice.factor);
 
   const last = lastFor(exKey);
@@ -171,6 +173,11 @@ export default function Workout() {
             <Pressable onPress={() => setSets((a) => [...a, { ...(a[a.length - 1] ?? { weight: 40, reps: 8 }) }])} style={{ paddingVertical: 10 }}>
               <AppText variant="caption" color={colors.accentText}>＋ Add set</AppText>
             </Pressable>
+            {detailed && ex.equipment === 'barbell' && (
+              <AppText variant="caption" color={colors.textMuted} style={{ paddingBottom: 8 }}>
+                🏋️ Per side (20 kg bar) @ {topWeight} kg: {platesPerSide(topWeight).length ? platesPerSide(topWeight).join(' · ') : 'just the bar'}
+              </AppText>
+            )}
           </Card>
 
           <View style={{ flexDirection: 'row', gap: spacing.md }}>

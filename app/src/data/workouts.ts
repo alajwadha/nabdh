@@ -114,6 +114,21 @@ export function workingWeight(oneRm: number, reps: number, factor = 1): number {
   return Math.round(base * factor * 2) / 2;
 }
 
+/** Plates to load PER SIDE for a target barbell total (greedy, standard kg plates). */
+export function platesPerSide(totalKg: number, barKg = 20): number[] {
+  let perSide = (totalKg - barKg) / 2;
+  if (perSide <= 0) return [];
+  const avail = [25, 20, 15, 10, 5, 2.5, 1.25];
+  const out: number[] = [];
+  for (const p of avail) {
+    while (perSide >= p - 1e-9) {
+      out.push(p);
+      perSide -= p;
+    }
+  }
+  return out;
+}
+
 // --- Catalogs ---------------------------------------------------------------
 export const EXERCISES: Exercise[] = [
   { key: 'legpress', name: 'Leg press', nameAr: 'دفع الأرجل', muscle: 'legs', equipment: 'machine', emoji: '🦵' },
