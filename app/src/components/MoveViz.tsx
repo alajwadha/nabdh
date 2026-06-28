@@ -46,6 +46,7 @@ const DURATION: Record<string, number> = {
   latpull: 1500, // pull the bar down and let it rise
   triext: 1200, // extend down and let it rise
   hipthrust: 1500, // drive the hips up to lockout and lower
+  calfraise: 1300, // rise onto the toes and lower the heel below the step
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -105,6 +106,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Pushdown phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'hipthrust' ? (
         <HipThrust phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'calfraise' ? (
+        <CalfRaise phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -699,6 +702,47 @@ function HipThrust({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
             reads as a loaded bar (not a body bulge), riding the same hip point */}
         <View style={{ position: 'absolute', left: hip0x - 19 * s, top: hip0y - 2.5 * s, width: 39 * s, height: 5 * s, borderRadius: 99, backgroundColor: fg }} />
         <View style={{ position: 'absolute', left: hip0x - 11.5 * s, top: hip0y - 11.5 * s, width: 23 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
+      </Animated.View>
+    </View>
+  );
+}
+
+// --- Calf raise: ball of foot fixed on a step edge; heel drops below then rises onto the
+// toes while the whole body lifts. The body translates straight UP (clean, no lateral
+// slide); the foot's instep "stretches" between the fixed ball and the rising ankle —
+// foreshortened (flat foot) at the bottom, near-vertical (on toes) at the top.
+function CalfRaise({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const ballX = 58 * s, ballY = 84 * s; // ball of foot on the step edge (fixed pivot)
+  const ankX = 54 * s, ankBotY = 80 * s, riseY = 12 * s; // ankle: bottom pose + how far it lifts
+  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 heel-dropped → 1 on toes
+  // body (legs/torso/head/arms/heel) lifts straight up onto the toes
+  const lift = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: -riseY * p(phase.value) }] }; });
+  // instep bone connects the FIXED ball to the RISING ankle (animated angle + length)
+  const ankle = useDerivedValue(() => { 'worklet'; return { x: ankX, y: ankBotY - riseY * p(phase.value) }; });
+  const instepRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(ankle.value.y - ballY, ankle.value.x - ballX)}rad` }] }; });
+  const instepLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((ankle.value.x - ballX) ** 2 + (ankle.value.y - ballY) ** 2) }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.08, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* the step / block the toes press on */}
+      <View style={{ position: 'absolute', left: 58 * s, top: 84 * s, width: 46 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      {/* ball of foot on the step edge (the fixed pivot) */}
+      <View style={{ position: 'absolute', left: 58 * s, top: 82 * s, width: 13 * s, height: 5 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* instep: fixed ball → rising ankle (Bone-style pivot with an animated-length bar) */}
+      <Animated.View style={[{ position: 'absolute', left: ballX, top: ballY, width: 0, height: 0 }, instepRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -3 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }, instepLen]} />
+      </Animated.View>
+      {/* everything above the ankle lifts straight up onto the toes */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, lift]}>
+        <View style={{ position: 'absolute', left: 49 * s, top: 58 * s, width: 8 * s, height: 22 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 54 * s, top: 58 * s, width: 8 * s, height: 22 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 49 * s, top: 34 * s, width: 10 * s, height: 25 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 46 * s, top: 36 * s, width: 7 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 60 * s, top: 36 * s, width: 7 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 44 * s, top: 18 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+        {/* heel, dropped below the step at the bottom and rising above it on the toes */}
+        <View style={{ position: 'absolute', left: 42 * s, top: 84 * s, width: 14 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '20deg' }] }} />
       </Animated.View>
     </View>
   );

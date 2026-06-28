@@ -180,6 +180,20 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* calf raise: ball of foot on a step edge, heel DROPPED below the step (bottom/stretch pose) */
+.cf{position:relative;width:116px;height:116px}
+.cf b{position:absolute;border-radius:99px;background:var(--grn)}
+.cf .ground{left:8px;right:8px;bottom:10px;height:3px;background:var(--navbg)}
+.cf .block{left:58px;top:84px;width:46px;height:18px;border-radius:3px;background:var(--mut)} /* the step */
+.cf .toe{left:58px;top:82px;width:13px;height:5px} /* ball of foot on the step edge (fixed pivot) */
+.cf .instep{left:58px;top:81px;width:7px;height:6px;transform-origin:left center;transform:rotate(-135deg)} /* ball→ankle, short = flat foot */
+.cf .heel{left:42px;top:84px;width:14px;height:6px;transform-origin:right center;transform:rotate(20deg)} /* heel dropped below the step edge */
+.cf .head{left:44px;top:18px;width:17px;height:17px}
+.cf .torso{left:49px;top:34px;width:10px;height:25px}
+.cf .armB{left:46px;top:36px;width:7px;height:23px}
+.cf .armF{left:60px;top:36px;width:7px;height:23px}
+.cf .legB{left:49px;top:58px;width:8px;height:22px}
+.cf .legF{left:54px;top:58px;width:8px;height:22px}
 /* hip thrust: shoulders on a bench, barbell on the hips, driven to full lockout (top pose) */
 .hp{position:relative;width:116px;height:116px}
 .hp b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -205,15 +219,15 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🍑 Hip thrust</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · LAT PULLDOWN</div>
- <div class="stage"><div class="lat">
-  <div class="pulley"></div><b class="cable"></b><b class="seat"></b><b class="pad"></b>
-  <b class="thigh"><b class="shin"></b></b>
-  <b class="torso"></b><b class="head"></b>
-  <b class="uarm"><b class="farm"></b></b>
-  <b class="pbar"></b>
+ <div class="lbl">WORKOUT · GYM · CALF RAISE</div>
+ <div class="stage"><div class="cf">
+  <b class="ground"></b><b class="block"></b>
+  <b class="instep"></b><b class="toe"></b>
+  <b class="legB"></b><b class="legF"></b>
+  <b class="torso"></b><b class="armB"></b><b class="armF"></b><b class="head"></b>
+  <b class="heel"></b>
  </div></div>
- <div class="name">🦵 Lat pulldown</div>
+ <div class="name">🦵 Calf raise</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · GYM · TRICEPS PUSHDOWN</div>
