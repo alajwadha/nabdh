@@ -119,6 +119,14 @@ export function workingWeight(oneRm: number, reps: number, factor = 1): number {
   return Math.round(base * factor * 2) / 2;
 }
 
+/** Rest-between-sets guidance from the working rep range (heavier/fewer → longer rest). */
+export function restRecommendation(reps: number): string {
+  if (reps <= 0) return '';
+  if (reps <= 5) return '3–5 min · strength';
+  if (reps <= 12) return '60–90 s · hypertrophy';
+  return '30–60 s · endurance';
+}
+
 /** Plates to load PER SIDE for a target barbell total (greedy, standard kg plates). */
 export function platesPerSide(totalKg: number, barKg = 20): number[] {
   let perSide = (totalKg - barKg) / 2;

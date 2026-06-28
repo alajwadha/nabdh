@@ -20,6 +20,7 @@ import {
   e1rm,
   metCalories,
   platesPerSide,
+  restRecommendation,
   warmupRamp,
   riegelTime,
   runningMet,
@@ -70,6 +71,7 @@ export default function Workout() {
   const vol = useMemo(() => volume(sets), [sets]);
   const best = useMemo(() => bestE1rm(sets), [sets]);
   const topWeight = sets.reduce((m, st) => Math.max(m, st.weight), 0);
+  const topReps = sets.find((st) => st.weight === topWeight)?.reps ?? 0; // reps of the heaviest set
   const plates = platesPerSide(topWeight, barKg);
   const loaded = barKg + plates.reduce((a, b) => a + b, 0) * 2; // what the plates actually make
   const warmup = warmupRamp(topWeight, ex.equipment === 'barbell' ? barKg : 0);
@@ -167,7 +169,7 @@ export default function Workout() {
           <Card>
             {detailed && (
               <AppText variant="caption" color={colors.textMuted}>
-                {MUSCLE_LABEL[ex.muscle]} · {ex.equipment}
+                {MUSCLE_LABEL[ex.muscle]} · {ex.equipment}{topReps > 0 ? ` · ⏱ rest ${restRecommendation(topReps)}` : ''}
               </AppText>
             )}
             {sets.map((st, i) => (
