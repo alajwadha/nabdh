@@ -45,6 +45,7 @@ const DURATION: Record<string, number> = {
   dbcurl: 1300, // curl up and lower
   latpull: 1500, // pull the bar down and let it rise
   triext: 1200, // extend down and let it rise
+  hipthrust: 1500, // drive the hips up to lockout and lower
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -102,6 +103,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <LatPulldown phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'triext' ? (
         <Pushdown phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'hipthrust' ? (
+        <HipThrust phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -650,6 +653,51 @@ function Pushdown({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
           <View style={{ position: 'absolute', left: -10 * s, top: -2.5 * s, width: 20 * s, height: 5 * s, borderRadius: 99, backgroundColor: equip }} />
         </Animated.View>
       </Bone>
+    </View>
+  );
+}
+
+// --- Hip thrust: upper back pinned on a bench, barbell on the hips, drive to lockout ---
+// The shoulder is fixed on the bench, the foot is planted; the HIP is the moving joint.
+// Torso rotates about the shoulder, so its far end traces the hip (FK). The leg then
+// solves by 2-bar IK from that moving hip down to the fixed foot (knee stays ~planted).
+function HipThrust({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const shx = 30 * s, shy = 56 * s, tL = 38 * s; // shoulder pivot on the bench + torso length
+  const footX = 92 * s, footY = 80 * s, thighL = 21 * s, shinL = 21 * s; // planted foot + leg
+  const A0 = 24, A1 = -7; // torso world angle: hips low (bottom) → near level (lockout)
+  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 bottom → 1 top
+  // hip = far end of the torso bone (FK). Authored bottom-pose hip is the translate anchor.
+  const hip0x = shx + tL * Math.cos((A0 * Math.PI) / 180), hip0y = shy + tL * Math.sin((A0 * Math.PI) / 180);
+  const hip = useDerivedValue(() => { 'worklet'; const a = ((A0 + p(phase.value) * (A1 - A0)) * Math.PI) / 180; return { x: shx + tL * Math.cos(a), y: shy + tL * Math.sin(a) }; });
+  // leg IK solved in WORLD coords; bone angles are translation-invariant, so they apply
+  // unchanged inside the translate-follow group that carries the leg root to the hip.
+  const ik = useDerivedValue(() => { 'worklet'; return solve2Bar(hip.value.x, hip.value.y, footX, footY, thighL, shinL, -1); });
+  const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${A0 + p(phase.value) * (A1 - A0)}deg` }] }; });
+  const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
+  const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
+  // leg + plate both ride the moving hip (translate by hip − hip0)
+  const follow = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateX: hip.value.x - hip0x }, { translateY: hip.value.y - hip0y }] }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* bench: pad the upper back rests on + a support leg */}
+      <View style={{ position: 'absolute', left: 8 * s, top: 57 * s, width: 30 * s, height: 10 * s, borderRadius: 4 * s, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 16 * s, top: 67 * s, width: 7 * s, height: 22 * s, borderRadius: 99, backgroundColor: equip }} />
+      {/* head resting on the bench */}
+      <View style={{ position: 'absolute', left: 11 * s, top: 40 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* torso pivots about the fixed shoulder; its end traces the hip */}
+      <Bone x={shx} y={shy} len={tL} w={10 * s} color={fg} rot={torso} />
+      {/* leg rides the hip: thigh (IK) → shin → planted foot */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, follow]}>
+        <Bone x={hip0x} y={hip0y} len={thighL} w={9 * s} color={fg} rot={thigh}>
+          <Bone x={0} y={0} len={shinL} w={9 * s} color={fg} rot={shin}>
+            <View style={{ position: 'absolute', left: -3 * s, top: -3 * s, width: 14 * s, height: 7 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+          </Bone>
+        </Bone>
+        {/* loaded barbell on the hips — plate seen edge-on, riding the same hip point */}
+        <View style={{ position: 'absolute', left: hip0x - 11.5 * s, top: hip0y - 11.5 * s, width: 23 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
+      </Animated.View>
     </View>
   );
 }

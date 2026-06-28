@@ -180,16 +180,28 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* hip thrust: shoulders on a bench, barbell on the hips, driven to full lockout (top pose) */
+.hp{position:relative;width:116px;height:116px}
+.hp b{position:absolute;border-radius:99px;background:var(--grn)}
+.hp .ground{left:8px;right:8px;bottom:12px;height:3px;background:var(--navbg)}
+.hp .benchpad{left:8px;top:57px;width:30px;height:10px;background:var(--mut)} /* upper back rests here */
+.hp .benchleg{left:16px;top:67px;width:7px;height:22px;background:var(--mut)}
+.hp .head{left:11px;top:40px;width:17px;height:17px}
+.hp .torso{left:30px;top:51px;width:38px;height:10px;transform-origin:left center;transform:rotate(-7deg)} /* shoulder→hip, near level at lockout */
+.hp .thigh{left:67px;top:47px;width:21px;height:9px;transform-origin:left center;transform:rotate(23deg)} /* hip→knee */
+.hp .shin{left:21px;top:0;width:21px;height:9px;transform-origin:left center;transform:rotate(53deg)} /* child of thigh: knee→foot */
+.hp .foot{left:18px;top:-3px;width:14px;height:7px;border-radius:3px} /* child of shin: planted */
+.hp .plate{left:56px;top:40px;width:23px;height:23px;border-radius:99px;background:var(--grn)} /* loaded bar on hips, plate edge-on */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · BICEP CURL</div>
- <div class="stage"><div class="cu">
-  <b class="ground"></b><b class="legF"></b><b class="legB"></b>
+ <div class="lbl">WORKOUT · GYM · HIP THRUST</div>
+ <div class="stage"><div class="hp">
+  <b class="ground"></b><b class="benchpad"></b><b class="benchleg"></b>
   <b class="torso"></b><b class="head"></b>
-  <b class="uarm"></b><b class="forearm"></b>
-  <b class="dbbar"></b><b class="dbL"></b><b class="dbR"></b>
+  <b class="thigh"><b class="shin"><b class="foot"></b></b></b>
+  <b class="plate"></b>
  </div></div>
- <div class="name">💪 Bicep curl</div>
+ <div class="name">🍑 Hip thrust</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · GYM · LAT PULLDOWN</div>
