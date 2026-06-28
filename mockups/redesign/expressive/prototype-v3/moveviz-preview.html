@@ -28,6 +28,22 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 /* emoji-pulse fallback — the sport's own emoji, gently pulsing */
 .pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+/* bench press: lying figure pressing a barbell up via a 2-seg arm */
+.bp{position:relative;width:116px;height:116px}
+.bp b{position:absolute;border-radius:99px;background:var(--grn)}
+.bp .ground{left:8px;right:8px;bottom:12px;height:3px;background:var(--navbg)}
+.bp .bench{left:16px;top:74px;width:66px;height:7px}
+.bp .lA{left:22px;top:81px;width:6px;height:18px;background:var(--navbg)}
+.bp .lB{left:72px;top:81px;width:6px;height:18px;background:var(--navbg)}
+.bp .head{left:12px;top:58px;width:16px;height:16px}
+.bp .torso{left:26px;top:66px;width:38px;height:10px} /* lying on bench */
+.bp .thigh{left:62px;top:68px;width:18px;height:9px;transform-origin:left center;transform:rotate(46deg)}
+.bp .shin{left:18px;top:0;width:18px;height:9px;transform-origin:left center;transform:rotate(58deg)} /* child of thigh */
+.bp .uarm{left:36px;top:64px;width:17px;height:9px;transform-origin:left center;transform:rotate(-80deg)}
+.bp .farm{left:17px;top:0;width:16px;height:9px;transform-origin:left center;transform:rotate(-4deg)} /* child of uarm */
+.bp .bar{left:-15px;top:-3px;width:42px;height:6px} /* child of farm: barbell across hands */
+.bp .plL{left:-19px;top:-9px;width:8px;height:18px;border-radius:3px}
+.bp .plR{left:19px;top:-9px;width:8px;height:18px;border-radius:3px}
 /* squat: side figure, barbell on back, jointed legs bending deep */
 .sq{position:relative;width:116px;height:116px}
 .sq b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -85,6 +101,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   </div>
  </div>
  <div class="name">🏋️ Squat</div>
+</div>
+<div class="card">
+ <div class="lbl">WORKOUT · GYM · BENCH PRESS</div>
+ <div class="stage">
+  <div class="bp">
+   <b class="ground"></b><b class="lA"></b><b class="lB"></b><b class="bench"></b>
+   <b class="head"></b><b class="torso"></b>
+   <b class="thigh"><b class="shin"></b></b>
+   <b class="uarm"><b class="farm"><b class="bar"></b><b class="plL"></b><b class="plR"></b></b></b>
+  </div>
+ </div>
+ <div class="name">🏋️ Bench press</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>

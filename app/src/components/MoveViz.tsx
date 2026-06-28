@@ -35,6 +35,7 @@ const DURATION: Record<string, number> = {
   running: 760, // a full stride cycle
   legpress: 1500, // a controlled press out-and-back
   squat: 1700, // down and up under the bar
+  bench: 1400, // press up and lower to the chest
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -71,6 +72,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <LegPress phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'squat' ? (
         <Squat phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'bench' ? (
+        <Bench phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -224,6 +227,39 @@ function Squat({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
           <View style={{ position: 'absolute', left: 60 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
         </Animated.View>
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Bench press: a lying figure pressing a barbell up and lowering it to the chest ---
+function Bench({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const press = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 chest → 1 locked out
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-60 - press(phase.value) * 20}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-40 + press(phase.value) * 36}deg` }] }; });
+  const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* bench: platform + legs */}
+      <View style={{ position: 'absolute', left: 22 * s, top: 81 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: 72 * s, top: 81 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: 16 * s, top: 74 * s, width: 66 * s, height: 7 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* lying lifter */}
+      <View style={{ position: 'absolute', left: 12 * s, top: 58 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 26 * s, top: 66 * s, width: 38 * s, height: 10 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* bent legs off the end of the bench (static) */}
+      <Bone x={62 * s} y={68 * s} len={18 * s} w={9 * s} color={fg} rot={stat(46)}>
+        <Bone x={0} y={0} len={18 * s} w={9 * s} color={fg} rot={stat(58)} />
+      </Bone>
+      {/* pressing arm: upper arm → forearm → barbell */}
+      <Bone x={36 * s} y={64 * s} len={17 * s} w={9 * s} color={fg} rot={uarm}>
+        <Bone x={0} y={0} len={16 * s} w={9 * s} color={fg} rot={farm}>
+          <View style={{ position: 'absolute', left: -15 * s, top: -3 * s, width: 42 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: -19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: 19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+        </Bone>
+      </Bone>
     </View>
   );
 }
