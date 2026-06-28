@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { AppText, Card, Screen } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
@@ -17,6 +17,7 @@ const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 
 export default function Food() {
   const { colors, tiles } = useTheme();
+  const router = useRouter();
   const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget, body } = useAppState();
   const { summary } = useHealth();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
@@ -192,6 +193,11 @@ export default function Food() {
           </Pressable>
         </View>
       </Card>
+
+      <Pressable onPress={() => router.navigate('/food-search')} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: colors.navOn, borderRadius: radii.pill, paddingVertical: 14 }}>
+        <Icon name="search" size={18} color={colors.navOnText} />
+        <AppText variant="title" color={colors.navOnText} style={{ fontSize: 15 }}>Search & add food</AppText>
+      </Pressable>
 
       {meals.map((m) => (
         <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.lg, padding: 12 }}>

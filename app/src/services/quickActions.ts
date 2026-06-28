@@ -26,6 +26,7 @@ export type ShortcutAction = {
 
 export const ACTIONS: ShortcutAction[] = [
   { id: 'water', title: 'Add water', subtitle: '+1 glass (250 ml)', icon: 'droplet', href: '/(tabs)/food?quickWater=1', iosIcon: 'symbol:drop.fill' },
+  { id: 'food', title: 'Add food', subtitle: 'Search dishes or scan', icon: 'utensils', href: '/food-search', iosIcon: 'symbol:fork.knife' },
   { id: 'workout', title: 'Start workout', subtitle: 'Log gym or a sport', icon: 'dumbbell', href: '/workout', iosIcon: 'symbol:dumbbell.fill' },
   { id: 'breathe', title: 'Breathe', subtitle: 'A calm minute', icon: 'wind', href: '/breathe', iosIcon: 'symbol:wind' },
   { id: 'track', title: 'Track outdoors', subtitle: 'GPS run / walk / ride', icon: 'map-pin', href: '/track', iosIcon: 'symbol:location.fill' },
