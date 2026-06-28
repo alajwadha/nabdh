@@ -58,6 +58,7 @@ const DURATION: Record<string, number> = {
   basketball: 650, // one dribble bounce
   football: 1100, // wind-up, strike, follow-through
   hiit: 520, // fast high-knees cadence
+  pushup: 1500, // lower the chest then press back up
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -123,6 +124,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <CalfRaise phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'plank' ? (
         <Plank phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'pushup' ? (
+        <Pushup phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'padel' || kind === 'tennis' ? (
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'jumprope' ? (
@@ -849,6 +852,41 @@ function Plank({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
         <View style={{ position: 'absolute', left: 23 * s, top: 52 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
         <Bone x={sh0x} y={sh0y} len={12 * s} w={8 * s} color={fg} rot={uarm}>
           <Bone x={0} y={0} len={14 * s} w={8 * s} color={fg} rot={fore} />
+        </Bone>
+      </Animated.View>
+    </View>
+  );
+}
+
+// --- Push-up: hands + toes planted, the body a rigid straight line pivoting about the toes;
+// the arms (IK to the fixed hand) bend to lower the chest to the floor then press straight to
+// raise the whole body. Reduce-motion still = the bent-arm bottom. Builds on the Plank base.
+function Pushup({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const toeX = 96 * s, toeY = 88 * s, hX = 33 * s, hY = 88 * s, U = 14 * s, F = 14 * s;
+  const sh0x = 44 * s, sh0y = 74 * s; // shoulder at the bottom pose (translate anchor)
+  const p = (v: number) => (1 - Math.cos((v - 0.25) * 2 * Math.PI)) / 2; // 0 chest-down (0.25) → 1 pressed-up (0.75)
+  const sh = useDerivedValue(() => { 'worklet'; const q = p(phase.value); return { x: (44 - 6 * q) * s, y: (74 - 14 * q) * s }; });
+  const ik = useDerivedValue(() => { 'worklet'; return solve2Bar(sh.value.x, sh.value.y, hX, hY, U, F, 1); });
+  const bodyRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(sh.value.y - toeY, sh.value.x - toeX)}rad` }] }; });
+  const bodyLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((sh.value.x - toeX) ** 2 + (sh.value.y - toeY) ** 2) }; });
+  const follow = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateX: sh.value.x - sh0x }, { translateY: sh.value.y - sh0y }] }; });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
+  const fore = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.07, right: size * 0.07, top: 90 * s, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* toes planted */}
+      <View style={{ position: 'absolute', left: 92 * s, top: 84 * s, width: 9 * s, height: 7 * s, borderRadius: 2 * s, backgroundColor: fg }} />
+      {/* straight body line: toe → shoulder (pivot at the fixed toe, animated length) */}
+      <Animated.View style={[{ position: 'absolute', left: toeX, top: toeY, width: 0, height: 0 }, bodyRot]}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -5.5 * s, height: 11 * s, borderRadius: 99, backgroundColor: fg }, bodyLen]} />
+      </Animated.View>
+      {/* upper body rides the rising shoulder: head + arm (bent at the bottom → straight at the top) */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, follow]}>
+        <View style={{ position: 'absolute', left: 27 * s, top: 64 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
+        <Bone x={sh0x} y={sh0y} len={U} w={8 * s} color={fg} rot={uarm}>
+          <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={fore} />
         </Bone>
       </Animated.View>
     </View>

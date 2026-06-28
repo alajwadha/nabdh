@@ -191,6 +191,15 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .fb .head{left:42px;top:13px;width:16px;height:16px}
 .fb .armB{left:51px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(42deg)}
 .fb .armF{left:55px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(-30deg)}
+/* push-up: hands + toes planted, straight body, arms BENT at the bottom (chest low) */
+.pp{position:relative;width:116px;height:116px}
+.pp b{position:absolute;border-radius:99px;background:var(--grn)}
+.pp .ground{left:8px;right:8px;top:90px;height:3px;background:var(--navbg)}
+.pp .body{left:44px;top:69px;width:54px;height:11px;transform-origin:left center;transform:rotate(15deg)} /* shoulder→toe straight line */
+.pp .uarm{left:44px;top:70px;width:14px;height:8px;transform-origin:left center;transform:rotate(179deg)} /* upper arm horizontal */
+.pp .fore{left:14px;top:0;width:14px;height:7px;transform-origin:left center;transform:rotate(-101deg)} /* forearm down to the planted hand */
+.pp .head{left:27px;top:64px;width:15px;height:15px}
+.pp .foot{left:92px;top:84px;width:9px;height:7px;border-radius:2px} /* toes */
 /* basketball: side-view dribble — ball mid-bounce, arm reaching down, athletic crouch */
 .bb{position:relative;width:116px;height:116px}
 .bb b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -339,15 +348,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .hp .plate{left:56px;top:40px;width:23px;height:23px;border-radius:99px;background:var(--grn)} /* loaded plate, edge-on */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · BASKETBALL</div>
- <div class="stage"><div class="bb">
-  <b class="ground"></b><b class="ball"></b>
-  <b class="thF"><b class="shF"></b></b>
-  <b class="barm"></b>
-  <b class="thN"><b class="shN"></b></b><b class="torso"></b><b class="head"></b>
-  <b class="uarm"><b class="farm"><b class="hand"></b></b></b>
+ <div class="lbl">WORKOUT · GYM · PUSH-UP</div>
+ <div class="stage"><div class="pp">
+  <b class="ground"></b><b class="foot"></b>
+  <b class="body"></b>
+  <b class="uarm"><b class="fore"></b></b><b class="head"></b>
  </div></div>
- <div class="name">🏀 Basketball</div>
+ <div class="name">💪 Push-up</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · SPORT · FOOTBALL</div>
