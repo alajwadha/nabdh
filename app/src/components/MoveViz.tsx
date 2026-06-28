@@ -42,6 +42,7 @@ const DURATION: Record<string, number> = {
   rowing: 1900, // drive, swing and pull, then recover
   cycling: 900, // one pedal revolution
   pullup: 1500, // pull up to the bar and lower
+  dbcurl: 1300, // curl up and lower
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -93,6 +94,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Cycling phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'pullup' ? (
         <Pullup phase={phase} size={size} fg={fg} equip={equip} />
+      ) : kind === 'dbcurl' ? (
+        <Curl phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -524,6 +527,35 @@ function Pullup({ phase, size, fg, equip }: { phase: SharedValue<number>; size: 
           </Bone>
         </Bone>
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Bicep curl: standing, upper arm fixed at the side, forearm curls a dumbbell up ---
+function Curl({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const c = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 extended (down) → 1 curled (up)
+  const forearm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${90 - c(phase.value) * 130}deg` }] }; }); // world angle: down → up
+  const bell = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-90 + c(phase.value) * 130}deg` }] }; }); // counter-rotate → dumbbell stays level
+  const elbowX = 57 * s, elbowY = 58 * s;
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* standing figure */}
+      <View style={{ position: 'absolute', left: 54 * s, top: 66 * s, width: 9 * s, height: 28 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 66 * s, width: 9 * s, height: 28 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 34 * s, width: 10 * s, height: 32 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 44 * s, top: 16 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* upper arm fixed at the side (shoulder → elbow) */}
+      <View style={{ position: 'absolute', left: 53 * s, top: 36 * s, width: 9 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* forearm curls around the elbow, dumbbell stays level */}
+      <Bone x={elbowX} y={elbowY} len={18 * s} w={9 * s} color={fg} rot={forearm}>
+        <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: 0, height: 0 }, bell]}>
+          <View style={{ position: 'absolute', left: -10 * s, top: -2.5 * s, width: 20 * s, height: 5 * s, borderRadius: 99, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: -13 * s, top: -6 * s, width: 7 * s, height: 13 * s, borderRadius: 2 * s, backgroundColor: fg }} />
+          <View style={{ position: 'absolute', left: 6 * s, top: -6 * s, width: 7 * s, height: 13 * s, borderRadius: 2 * s, backgroundColor: fg }} />
+        </Animated.View>
+      </Bone>
     </View>
   );
 }

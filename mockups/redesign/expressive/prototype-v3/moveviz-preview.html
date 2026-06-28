@@ -28,6 +28,19 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 /* emoji-pulse fallback — the sport's own emoji, gently pulsing */
 .pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+/* bicep curl: standing, upper arm at side, forearm curling a dumbbell up */
+.cu{position:relative;width:116px;height:116px}
+.cu b{position:absolute;border-radius:99px;background:var(--grn)}
+.cu .ground{left:8px;right:8px;bottom:12px;height:3px;background:var(--navbg)}
+.cu .head{left:44px;top:16px;width:17px;height:17px}
+.cu .torso{left:49px;top:34px;width:10px;height:32px}
+.cu .legF{left:54px;top:66px;width:9px;height:28px;transform-origin:top center;transform:rotate(5deg)}
+.cu .legB{left:49px;top:66px;width:9px;height:28px;transform-origin:top center;transform:rotate(-5deg)}
+.cu .uarm{left:54px;top:36px;width:9px;height:22px;transform-origin:top center}
+.cu .forearm{left:54px;top:56px;width:18px;height:9px;transform-origin:left center;transform:rotate(-22deg)}
+.cu .dbbar{left:64px;top:47px;width:18px;height:5px}
+.cu .dbL{left:62px;top:43px;width:7px;height:13px;border-radius:2px}
+.cu .dbR{left:78px;top:43px;width:7px;height:13px;border-radius:2px}
 /* pull-up: hang from a fixed bar, arms bent (near-top pose), body raised */
 .pu{position:relative;width:116px;height:116px}
 .pu b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -142,15 +155,6 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · ROWING</div>
- <div class="stage"><div class="row">
-  <b class="rail"></b><b class="fly"></b><b class="foot"></b><b class="seat"></b><b class="cable"></b>
-  <b class="thigh"><b class="shin"></b></b><b class="torso"></b><b class="head"></b>
-  <b class="uarm"><b class="farm"><b class="handle"></b></b></b>
- </div></div>
- <div class="name">🚣 Rowing</div>
-</div>
-<div class="card">
  <div class="lbl">WORKOUT · SPORT · CYCLING</div>
  <div class="stage"><div class="cy">
   <div class="wheel wR"></div><div class="wheel wF"></div>
@@ -171,6 +175,16 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   <b class="uarm"><b class="farm"><b class="grip"></b></b></b>
  </div></div>
  <div class="name">🤸 Pull-up</div>
+</div>
+<div class="card">
+ <div class="lbl">WORKOUT · GYM · BICEP CURL</div>
+ <div class="stage"><div class="cu">
+  <b class="ground"></b><b class="legF"></b><b class="legB"></b>
+  <b class="torso"></b><b class="head"></b>
+  <b class="uarm"></b><b class="forearm"></b>
+  <b class="dbbar"></b><b class="dbL"></b><b class="dbR"></b>
+ </div></div>
+ <div class="name">💪 Bicep curl</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
