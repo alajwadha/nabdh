@@ -37,6 +37,7 @@ const DURATION: Record<string, number> = {
   squat: 1700, // down and up under the bar
   bench: 1400, // press up and lower to the chest
   deadlift: 1700, // pull from the floor to lockout and back
+  ohp: 1400, // press from the shoulders to overhead
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -77,6 +78,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Bench phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'deadlift' ? (
         <Deadlift phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'ohp' ? (
+        <Ohp phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -310,6 +313,35 @@ function Deadlift({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
         <View style={{ position: 'absolute', left: 55 * s, top: 50 * s, width: 19 * s, height: 19 * s, borderRadius: 99, backgroundColor: fg }} />
         <View style={{ position: 'absolute', left: 76 * s, top: 50 * s, width: 19 * s, height: 19 * s, borderRadius: 99, backgroundColor: fg }} />
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Overhead press: standing figure presses a bar from the shoulders to overhead ----
+function Ohp({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const press = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 shoulders → 1 overhead
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-72 - press(phase.value) * 12}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-36 + press(phase.value) * 30}deg` }] }; });
+  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${108 - press(phase.value) * 18}deg` }] }; }); // keep bar level
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* standing figure: legs, torso, head */}
+      <View style={{ position: 'absolute', left: 54 * s, top: 76 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 76 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 46 * s, width: 10 * s, height: 32 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 40 * s, top: 30 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* pressing arm: upper arm → forearm → level bar */}
+      <Bone x={54 * s} y={48 * s} len={18 * s} w={9 * s} color={fg} rot={uarm}>
+        <Bone x={0} y={0} len={16 * s} w={9 * s} color={fg} rot={farm}>
+          <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: 0, height: 0 }, bar]}>
+            <View style={{ position: 'absolute', left: -15 * s, top: -3 * s, width: 40 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+            <View style={{ position: 'absolute', left: -19 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+            <View style={{ position: 'absolute', left: 17 * s, top: -9 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+          </Animated.View>
+        </Bone>
+      </Bone>
     </View>
   );
 }

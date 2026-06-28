@@ -28,6 +28,19 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 /* emoji-pulse fallback — the sport's own emoji, gently pulsing */
 .pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+/* overhead press: standing figure pressing a bar overhead (top/lockout pose) */
+.ohp{position:relative;width:116px;height:116px}
+.ohp b{position:absolute;border-radius:99px;background:var(--grn)}
+.ohp .ground{left:8px;right:8px;bottom:12px;height:3px;background:var(--navbg)}
+.ohp .head{left:40px;top:30px;width:17px;height:17px}
+.ohp .torso{left:49px;top:46px;width:10px;height:32px}
+.ohp .legF{left:54px;top:76px;width:9px;height:24px;transform-origin:top center;transform:rotate(5deg)}
+.ohp .legB{left:49px;top:76px;width:9px;height:24px;transform-origin:top center;transform:rotate(-5deg)}
+.ohp .uarm{left:54px;top:48px;width:9px;height:18px;transform-origin:left center;transform:rotate(-84deg)} /* up */
+.ohp .farm{left:18px;top:0;width:9px;height:16px;transform-origin:left center;transform:rotate(-6deg)} /* child: continue up */
+.ohp .bar{left:-15px;top:-3px;width:40px;height:6px} /* child of farm: overhead bar */
+.ohp .plL{left:-19px;top:-9px;width:8px;height:18px;border-radius:3px}
+.ohp .plR{left:17px;top:-9px;width:8px;height:18px;border-radius:3px}
 /* deadlift: hip-hinge figure, straight arms, bar rising off the floor */
 .dl{position:relative;width:116px;height:116px}
 .dl b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -137,6 +150,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   </div>
  </div>
  <div class="name">🏋️ Deadlift</div>
+</div>
+<div class="card">
+ <div class="lbl">WORKOUT · GYM · OVERHEAD PRESS</div>
+ <div class="stage">
+  <div class="ohp">
+   <b class="ground"></b>
+   <b class="legF"></b><b class="legB"></b>
+   <b class="torso"></b><b class="head"></b>
+   <b class="uarm"><b class="farm"><b class="bar"></b><b class="plL"></b><b class="plR"></b></b></b>
+  </div>
+ </div>
+ <div class="name">💪 Overhead press</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
