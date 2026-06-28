@@ -432,10 +432,10 @@ function Rowing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
   );
 }
 
-// Two-bar inverse kinematics: place a foot at (fx,fy) from a hip at (hx,hy) with thigh
-// L1 + shin L2. Returns the thigh's world angle and the shin angle RELATIVE to the thigh
+// Two-bar inverse kinematics (limb-agnostic): place an end-effector (fx,fy) from a
+// root (hx,hy) with segments L1,L2. Returns the root's world angle and the shin angle RELATIVE to the thigh
 // (so they map straight onto nested Bones). `bend` (±1) picks which way the knee folds.
-function legIK(hx: number, hy: number, fx: number, fy: number, L1: number, L2: number, bend: number): { thigh: number; shinRel: number } {
+function solve2Bar(hx: number, hy: number, fx: number, fy: number, L1: number, L2: number, bend: number): { a: number; bRel: number } {
   'worklet';
   const dx = fx - hx, dy = fy - hy;
   let d = Math.sqrt(dx * dx + dy * dy);
@@ -447,7 +447,7 @@ function legIK(hx: number, hy: number, fx: number, fy: number, L1: number, L2: n
   const td = base + bend * A;
   const kx = hx + L1 * Math.cos(td), ky = hy + L1 * Math.sin(td);
   const sd = Math.atan2(fy - ky, fx - kx);
-  return { thigh: (td * 180) / Math.PI, shinRel: ((sd - td) * 180) / Math.PI };
+  return { a: (td * 180) / Math.PI, bRel: ((sd - td) * 180) / Math.PI };
 }
 
 // --- Cycling: a rider whose feet orbit the crank — legs solved by IK to follow the pedals
@@ -457,12 +457,12 @@ function Cycling({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; s
   const hx = 44 * s, hy = 48 * s, L1 = 22 * s, L2 = 22 * s; // hip on the saddle, leg lengths
   const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
   // each leg's foot orbits the crank; solve the 2-bar IK ONCE per leg, consume in thigh+shin
-  const ikA = useDerivedValue(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1); });
-  const ikB = useDerivedValue(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1); });
-  const thighA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.thigh}deg` }] }; });
-  const shinA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.shinRel}deg` }] }; });
-  const thighB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.thigh}deg` }] }; });
-  const shinB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.shinRel}deg` }] }; });
+  const ikA = useDerivedValue(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return solve2Bar(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1); });
+  const ikB = useDerivedValue(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return solve2Bar(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1); });
+  const thighA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.a}deg` }] }; });
+  const shinA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.bRel}deg` }] }; });
+  const thighB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.a}deg` }] }; });
+  const shinB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.bRel}deg` }] }; });
   const foot = { position: 'absolute' as const, left: 18 * s, top: -2 * s, width: 11 * s, height: 6 * s, borderRadius: 3 * s, backgroundColor: fg };
   const wheel = (left: number) => ({ position: 'absolute' as const, left, top: 71 * s, width: 30 * s, height: 30 * s, borderRadius: 99, borderWidth: 4 * s, borderColor: equip });
   return (
@@ -500,10 +500,10 @@ function Pullup({ phase, size, fg, equip }: { phase: SharedValue<number>; size: 
   const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
   // the whole body translates up by the pull; the arm IK targets the fixed bar in local
   // coords (which slides down relative to the rising body), so the hand stays on the bar.
-  const body = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { transform: [{ translateY: -14 * p * s }] }; });
-  const ik = useDerivedValue(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return legIK(58 * s, 52 * s, 58 * s, (24 + 14 * p) * s, 14 * s, 13 * s, 1); });
-  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.thigh}deg` }] }; });
-  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.shinRel}deg` }] }; });
+  const body = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { transform: [{ translateY: -16 * p * s }] }; });
+  const ik = useDerivedValue(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return solve2Bar(58 * s, 52 * s, 58 * s, (24 + 16 * p) * s, 14 * s, 13 * s, 1); });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
   return (
     <View style={{ width: size, height: size }}>
       {/* fixed pull-up bar + supports */}
