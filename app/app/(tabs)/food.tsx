@@ -4,7 +4,7 @@ import { AppHeader } from '../../src/components/AppHeader';
 import { CoachCard } from '../../src/components/Dashboard';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
-import { useAppState, MACRO_GOALS } from '../../src/store/app';
+import { useAppState } from '../../src/store/app';
 import { DEMO_IDENTITY } from '../../src/integrations/demo';
 import { weekdayName } from '../../src/data/derive';
 
@@ -12,7 +12,7 @@ const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 
 export default function Food() {
   const { colors, tiles } = useTheme();
-  const { water, addWater, meals, kcal, macros, budget } = useAppState();
+  const { water, addWater, meals, kcal, macros, macroGoals, budget } = useAppState();
   const left = Math.max(0, budget - kcal);
 
   const macroRows: [string, number, keyof typeof MACRO_COLORS][] = [
@@ -50,10 +50,10 @@ export default function Food() {
                 {label}
               </AppText>
               <AppText variant="title" style={{ textAlign: 'center', marginTop: 2 }}>
-                {grams}g
+                {grams}<AppText variant="caption" color={colors.textMuted}>/{macroGoals[key]}g</AppText>
               </AppText>
               <View style={{ height: 6, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 5, overflow: 'hidden' }}>
-                <View style={{ width: `${Math.min(100, (grams / MACRO_GOALS[key]) * 100)}%`, height: '100%', backgroundColor: MACRO_COLORS[key], borderRadius: 99 }} />
+                <View style={{ width: `${Math.min(100, (grams / macroGoals[key]) * 100)}%`, height: '100%', backgroundColor: MACRO_COLORS[key], borderRadius: 99 }} />
               </View>
             </View>
           ))}

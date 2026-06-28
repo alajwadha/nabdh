@@ -137,3 +137,19 @@ export function calorieBudget(tdeeValue: number, goal: Goal, sex: 'male' | 'fema
   const floor = sex === 'female' ? 1200 : 1500;
   return Math.max(floor, tdeeValue + delta);
 }
+
+/**
+ * Daily macro targets (grams) from bodyweight + budget. Protein is set per kg
+ * (higher on a cut to spare muscle), fat at 25% of calories, carbs fill the rest.
+ */
+export function macroTargets(
+  weightKg: number,
+  budgetKcal: number,
+  goal: Goal,
+): { protein: number; carbs: number; fat: number } {
+  const proteinPerKg = goal === 'cut' ? 2.0 : goal === 'gain' ? 1.8 : 1.6;
+  const protein = Math.round(weightKg * proteinPerKg);
+  const fat = Math.round((budgetKcal * 0.25) / 9);
+  const carbs = Math.max(0, Math.round((budgetKcal - protein * 4 - fat * 9) / 4));
+  return { protein, carbs, fat };
+}

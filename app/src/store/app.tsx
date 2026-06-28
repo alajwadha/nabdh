@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TileColor } from '../design-system';
-import { bmr, calorieBudget, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
+import { bmr, calorieBudget, macroTargets, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
 
 export type MetricKey =
   | 'rhr'
@@ -36,9 +36,6 @@ export type Meal = {
 };
 
 export type Macros = { protein: number; carbs: number; fat: number };
-
-/** Daily macro goals (grams) used for the progress bars on the Food screen. */
-export const MACRO_GOALS: Macros = { protein: 120, carbs: 220, fat: 65 };
 
 export type Sex = 'male' | 'female';
 export type Body = {
@@ -89,6 +86,7 @@ type AppState = {
   addMeal: (m: Meal) => void;
   kcal: number;
   macros: Macros;
+  macroGoals: Macros;
   budget: number;
 
   body: Body;
@@ -161,6 +159,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   // so Body and Food agree instead of showing two contradictory numbers.
   const bmrVal = bmr(body.weightKg, body.heightCm, body.age, body.sex);
   const budget = calorieBudget(tdee(bmrVal, resolveActivityFactor(body.activity)), body.goal, body.sex);
+  const macroGoals: Macros = macroTargets(body.weightKg, budget, body.goal);
 
   const kcal = meals.reduce((sum, m) => sum + m.kcal, 0);
   const macros: Macros = meals.reduce(
@@ -185,6 +184,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     addMeal,
     kcal,
     macros,
+    macroGoals,
     budget,
     body,
     setBody,
