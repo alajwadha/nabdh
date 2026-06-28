@@ -916,8 +916,10 @@ function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size
 function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
   const U = 15 * s, F = 15 * s;
-  const ikA = useDerivedValue(() => { 'worklet'; const e = Math.max(0, Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(57 * s, 45 * s, (63 + e * 24) * s, (39 + e * 4) * s, U, F, 1); });
-  const ikB = useDerivedValue(() => { 'worklet'; const e = Math.max(0, -Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(53 * s, 48 * s, (60 + e * 24) * s, (43 + e * 3) * s, U, F, 1); });
+  // punch targets land at matched reach ~29.9 (just inside U+F=30), so both arms extend the
+  // same amount with a hair of natural elbow bend — no IK clamp, no lead/rear asymmetry.
+  const ikA = useDerivedValue(() => { 'worklet'; const e = Math.max(0, Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(57 * s, 45 * s, (63 + e * 23.8) * s, (39 + e * 4) * s, U, F, 1); });
+  const ikB = useDerivedValue(() => { 'worklet'; const e = Math.max(0, -Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(53 * s, 48 * s, (60 + e * 22.8) * s, (43 + e * 3) * s, U, F, 1); });
   const uarmA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.a}deg` }] }; });
   const foreA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.bRel}deg` }] }; });
   const uarmB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.a}deg` }] }; });
@@ -935,10 +937,13 @@ function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
         {/* torso leaning forward + head tucked behind the guard */}
         <Bone x={48 * s} y={67 * s} len={24 * s} w={11 * s} color={fg} rot={stat(-68)} />
         <View style={{ position: 'absolute', left: 53 * s, top: 27 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
-        {/* rear arm (cross) drawn first, lead arm (jab) on top — each a bent arm to a glove */}
-        <Bone x={53 * s} y={48 * s} len={U} w={8 * s} color={fg} rot={uarmB}>
-          <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreB}><View style={glove} /></Bone>
-        </Bone>
+        {/* rear arm (cross) drawn first and slightly dimmed (it's the far arm — depth), lead
+            arm (jab) on top — each a bent arm to a glove */}
+        <View style={{ position: 'absolute', left: 0, top: 0, width: size, height: size, opacity: 0.72 }}>
+          <Bone x={53 * s} y={48 * s} len={U} w={8 * s} color={fg} rot={uarmB}>
+            <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreB}><View style={glove} /></Bone>
+          </Bone>
+        </View>
         <Bone x={57 * s} y={45 * s} len={U} w={8 * s} color={fg} rot={uarmA}>
           <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreA}><View style={glove} /></Bone>
         </Bone>
