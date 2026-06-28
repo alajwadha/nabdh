@@ -150,7 +150,7 @@ export default function Profile() {
             🛡 Your health data is processed and stored in the Kingdom (Dammam · me-central2). It never leaves the region unless you opt in to a Pro model.
           </AppText>
         </View>
-        <Row icon="download" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} />
+        <Row icon="download" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/export')} />
         <Row icon="trash-2" label="Delete everything" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} last />
       </Group>
 
