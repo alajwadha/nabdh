@@ -180,6 +180,17 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* football/soccer: side-view kick at the contact moment — kicking foot striking the ball */
+.fb{position:relative;width:116px;height:116px}
+.fb b{position:absolute;border-radius:99px;background:var(--grn)}
+.fb .ground{left:8px;right:8px;bottom:20px;height:3px;background:var(--navbg)}
+.fb .ball{position:absolute;left:61px;top:78px;width:16px;height:16px;border-radius:99px;background:var(--mut)}
+.fb .plant{left:52px;top:56px;width:37px;height:10px;transform-origin:left center;transform:rotate(103deg)} /* support leg */
+.fb .kick{left:56px;top:56px;width:34px;height:10px;transform-origin:left center;transform:rotate(70deg)} /* kicking leg striking the ball */
+.fb .torso{left:54px;top:56px;width:23px;height:11px;transform-origin:left center;transform:rotate(-97deg)}
+.fb .head{left:42px;top:13px;width:16px;height:16px}
+.fb .armB{left:51px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(42deg)}
+.fb .armF{left:55px;top:36px;width:7px;height:18px;transform-origin:top center;transform:rotate(-30deg)}
 /* basketball: side-view dribble — ball mid-bounce, arm reaching down, athletic crouch */
 .bb{position:relative;width:116px;height:116px}
 .bb b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -325,13 +336,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🏀 Basketball</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · YOGA</div>
- <div class="stage"><div class="yg">
-  <b class="mat"></b>
-  <b class="arm"></b><b class="thigh"></b><b class="shin"></b>
-  <b class="spineB"></b><b class="spineF"></b><b class="neck"></b><b class="head"></b>
+ <div class="lbl">WORKOUT · SPORT · FOOTBALL</div>
+ <div class="stage"><div class="fb">
+  <b class="ground"></b><b class="ball"></b>
+  <b class="plant"></b><b class="armB"></b>
+  <b class="kick"></b><b class="torso"></b><b class="head"></b><b class="armF"></b>
  </div></div>
- <div class="name">🧘 Yoga</div>
+ <div class="name">⚽ Football</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · SPORT · WALKING</div>

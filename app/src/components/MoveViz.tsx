@@ -56,6 +56,7 @@ const DURATION: Record<string, number> = {
   yoga: 2600, // a slow cat→cow→cat breath
   walking: 1050, // an unhurried stride
   basketball: 650, // one dribble bounce
+  football: 1100, // wind-up, strike, follow-through
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -133,6 +134,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Yoga phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'basketball' ? (
         <Basketball phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'football' ? (
+        <Football phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -1071,6 +1074,42 @@ function Basketball({ phase, size, fg, bg, equip }: { phase: SharedValue<number>
           </Bone>
         </Bone>
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Football/soccer: a side-view kick. The plant leg is fixed; the kicking leg swings
+// from a wind-up through the ball (contact at phase 0.25, the reduce-motion still) to a high
+// follow-through. The ball launches forward+up off the foot, then fades and resets for a
+// clean loop. Ball = equip.
+function Football({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  // kicking leg: wind-up (115°, back) at phase 0 → strike (70°, at the ball) at 0.25 →
+  // follow-through (25°, high forward) at 0.5 → back to wind-up
+  const kick = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${70 + 45 * Math.cos(phase.value * 2 * Math.PI)}deg` }] }; });
+  // ball launches off the foot at contact (0.25), flies up-right, fades, then resets at rest
+  const ball = useAnimatedStyle(() => {
+    'worklet';
+    const p = phase.value;
+    const L = Math.max(0, Math.min(1, (p - 0.25) / 0.4)); // launch progress
+    const flying = p < 0.7;
+    const op = p < 0.6 ? 1 : p < 0.7 ? 1 - (p - 0.6) / 0.1 : p < 0.8 ? 0 : p < 0.9 ? (p - 0.8) / 0.1 : 1;
+    return { opacity: op, transform: [{ translateX: flying ? L * 42 * s : 0 }, { translateY: flying ? -L * 48 * s : 0 }] };
+  });
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.17, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* the ball, at rest by the foot then launched off it */}
+      <Animated.View style={[{ position: 'absolute', left: 61 * s, top: 78 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: equip }, ball]} />
+      {/* plant (support) leg + back arm */}
+      <Bone x={52 * s} y={56 * s} len={37 * s} w={10 * s} color={fg} rot={stat(103)} />
+      <Bone x={52 * s} y={37 * s} len={18 * s} w={7 * s} color={fg} rot={stat(128)} />
+      {/* kicking leg (swings), torso, head, front arm */}
+      <Bone x={56 * s} y={56 * s} len={34 * s} w={10 * s} color={fg} rot={kick} />
+      <Bone x={54 * s} y={56 * s} len={23 * s} w={11 * s} color={fg} rot={stat(-97)} />
+      <View style={{ position: 'absolute', left: 42 * s, top: 13 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      <Bone x={55 * s} y={37 * s} len={18 * s} w={7 * s} color={fg} rot={stat(58)} />
     </View>
   );
 }
