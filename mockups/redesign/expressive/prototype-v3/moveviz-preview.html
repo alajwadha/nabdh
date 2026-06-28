@@ -203,6 +203,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lc .thigh{left:44px;top:60px;width:28px;height:10px;transform-origin:left center;transform:rotate(0deg)}
 .lc .shin{left:28px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(125deg)} /* curled down-and-back */
 .lc .roller{left:17px;top:-3px;width:15px;height:15px;border-radius:99px;background:var(--mut)} /* child of shin: ankle pad behind the ankle */
+/* shoulder press (seated): seated against a seat back, arm pressed a handle UP to lockout */
+.sp{position:relative;width:116px;height:116px}
+.sp b{position:absolute;border-radius:99px;background:var(--grn)}
+.sp .seatback{position:absolute;left:38px;top:42px;width:7px;height:30px;background:var(--mut);border-radius:3px}
+.sp .seatbot{position:absolute;left:40px;top:72px;width:22px;height:7px;background:var(--mut);border-radius:3px}
+.sp .thigh{left:46px;top:70px;width:20px;height:10px;transform-origin:left center;transform:rotate(2deg)}
+.sp .shin{left:20px;top:0;width:22px;height:9px;transform-origin:left center;transform:rotate(86deg)}
+.sp .torso{left:46px;top:70px;width:26px;height:11px;transform-origin:left center;transform:rotate(-96deg)}
+.sp .head{left:43px;top:24px;width:16px;height:16px}
+.sp .uarm{left:50px;top:42px;width:15px;height:8px;transform-origin:left center;transform:rotate(-71deg)}
+.sp .farm{left:15px;top:0;width:14px;height:8px;transform-origin:left center;transform:rotate(-28deg)}
+.sp .bar{position:absolute;left:39px;top:15px;width:28px;height:6px;background:var(--mut);border-radius:99px} /* level handle overhead */
 /* leg extension: seated, thigh horizontal, shin extended UP to straight, ankle roller (mut) */
 .le{position:relative;width:116px;height:116px}
 .le b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -393,13 +405,14 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🫁 Chest press</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · LEG EXTENSION</div>
- <div class="stage"><div class="le">
+ <div class="lbl">WORKOUT · GYM · SHOULDER PRESS</div>
+ <div class="stage"><div class="sp">
   <b class="seatback"></b><b class="seatbot"></b>
-  <b class="torso"></b><b class="head"></b><b class="arm"></b>
-  <b class="thigh"><b class="shin"><b class="roller"></b></b></b>
+  <b class="thigh"><b class="shin"></b></b>
+  <b class="torso"></b><b class="head"></b>
+  <b class="uarm"><b class="farm"></b></b><b class="bar"></b>
  </div></div>
- <div class="name">🦵 Leg extension</div>
+ <div class="name">💪 Shoulder press</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · GYM · LEG CURL</div>

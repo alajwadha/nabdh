@@ -62,6 +62,7 @@ const DURATION: Record<string, number> = {
   legext: 1400, // extend the knee straight then lower
   legcurl: 1400, // curl the shin down-and-back then release
   chestpress: 1400, // press the handle forward then return
+  shoulderpress: 1400, // press the handle overhead then lower
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -135,6 +136,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <LegCurl phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'chestpress' ? (
         <ChestPress phase={phase} size={size} fg={fg} equip={equip} />
+      ) : kind === 'shoulderpress' ? (
+        <ShoulderPress phase={phase} size={size} fg={fg} equip={equip} />
       ) : kind === 'padel' || kind === 'tennis' ? (
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'jumprope' ? (
@@ -985,6 +988,39 @@ function ChestPress({ phase, size, fg, equip }: { phase: SharedValue<number>; si
           <View style={{ position: 'absolute', left: -2 * s, top: -8 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }} />
         </Bone>
       </Bone>
+    </View>
+  );
+}
+
+// --- Shoulder press (seated): seated against a seat back (equip), the arm presses a level
+// handle (equip) UP from the shoulder to overhead lockout (arm solved by IK to the known hand;
+// bar attaches at that hand, convention 1), then lowers. Seated, so it's distinct from the
+// standing overhead press. Reduce-motion still = arm locked out overhead.
+function ShoulderPress({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  // press p: 1 (overhead lockout) at phase 0.25 → 0 (racked at the shoulder) at 0.75
+  const ik = useDerivedValue(() => { 'worklet'; const p = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return solve2Bar(50 * s, 46 * s, (57 - 4 * p) * s, (42 - 24 * p) * s, 15 * s, 14 * s, 1); });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
+  // level handle rides the known hand (authored at lockout, translate-follows down to the rack)
+  const bar = useAnimatedStyle(() => { 'worklet'; const p = (1 + Math.cos((phase.value - 0.25) * 2 * Math.PI)) / 2; return { transform: [{ translateX: 4 * (1 - p) * s }, { translateY: 24 * (1 - p) * s }] }; });
+  const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* machine seat: back pad + bottom */}
+      <View style={{ position: 'absolute', left: 38 * s, top: 42 * s, width: 7 * s, height: 30 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 40 * s, top: 72 * s, width: 22 * s, height: 7 * s, borderRadius: 3 * s, backgroundColor: equip }} />
+      {/* seated lifter: thigh→shin, torso upright, head */}
+      <Bone x={46 * s} y={70 * s} len={20 * s} w={10 * s} color={fg} rot={stat(2)}>
+        <Bone x={0} y={0} len={22 * s} w={9 * s} color={fg} rot={stat(86)} />
+      </Bone>
+      <Bone x={46 * s} y={70 * s} len={26 * s} w={11 * s} color={fg} rot={stat(-96)} />
+      <View style={{ position: 'absolute', left: 43 * s, top: 24 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* pressing arm (IK) + level handle overhead */}
+      <Bone x={50 * s} y={46 * s} len={15 * s} w={8 * s} color={fg} rot={uarm}>
+        <Bone x={0} y={0} len={14 * s} w={8 * s} color={fg} rot={farm} />
+      </Bone>
+      <Animated.View style={[{ position: 'absolute', left: 39 * s, top: 15 * s, width: 28 * s, height: 6 * s, borderRadius: 99, backgroundColor: equip }, bar]} />
     </View>
   );
 }
