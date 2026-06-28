@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
-import { AppState, View, Text } from 'react-native';
+import { AppState, View } from 'react-native';
+import { Blur, Canvas, Oval } from '@shopify/react-native-skia';
 import Animated, {
   Easing,
   cancelAnimation,
@@ -98,6 +99,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
 
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      {/* soft contact shadow grounds the figure (premium depth) — behind everything */}
+      <ContactShadow size={size} />
       {kind === 'running' ? (
         <Runner phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'walking' ? (
@@ -157,7 +160,7 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
       ) : kind === 'hiit' ? (
         <HighKnees phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
-        <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
+        <NeutralFigure phase={phase} size={size} fg={fg} />
       )}
     </View>
   );
@@ -1331,15 +1334,39 @@ function HighKnees({ phase, size, fg, bg }: { phase: SharedValue<number>; size: 
   );
 }
 
-// --- Fallback: the sport's own emoji, gently pulsing (clearly "this sport") -----------
-function EmojiPulse({ phase, size, emoji }: { phase: SharedValue<number>; size: number; emoji: string }) {
-  const pulse = useAnimatedStyle(() => {
-    const p = Math.abs(Math.sin(phase.value * Math.PI));
-    return { transform: [{ scale: 0.9 + p * 0.16 }], opacity: 0.7 + p * 0.3 };
-  });
+// --- Fallback: a neutral standing figure that gently breathes (never a bare emoji in a hero
+// card). Used for any movement without a bespoke figure yet.
+function NeutralFigure({ phase, size, fg }: { phase: SharedValue<number>; size: number; fg: string }) {
+  const s = size / 116;
+  const breath = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: -Math.abs(Math.sin(phase.value * Math.PI)) * 2 * s }] }; });
   return (
-    <Animated.View style={[{ alignItems: 'center', justifyContent: 'center' }, pulse]}>
-      <Text style={{ fontSize: size * 0.42 }}>{emoji}</Text>
-    </Animated.View>
+    <View style={{ width: size, height: size }}>
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, breath]}>
+        {/* head */}
+        <View style={{ position: 'absolute', left: 49 * s, top: 18 * s, width: 18 * s, height: 18 * s, borderRadius: 99, backgroundColor: fg }} />
+        {/* torso */}
+        <View style={{ position: 'absolute', left: 51 * s, top: 37 * s, width: 14 * s, height: 32 * s, borderRadius: 99, backgroundColor: fg }} />
+        {/* arms */}
+        <View style={{ position: 'absolute', left: 44 * s, top: 40 * s, width: 8 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '8deg' }] }} />
+        <View style={{ position: 'absolute', left: 64 * s, top: 40 * s, width: 8 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-8deg' }] }} />
+      </Animated.View>
+      {/* legs (don't bob — feet stay planted) */}
+      <View style={{ position: 'absolute', left: 51 * s, top: 67 * s, width: 9 * s, height: 30 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '4deg' }] }} />
+      <View style={{ position: 'absolute', left: 56 * s, top: 67 * s, width: 9 * s, height: 30 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-4deg' }] }} />
+    </View>
+  );
+}
+
+// --- ContactShadow: a soft, blurred ellipse on the ground beneath the figure (Skia). Adds the
+// single biggest "grounded/real" cue across every glyph. Subtle so it never competes.
+function ContactShadow({ size }: { size: number }) {
+  const s = size / 116;
+  const w = 58 * s, h = 11 * s;
+  return (
+    <Canvas style={{ position: 'absolute', bottom: 6 * s, width: size, height: 22 * s }} pointerEvents="none">
+      <Oval x={(size - w) / 2} y={6 * s} width={w} height={h} color="#241B0E" opacity={0.13}>
+        <Blur blur={4.5 * s} />
+      </Oval>
+    </Canvas>
   );
 }

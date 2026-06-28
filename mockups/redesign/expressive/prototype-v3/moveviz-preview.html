@@ -393,6 +393,19 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .hp .foot{left:18px;top:-3px;width:14px;height:7px;border-radius:3px} /* child of shin: planted */
 .hp .bar{left:48px;top:49px;width:39px;height:5px;background:var(--grn)} /* barbell shaft across the hips */
 .hp .plate{left:56px;top:40px;width:23px;height:23px;border-radius:99px;background:var(--grn)} /* loaded plate, edge-on */
+/* D2: soft contact shadow grounding every figure (matches the RN Skia ContactShadow) */
+.stage>div{position:relative}
+.stage>div::after{content:'';position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:58px;height:11px;border-radius:50%;background:rgba(36,27,14,.14);filter:blur(4px);z-index:0}
+.stage>div>*{position:relative;z-index:1}
+/* neutral fallback figure (replaces the bare emoji) */
+.nf{position:relative;width:116px;height:116px}
+.nf b{position:absolute;border-radius:99px;background:var(--grn)}
+.nf .head{left:49px;top:18px;width:18px;height:18px}
+.nf .torso{left:51px;top:37px;width:14px;height:32px}
+.nf .aL{left:44px;top:40px;width:8px;height:26px;transform-origin:top center;transform:rotate(8deg)}
+.nf .aR{left:64px;top:40px;width:8px;height:26px;transform-origin:top center;transform:rotate(-8deg)}
+.nf .lL{left:51px;top:67px;width:9px;height:30px;transform-origin:top center;transform:rotate(4deg)}
+.nf .lR{left:56px;top:67px;width:9px;height:30px;transform-origin:top center;transform:rotate(-4deg)}
 </style></head><body>
 <div class="card">
  <div class="lbl">WORKOUT · GYM · CHEST PRESS</div>
@@ -425,8 +438,8 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🦵 Leg curl</div>
 </div>
 <div class="card">
- <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
- <div class="stage"><div class="pulse">🎾</div></div>
- <div class="name">🎾 Padel (until drawn)</div>
+ <div class="lbl">FALLBACK · NEUTRAL FIGURE</div>
+ <div class="stage"><div class="nf"><b class="lL"></b><b class="lR"></b><b class="torso"></b><b class="aL"></b><b class="aR"></b><b class="head"></b></div></div>
+ <div class="name">Any movement (until drawn)</div>
 </div>
 </body></html>
