@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { AppState, View, Text } from 'react-native';
 import Animated, {
   Easing,
@@ -32,6 +32,7 @@ export type MoveKind = 'running' | string;
 
 const DURATION: Record<string, number> = {
   running: 760, // a full stride cycle
+  legpress: 1500, // a controlled press out-and-back
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -60,10 +61,15 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
     };
   }, [kind, reduced, phase]);
 
-  const known = kind === 'running';
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      {known ? <Runner phase={phase} size={size} fg={fg} bg={bg} /> : <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />}
+      {kind === 'running' ? (
+        <Runner phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'legpress' ? (
+        <LegPress phase={phase} size={size} fg={fg} bg={bg} />
+      ) : (
+        <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
+      )}
     </View>
   );
 }
@@ -116,6 +122,55 @@ function Runner({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
         <Limb x={shoX + 3 * s} y={shoY + 2 * s} w={6 * s} h={26 * s} color={fg} rot={armBack} />
         <Limb x={shoX + 7 * s} y={shoY + 2 * s} w={6 * s} h={26 * s} color={fg} rot={armFront} />
       </Animated.View>
+    </View>
+  );
+}
+
+/**
+ * A "bone" that extends RIGHT from a joint pivot and can nest another bone at its far
+ * end (the 0×0 wrapper rotates about its centre = the joint; the bar hangs to the right;
+ * children sit at the bar's end). Horizontal authoring makes joint angles intuitive
+ * (0° = right, negative = up) and needs no transformOrigin. Reused for any jointed limb.
+ */
+function Bone({ x, y, len, w, color, rot, children }: {
+  x: number; y: number; len: number; w: number; color: string;
+  rot: ReturnType<typeof useAnimatedStyle>; children?: ReactNode;
+}) {
+  return (
+    <Animated.View style={[{ position: 'absolute', left: x, top: y, width: 0, height: 0 }, rot]}>
+      <View style={{ position: 'absolute', left: 0, top: -w / 2, width: len, height: w, borderRadius: 99, backgroundColor: color }} />
+      <View style={{ position: 'absolute', left: len, top: 0, width: 0, height: 0 }}>{children}</View>
+    </Animated.View>
+  );
+}
+
+// --- Leg press: a reclined figure whose jointed leg extends to press a footplate & back
+function LegPress({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  // e: 0 = knee bent (foot near), 1 = leg extended (foot pressed away)
+  const thigh = useAnimatedStyle(() => {
+    const e = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2;
+    return { transform: [{ rotate: `${-20 + e * 14}deg` }] };
+  });
+  const shin = useAnimatedStyle(() => {
+    const e = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2;
+    return { transform: [{ rotate: `${16 - e * 14}deg` }] };
+  });
+  const torso = useAnimatedStyle(() => ({ transform: [{ rotate: '-12deg' }] }));
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* ground */}
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.14, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* head */}
+      <View style={{ position: 'absolute', left: 14 * s, top: 40 * s, width: 18 * s, height: 18 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* reclined back */}
+      <Bone x={18 * s} y={62 * s} len={34 * s} w={9 * s} color={fg} rot={torso} />
+      {/* jointed leg: thigh → shin → footplate */}
+      <Bone x={46 * s} y={62 * s} len={24 * s} w={9 * s} color={fg} rot={thigh}>
+        <Bone x={0} y={0} len={24 * s} w={9 * s} color={fg} rot={shin}>
+          <View style={{ position: 'absolute', left: 0, top: -17 * s, width: 8 * s, height: 34 * s, borderRadius: 5 * s, backgroundColor: fg }} />
+        </Bone>
+      </Bone>
     </View>
   );
 }

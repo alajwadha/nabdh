@@ -184,6 +184,10 @@ export default function Workout() {
           </ScrollView>
 
           <Card>
+            {/* moving glyph of the selected lift (sled press, etc.) */}
+            <View style={{ alignItems: 'center', backgroundColor: colors.navBg, borderRadius: radii.lg, paddingVertical: 6, marginBottom: spacing.md }}>
+              <MoveViz kind={ex.key} emoji={ex.emoji} size={96} />
+            </View>
             {detailed && (
               <AppText variant="caption" color={colors.textMuted}>
                 {MUSCLE_LABEL[ex.muscle]} · {ex.equipment}{topReps > 0 ? ` · ⏱ rest ${restRecommendation(topReps)}` : ''}
