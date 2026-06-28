@@ -34,6 +34,7 @@ export type MoveKind = 'running' | string;
 const DURATION: Record<string, number> = {
   running: 760, // a full stride cycle
   legpress: 1500, // a controlled press out-and-back
+  squat: 1700, // down and up under the bar
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -68,6 +69,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Runner phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'legpress' ? (
         <LegPress phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'squat' ? (
+        <Squat phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -176,6 +179,40 @@ function LegPress({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
           <View style={{ position: 'absolute', left: -2 * s, top: -18 * s, width: 11 * s, height: 36 * s, borderRadius: 5 * s, backgroundColor: fg }} />
         </Bone>
       </Bone>
+    </View>
+  );
+}
+
+// --- Squat: a side figure with a barbell on the back, bending deep and standing up ----
+function Squat({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const depth = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 standing → 1 deep
+  const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${75 - depth(phase.value) * 51}deg` }] }; });
+  const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-5 + depth(phase.value) * 71}deg` }] }; });
+  const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-100 - depth(phase.value) * 18}deg` }] }; });
+  // body lowers as the knee folds, so the foot stays ~planted on the ground
+  const body = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: depth(phase.value) * 14 * s }] }; });
+
+  const hipX = 52 * s;
+  const hipY = 50 * s;
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.12, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, body]}>
+        {/* jointed leg from the hip: thigh → shin → foot */}
+        <Bone x={hipX} y={hipY} len={23 * s} w={11 * s} color={fg} rot={thigh}>
+          <Bone x={0} y={0} len={23 * s} w={11 * s} color={fg} rot={shin}>
+            <View style={{ position: 'absolute', left: -4 * s, top: -4 * s, width: 16 * s, height: 8 * s, borderRadius: 4 * s, backgroundColor: fg }} />
+          </Bone>
+        </Bone>
+        {/* torso up from the hip */}
+        <Bone x={hipX} y={hipY} len={30 * s} w={10 * s} color={fg} rot={torso} />
+        {/* head + barbell across the shoulders (sit on top of the torso) */}
+        <View style={{ position: 'absolute', left: 34 * s, top: 12 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 22 * s, top: 22 * s, width: 44 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 20 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 60 * s, top: 16 * s, width: 8 * s, height: 18 * s, borderRadius: 3 * s, backgroundColor: fg }} />
+      </Animated.View>
     </View>
   );
 }
