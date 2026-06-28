@@ -7,7 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, calorieBudget, hrZones, maxHr, tdee } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
@@ -26,6 +26,7 @@ export default function Body() {
   const energyBmr = bmr(body.weightKg, body.heightCm, body.age, body.sex);
   const activity = ACTIVITY_LEVELS.find((a) => a.key === body.activity) ?? ACTIVITY_LEVELS[2];
   const energyTdee = tdee(energyBmr, activity.factor);
+  const targetBudget = calorieBudget(energyTdee, body.goal, body.sex);
   const bmiBandColor = b.band === 'Healthy' ? tiles.mint : b.band === 'Underweight' ? tiles.blue : b.band === 'Overweight' ? tiles.gold : tiles.pink;
   // BMI gauge on a 15–40 scale (severe obesity is common in-market — don't cap at 35)
   const bmiPos = Math.max(0, Math.min(100, ((b.value - 15) / 25) * 100));
@@ -107,9 +108,26 @@ export default function Body() {
             );
           })}
         </View>
+        <View style={{ flexDirection: 'row', gap: 6, marginTop: 8 }}>
+          {([['maintain', 'Maintain'], ['cut', 'Lose'], ['gain', 'Gain']] as const).map(([g, lbl]) => {
+            const on = body.goal === g;
+            return (
+              <Pressable key={g} onPress={() => setBody({ goal: g })} style={{ flex: 1, alignItems: 'center', paddingVertical: 9, borderRadius: 99, backgroundColor: on ? colors.navOn : colors.card, borderWidth: 2, borderColor: on ? colors.navOn : colors.border }}>
+                <AppText variant="caption" color={on ? colors.navOnText : colors.ink} style={{ fontSize: 11 }}>{lbl}</AppText>
+              </Pressable>
+            );
+          })}
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 10 }}>
+          <AppText variant="title" color={tiles.gold.ink}>Daily target</AppText>
+          <AppText variant="h2" color={tiles.gold.ink}>{targetBudget.toLocaleString()} <AppText variant="caption" color={tiles.gold.ink}>kcal</AppText></AppText>
+        </View>
+        <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 4, opacity: 0.8 }}>
+          An estimate (±10%) — trust your 2–3 week weight trend. This drives your Food budget.
+        </AppText>
         {detailed && (
-          <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 8, opacity: 0.85 }}>
-            BMR {energyBmr.toLocaleString()} kcal (Mifflin–St Jeor) × {activity.factor} = {energyTdee.toLocaleString()} kcal/day · eat ~500 under to lose ~0.5 kg/week
+          <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 4, opacity: 0.85 }}>
+            BMR {energyBmr.toLocaleString()} (Mifflin–St Jeor) × {activity.factor} = {energyTdee.toLocaleString()}{body.goal === 'cut' ? ' − 500' : body.goal === 'gain' ? ' + 300' : ''} → {targetBudget.toLocaleString()} kcal, floored at a safe minimum
           </AppText>
         )}
       </View>

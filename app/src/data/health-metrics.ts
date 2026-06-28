@@ -119,3 +119,16 @@ export const ACTIVITY_LEVELS: ActivityLevel[] = [
 export function tdee(bmrValue: number, factor: number): number {
   return Math.round(bmrValue * factor);
 }
+
+export type Goal = 'maintain' | 'cut' | 'gain';
+
+/**
+ * Daily calorie target from TDEE and goal, floored at a safe minimum so an
+ * aggressive deficit never recommends a dangerous intake (~1,200 F / 1,500 M).
+ * −500/day ≈ −0.5 kg/week; +300 ≈ a lean gain.
+ */
+export function calorieBudget(tdeeValue: number, goal: Goal, sex: 'male' | 'female'): number {
+  const delta = goal === 'cut' ? -500 : goal === 'gain' ? 300 : 0;
+  const floor = sex === 'female' ? 1200 : 1500;
+  return Math.max(floor, tdeeValue + delta);
+}
