@@ -12,6 +12,7 @@ import { AppStateProvider } from '../src/store/app';
 import { WorkoutProvider } from '../src/store/workouts';
 import { HealthLogsProvider } from '../src/store/health-logs';
 import { CycleProvider } from '../src/store/cycle';
+import { MindfulProvider } from '../src/store/mindful';
 import '../src/i18n';
 
 const AUTH_ROUTES = ['sign-in', 'phone'];
@@ -69,7 +70,9 @@ export default function RootLayout() {
                 <WorkoutProvider>
                   <HealthLogsProvider>
                     <CycleProvider>
-                      <RootNavigator />
+                      <MindfulProvider>
+                        <RootNavigator />
+                      </MindfulProvider>
                     </CycleProvider>
                   </HealthLogsProvider>
                 </WorkoutProvider>

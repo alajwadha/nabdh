@@ -114,6 +114,7 @@ export default function Profile() {
         {body.sex === 'female' && <Row icon="calendar" label="Cycle" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/cycle")} />}
         <Row icon="heart-pulse" label="Body & metrics" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/body')} />
         <Row icon="bell" label="Reminders" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/reminders')} />
+        <Row icon="wind" label="Breathe" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/breathe")} />
         <Row icon="dumbbell" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
         <Row icon="moon-star" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
         <Row icon="church" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
