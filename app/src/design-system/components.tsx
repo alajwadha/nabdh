@@ -7,12 +7,13 @@ import {
   ScrollView,
   I18nManager,
   type TextProps,
+  type TextStyle,
   type ViewProps,
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { motion, radii, spacing, typography, type TextVariant } from './index';
+import { motion, radii, shadow, spacing, typography, type TextVariant } from './index';
 import { useTheme } from './theme';
 
 /** Screen: safe-area + scroll + themed background + comfortable padding. */
@@ -52,7 +53,7 @@ export function AppText({
     <Text
       {...rest}
       style={[
-        typography[variant],
+        typography[variant] as TextStyle,
         { color: color ?? colors.ink, writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
         style,
       ]}
@@ -71,9 +72,10 @@ export function Card({ style, ...rest }: ViewProps) {
           backgroundColor: colors.card,
           borderRadius: radii.xl,
           padding: spacing.lg,
-          borderWidth: 2,
+          borderWidth: 1,
           borderColor: colors.border,
           gap: spacing.sm,
+          ...shadow.soft, // real elevation — was flat cream-on-cream before
         },
         style,
       ]}

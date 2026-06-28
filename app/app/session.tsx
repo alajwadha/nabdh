@@ -182,7 +182,7 @@ export default function Session() {
           <View style={{ backgroundColor: colors.navBg, borderRadius: radii.lg, padding: spacing.lg, gap: spacing.sm }}>
             <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
               <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>REST</AppText>
-              <AppText variant="display" color={colors.accentText}>{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</AppText>
+              <AppText variant="metric" color={colors.accentText}>{Math.floor(rest.left / 60)}:{String(rest.left % 60).padStart(2, '0')}</AppText>
             </View>
             <View style={{ height: 6, borderRadius: 99, backgroundColor: colors.border, overflow: 'hidden' }}>
               <View style={{ height: 6, borderRadius: 99, backgroundColor: colors.accent, width: `${restPct * 100}%` }} />

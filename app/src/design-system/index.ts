@@ -124,12 +124,15 @@ export const radii = {
 } as const;
 
 export const typography = {
-  display: { fontSize: 32, lineHeight: 36, fontWeight: '800' },
-  h1: { fontSize: 28, lineHeight: 32, fontWeight: '800' },
-  h2: { fontSize: 22, lineHeight: 28, fontWeight: '800' },
-  title: { fontSize: 17, lineHeight: 22, fontWeight: '700' },
+  // Large weights get negative tracking so headlines read crafted, not default-loose.
+  display: { fontSize: 32, lineHeight: 36, fontWeight: '800', letterSpacing: -0.8 },
+  h1: { fontSize: 28, lineHeight: 32, fontWeight: '800', letterSpacing: -0.6 },
+  h2: { fontSize: 22, lineHeight: 28, fontWeight: '800', letterSpacing: -0.4 },
+  title: { fontSize: 17, lineHeight: 22, fontWeight: '700', letterSpacing: -0.1 },
   body: { fontSize: 15, lineHeight: 22, fontWeight: '500' },
   caption: { fontSize: 12, lineHeight: 17, fontWeight: '700' },
+  // Data hero: big tabular figures (timers, weights, kcal) — digits don't jitter as they change.
+  metric: { fontSize: 40, lineHeight: 44, fontWeight: '800', letterSpacing: -1.2, fontVariant: ['tabular-nums'] },
 } as const;
 
 export type TextVariant = keyof typeof typography;
@@ -140,11 +143,20 @@ export const motion = {
 } as const;
 
 export const shadow = {
+  // Warm-brown (not pure black) so elevation reads as designed depth on the cream palette.
   soft: {
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
+    shadowColor: '#3A2E1A',
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 3,
+  },
+  // Stronger lift for hero/floating surfaces (sheets, primary cards).
+  lift: {
+    shadowColor: '#2A2011',
+    shadowOpacity: 0.16,
+    shadowRadius: 28,
+    shadowOffset: { width: 0, height: 14 },
+    elevation: 8,
   },
 } as const;
