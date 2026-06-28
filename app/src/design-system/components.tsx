@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import {
   Modal,
   Pressable,
+  StyleSheet,
   Text,
   View,
   ScrollView,
@@ -13,6 +14,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Canvas, LinearGradient, Rect, vec } from '@shopify/react-native-skia';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { motion, radii, shadow, spacing, typography, type TextVariant } from './index';
 import { useTheme } from './theme';
@@ -131,6 +133,32 @@ export function Card({ style, ...rest }: ViewProps) {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export type ButtonVariant = 'solid' | 'line' | 'dark';
 
+/** Glossy specular sheen — a soft top-down highlight clipped to the shape, for the
+ * "glare" on filled buttons (and reusable on other glossy surfaces). */
+export function Sheen({ radius, strength = 0.3 }: { radius: number; strength?: number }) {
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  return (
+    <View
+      pointerEvents="none"
+      onLayout={(e) => setSize({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}
+      style={[StyleSheet.absoluteFill, { borderRadius: radius, overflow: 'hidden' }]}
+    >
+      {size.w > 0 && (
+        <Canvas style={{ width: size.w, height: size.h }}>
+          <Rect x={0} y={0} width={size.w} height={size.h}>
+            <LinearGradient
+              start={vec(0, 0)}
+              end={vec(0, size.h)}
+              colors={[`rgba(255,255,255,${strength})`, `rgba(255,255,255,${strength * 0.26})`, 'rgba(255,255,255,0)']}
+              positions={[0, 0.45, 0.82]}
+            />
+          </Rect>
+        </Canvas>
+      )}
+    </View>
+  );
+}
+
 /** Button: pill that springs slightly on press. */
 export function Button({
   label,
@@ -176,6 +204,7 @@ export function Button({
         style,
       ]}
     >
+      {variant !== 'line' && <Sheen radius={radii.pill} strength={variant === 'dark' ? 0.16 : 0.28} />}
       <AppText variant="title" color={fg}>
         {label}
       </AppText>
