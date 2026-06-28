@@ -52,6 +52,7 @@ export default function Workout() {
 
   const [detailed, setDetailed] = useState(false);
   const [mode, setMode] = useState<'gym' | 'sports'>('gym');
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
 
   // gym state
   const [exKey, setExKey] = useState(EXERCISES[0].key);
@@ -77,20 +78,24 @@ export default function Workout() {
   const last = lastFor(exKey);
   const trend = e1rmTrendFor(exKey);
   const prevBest = bestE1rmFor(exKey);
-  const isPr = best > 0 && best >= prevBest;
+  const isPr = best > prevBest; // strict: ties aren't PRs
 
   const save = () => {
+    const wasPr = mode === 'gym' && best > prevBest;
     if (mode === 'gym') addSession({ kind: 'gym', exKey, sets, volume: vol, e1rm: best, readiness: r });
     else addSession({ kind: 'sport', sportKey, minutes, kcal: cals, distanceKm: dist, readiness: r });
-    router.back();
+    // Stay on the screen so the user SEES the payoff: updated best, ticked-up trend.
+    setSavedMsg(mode === 'gym' ? (wasPr ? 'Saved — new e1RM PR 💪' : 'Saved ✓') : `Logged ${sport.name} ✓`);
   };
 
   const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
   const cals = metCalories(sportMet, minutes, weight);
   const dist = sport.gps ? distanceKm(minutes, pace) : 0;
 
-  const setVal = (i: number, field: keyof SetEntry, delta: number) =>
+  const setVal = (i: number, field: keyof SetEntry, delta: number) => {
+    setSavedMsg(null);
     setSets((arr) => arr.map((st, j) => (j === i ? { ...st, [field]: Math.max(0, st[field] + delta) } : st)));
+  };
 
   return (
     <Screen>
@@ -131,7 +136,7 @@ export default function Workout() {
       {/* mode switch */}
       <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}>
         {(['gym', 'sports'] as const).map((m) => (
-          <Pressable key={m} onPress={() => setMode(m)} style={{ flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 99, backgroundColor: mode === m ? colors.navOn : 'transparent' }}>
+          <Pressable key={m} onPress={() => { setMode(m); setSavedMsg(null); }} style={{ flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 99, backgroundColor: mode === m ? colors.navOn : 'transparent' }}>
             <AppText variant="caption" color={mode === m ? colors.navOnText : colors.textMuted}>{m === 'gym' ? '🏋️ Gym' : '🎾 Sports'}</AppText>
           </Pressable>
         ))}
@@ -143,7 +148,7 @@ export default function Workout() {
             {EXERCISES.map((e) => {
               const on = e.key === exKey;
               return (
-                <Pressable key={e.key} onPress={() => setExKey(e.key)} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
+                <Pressable key={e.key} onPress={() => { setExKey(e.key); setSavedMsg(null); }} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
                   <AppText variant="caption" color={on ? '#fff' : colors.ink}>{e.emoji} {e.name}</AppText>
                 </Pressable>
               );
@@ -206,7 +211,7 @@ export default function Workout() {
             {SPORTS.map((sp) => {
               const on = sp.key === sportKey;
               return (
-                <Pressable key={sp.key} onPress={() => setSportKey(sp.key)} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
+                <Pressable key={sp.key} onPress={() => { setSportKey(sp.key); setSavedMsg(null); }} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
                   <AppText variant="caption" color={on ? '#fff' : colors.ink}>{sp.emoji} {sp.name}</AppText>
                 </Pressable>
               );
@@ -262,6 +267,11 @@ export default function Workout() {
         </View>
       )}
 
+      {savedMsg && (
+        <View style={{ backgroundColor: tiles.mint.bg, borderRadius: radii.lg, padding: spacing.md, alignItems: 'center' }}>
+          <AppText variant="title" color={tiles.mint.ink}>{savedMsg}</AppText>
+        </View>
+      )}
       <Button label={mode === 'gym' ? `Save workout · ${vol.toLocaleString()} kg volume` : `Log ${sport.name} · ${cals} kcal`} onPress={save} />
     </Screen>
   );

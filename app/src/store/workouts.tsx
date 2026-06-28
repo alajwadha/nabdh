@@ -61,8 +61,11 @@ type WorkoutState = {
 
 const Ctx = createContext<WorkoutState | undefined>(undefined);
 
+// Seed is DISPLAY-ONLY: shown until the first real save, never written to storage.
+const SEED: WorkoutSession[] = seed();
+
 export function WorkoutProvider({ children }: { children: ReactNode }) {
-  const [sessions, setSessions] = useState<WorkoutSession[]>(seed());
+  const [sessions, setSessions] = useState<WorkoutSession[]>([]);
 
   useEffect(() => {
     AsyncStorage.getItem(KEY).then((v) => {
@@ -76,31 +79,37 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const persist = (next: WorkoutSession[]) => {
-    setSessions(next);
-    AsyncStorage.setItem(KEY, JSON.stringify(next.slice(-200))).catch(() => {});
-  };
+  // Real (persisted) sessions, or the seed only while there are none.
+  const data = sessions.length ? sessions : SEED;
 
   const addSession: WorkoutState['addSession'] = (s) => {
-    const session: WorkoutSession = {
-      ...s,
-      id: `${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
-      at: new Date().toISOString(),
-    };
-    persist([...sessions, session]);
+    setSessions((prev) => {
+      const session: WorkoutSession = {
+        ...s,
+        id: `${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
+        at: new Date().toISOString(),
+      };
+      const next = [...prev, session]; // appends to REAL sessions — seed never persists
+      AsyncStorage.setItem(KEY, JSON.stringify(next.slice(-500))).catch(() => {});
+      return next;
+    });
   };
 
   const gymFor = (exKey: string) =>
-    sessions.filter((s) => s.kind === 'gym' && s.exKey === exKey).sort((a, b) => a.at.localeCompare(b.at));
+    data.filter((s) => s.kind === 'gym' && s.exKey === exKey).sort((a, b) => a.at.localeCompare(b.at));
+  const bestOf = (exKey: string) => gymFor(exKey).reduce((best, s) => Math.max(best, s.e1rm ?? 0), 0);
 
   const value: WorkoutState = {
-    sessions,
+    sessions: data,
     addSession,
-    clear: () => persist([]),
+    clear: () => {
+      setSessions([]);
+      AsyncStorage.removeItem(KEY).catch(() => {});
+    },
     lastFor: (exKey) => gymFor(exKey).slice(-1)[0],
-    bestE1rmFor: (exKey) => gymFor(exKey).reduce((best, s) => Math.max(best, s.e1rm ?? 0), 0),
+    bestE1rmFor: bestOf,
     e1rmTrendFor: (exKey) => gymFor(exKey).map((s) => s.e1rm ?? 0),
-    isPrFor: (exKey, e1rm) => e1rm > 0 && e1rm >= gymFor(exKey).reduce((best, s) => Math.max(best, s.e1rm ?? 0), 0),
+    isPrFor: (exKey, e1rm) => e1rm > bestOf(exKey), // strict: ties are not PRs
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
