@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import type { HealthDaily } from '@nabdh/shared';
 import { AppText, Button, Card, Screen, SectionHeader } from '../src/design-system/components';
 import { Sparkline } from '../src/components/Charts';
 import { radii, spacing } from '../src/design-system';
@@ -15,6 +14,7 @@ import {
   SPORTS,
   MUSCLE_LABEL,
   adjustForReadiness,
+  computeReadiness,
   bestE1rm,
   distanceKm,
   e1rm,
@@ -25,17 +25,6 @@ import {
   workingWeight,
   type SetEntry,
 } from '../src/data/workouts';
-
-function readiness(s: HealthDaily | null): number {
-  if (!s) return 64;
-  const clamp = (n: number) => Math.max(0, Math.min(1, n));
-  let score = 0;
-  let w = 0;
-  if (s.sleepMinutes != null) { score += clamp(s.sleepMinutes / 450) * 40; w += 40; }
-  if (s.restingHeartRate != null) { score += clamp((70 - s.restingHeartRate) / 16) * 30; w += 30; }
-  if (s.hrvSdnn != null) { score += clamp(s.hrvSdnn / 70) * 30; w += 30; }
-  return w === 0 ? 64 : Math.round((score / w) * 100);
-}
 
 const SEED_SETS: SetEntry[] = [
   { weight: 60, reps: 10 },
@@ -69,7 +58,7 @@ export default function Workout() {
   const weight = weightOverride ?? body.weightKg;
   const sport = SPORTS.find((sp) => sp.key === sportKey) ?? SPORTS[0];
 
-  const r = readiness(s);
+  const r = computeReadiness(s);
   const advice = adjustForReadiness(r);
   const adviceBg =
     advice.tone === 'rest' ? tiles.pink : advice.tone === 'easy' ? tiles.gold : advice.tone === 'push' ? tiles.mint : tiles.blue;

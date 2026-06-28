@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Redirect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import type { HealthDaily } from '@nabdh/shared';
 import { AppText, Card, Screen, SectionHeader, Sheet } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
 import { InsightHero } from '../../src/components/InsightHero';
@@ -22,21 +21,10 @@ import { useAuth } from '../../src/auth/AuthProvider';
 import { useHealth } from '../../src/store/health';
 import { useAppState, type MetricKey } from '../../src/store/app';
 import { ALL_METRICS, METRICS, METRIC_ICON } from '../../src/data/metrics';
-import { adjustForReadiness } from '../../src/data/workouts';
+import { adjustForReadiness, computeReadiness } from '../../src/data/workouts';
 import { useIdentity } from '../../src/data/identity';
 import { fetchGoogleHealthToday } from '../../src/integrations/googleHealth';
 import { isAvailable } from '../../src/integrations/healthkit';
-
-function computeReadiness(s: HealthDaily | null): number | null {
-  if (!s) return null;
-  const clamp = (n: number) => Math.max(0, Math.min(1, n));
-  let score = 0;
-  let weight = 0;
-  if (s.sleepMinutes != null) { score += clamp(s.sleepMinutes / 450) * 40; weight += 40; }
-  if (s.restingHeartRate != null) { score += clamp((70 - s.restingHeartRate) / 16) * 30; weight += 30; }
-  if (s.hrvSdnn != null) { score += clamp(s.hrvSdnn / 70) * 30; weight += 30; }
-  return weight === 0 ? null : Math.round((score / weight) * 100);
-}
 
 export default function Today() {
   const { t } = useTranslation();
@@ -68,7 +56,7 @@ export default function Today() {
     return <Redirect href="/onboarding" />;
   }
 
-  const readiness = computeReadiness(summary) ?? 64;
+  const readiness = computeReadiness(summary);
   const advice = adjustForReadiness(readiness);
   const adviceTile =
     advice.tone === 'rest' ? tilePalette.pink : advice.tone === 'easy' ? tilePalette.gold : advice.tone === 'push' ? tilePalette.mint : tilePalette.blue;
@@ -146,7 +134,7 @@ export default function Today() {
       {/* readiness-adjusted training CTA → Workout screen */}
       <Pressable onPress={() => router.navigate('/workout')} style={{ backgroundColor: adviceTile.bg, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <AppText variant="caption" color={adviceTile.ink} style={{ letterSpacing: 1.2 }}>TRAIN TODAY · READINESS {readiness}</AppText>
+          <AppText variant="caption" color={adviceTile.ink} style={{ letterSpacing: 1.2 }}>TRAIN TODAY</AppText>
           <AppText variant="title" color={adviceTile.ink}>{advice.label} ›</AppText>
         </View>
         <AppText variant="caption" color={adviceTile.ink} style={{ fontWeight: '600', marginTop: 5, lineHeight: 17 }}>

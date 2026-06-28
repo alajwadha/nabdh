@@ -1,3 +1,5 @@
+import type { HealthDaily } from '@nabdh/shared';
+
 // Workout calculations + catalogs. The numbers here are the moat vs Hevy/Strong/
 // Fitbod/JEFIT: those log lifts and estimate 1RM/volume, but none adjust today's
 // training to your recovery. Nabdh does (adjustForReadiness below).
@@ -80,6 +82,22 @@ export type LoadAdvice = {
   label: string;
   note: string;
 };
+/**
+ * Recovery readiness 0–100 from sleep + resting HR + HRV. ONE shared definition
+ * so Today, the Workout screen, and the insight hero never disagree. Neutral 64
+ * when there's no data to weight.
+ */
+export function computeReadiness(s: HealthDaily | null): number {
+  if (!s) return 64;
+  const clamp = (n: number) => Math.max(0, Math.min(1, n));
+  let score = 0;
+  let weight = 0;
+  if (s.sleepMinutes != null) { score += clamp(s.sleepMinutes / 450) * 40; weight += 40; }
+  if (s.restingHeartRate != null) { score += clamp((70 - s.restingHeartRate) / 16) * 30; weight += 30; }
+  if (s.hrvSdnn != null) { score += clamp(s.hrvSdnn / 70) * 30; weight += 30; }
+  return weight === 0 ? 64 : Math.round((score / weight) * 100);
+}
+
 export function adjustForReadiness(readiness: number): LoadAdvice {
   if (readiness < 50)
     return { factor: 0, tone: 'rest', label: 'Recover today', note: 'Readiness is low — swap lifting for mobility or an easy walk. Lifting now costs more than it gives.' };
