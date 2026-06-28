@@ -28,6 +28,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 /* emoji-pulse fallback — the sport's own emoji, gently pulsing */
 .pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+/* deadlift: hip-hinge figure, straight arms, bar rising off the floor */
+.dl{position:relative;width:116px;height:116px}
+.dl b{position:absolute;border-radius:99px;background:var(--grn)}
+.dl .ground{left:8px;right:8px;bottom:12px;height:3px;background:var(--navbg)}
+.dl .thigh{left:48px;top:54px;width:21px;height:11px;transform-origin:left center;transform:rotate(74deg)}
+.dl .shin{left:21px;top:0;width:21px;height:11px;transform-origin:left center;transform:rotate(10deg)} /* child of thigh */
+.dl .torso{left:48px;top:54px;width:27px;height:11px;transform-origin:left center;transform:rotate(-44deg)} /* hinge */
+.dl .head{left:69px;top:20px;width:16px;height:16px}
+.dl .arm{left:69px;top:36px;width:9px;height:24px} /* straight down from shoulder */
+.dl .bar{left:58px;top:58px;width:34px;height:6px}
+.dl .plL{left:55px;top:50px;width:19px;height:19px;border-radius:99px}
+.dl .plR{left:76px;top:50px;width:19px;height:19px;border-radius:99px}
 /* bench press: lying figure pressing a barbell up via a 2-seg arm */
 .bp{position:relative;width:116px;height:116px}
 .bp b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -113,6 +125,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   </div>
  </div>
  <div class="name">🏋️ Bench press</div>
+</div>
+<div class="card">
+ <div class="lbl">WORKOUT · GYM · DEADLIFT</div>
+ <div class="stage">
+  <div class="dl">
+   <b class="ground"></b>
+   <b class="thigh"><b class="shin"></b></b>
+   <b class="torso"></b><b class="head"></b>
+   <b class="arm"></b><b class="bar"></b><b class="plL"></b><b class="plR"></b>
+  </div>
+ </div>
+ <div class="name">🏋️ Deadlift</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>

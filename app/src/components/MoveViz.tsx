@@ -36,6 +36,7 @@ const DURATION: Record<string, number> = {
   legpress: 1500, // a controlled press out-and-back
   squat: 1700, // down and up under the bar
   bench: 1400, // press up and lower to the chest
+  deadlift: 1700, // pull from the floor to lockout and back
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -74,6 +75,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Squat phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'bench' ? (
         <Bench phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'deadlift' ? (
+        <Deadlift phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -266,6 +269,45 @@ function Bench({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
           </Animated.View>
         </Bone>
       </Bone>
+    </View>
+  );
+}
+
+// --- Deadlift: a hip-hinge from the floor to lockout; straight arms, the bar stays level
+function Deadlift({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const lift = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 floor → 1 lockout
+  const A0 = -44, A1 = -90; // torso hinge: bent-over → upright
+  const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${A0 + lift(phase.value) * (A1 - A0)}deg` }] }; });
+  // head + straight arms + level bar are authored at the bottom pose and translate to
+  // follow the shoulder as the torso stands up (so arms hang straight, bar stays level).
+  const upper = useAnimatedStyle(() => {
+    'worklet';
+    const l = lift(phase.value);
+    const a0 = (A0 * Math.PI) / 180;
+    const a = ((A0 + l * (A1 - A0)) * Math.PI) / 180;
+    const L = 27 * s;
+    return { transform: [{ translateX: L * (Math.cos(a) - Math.cos(a0)) }, { translateY: L * (Math.sin(a) - Math.sin(a0)) }] };
+  });
+  const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
+  const hipX = 48 * s, hipY = 54 * s;
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* legs (near-static; the hip hinge is the motion) */}
+      <Bone x={hipX} y={hipY} len={21 * s} w={11 * s} color={fg} rot={stat(74)}>
+        <Bone x={0} y={0} len={21 * s} w={11 * s} color={fg} rot={stat(10)} />
+      </Bone>
+      {/* torso hinge from the hip */}
+      <Bone x={hipX} y={hipY} len={27 * s} w={11 * s} color={fg} rot={torso} />
+      {/* upper body: head + straight arm + level bar, following the shoulder */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, upper]}>
+        <View style={{ position: 'absolute', left: 69 * s, top: 20 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 69 * s, top: 36 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 58 * s, top: 58 * s, width: 34 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 55 * s, top: 50 * s, width: 19 * s, height: 19 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 76 * s, top: 50 * s, width: 19 * s, height: 19 * s, borderRadius: 99, backgroundColor: fg }} />
+      </Animated.View>
     </View>
   );
 }
