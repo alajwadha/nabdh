@@ -1094,16 +1094,11 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
  function buildDetail(key,rng){
   var m=M[key],data=rng==='7D'?m.d7:m.d30;
   dbody.innerHTML=
-   '<div class="dhead"><div class="t">'+m.t+'</div><div class="s">Thursday · compared to your 28-day baseline</div></div>'
+   '<div class="dhead"><div class="t">'+m.t+'</div><div class="s">Thursday · measured today</div></div>'
    +'<div class="dval">'+m.v+'<small> '+m.u+'</small></div>'
-   +'<div class="ddelta" style="color:'+m.dc+'">'+m.delta+'</div>'
-   +'<div class="rngs"><button data-r="7D"'+(rng==='7D'?' class="on"':'')+'>7 days</button><button data-r="30D"'+(rng==='30D'?' class="on"':'')+'>30 days</button></div>'
-   +'<div class="chartc">'+(m.bars?barChart(m,data):lineChart(m,data,rng))+'</div>'
-   +'<div class="dgrid">'
-    +'<div class="tile" style="background:var(--mint)"><div class="l" style="color:var(--mintT)">'+m.tiles[0][0]+'</div><div class="v" style="font-size:20px">'+m.tiles[0][1]+'</div></div>'
-    +'<div class="tile" style="background:var(--lav)"><div class="l" style="color:var(--lavT)">'+m.tiles[1][0]+'</div><div class="v" style="font-size:20px">'+m.tiles[1][1]+'</div></div>'
-   +'</div>'
-   +'<div class="coach"><div class="cic">💡</div><p>'+m.ins+'</p></div>';
+   +'<div class="rngs" style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex"><button data-r="7D"'+(rng==='7D'?' class="on"':'')+'>7 days</button><button data-r="30D"'+(rng==='30D'?' class="on"':'')+'>30 days</button></div><span style="background:var(--navbg);color:var(--mut);border-radius:99px;padding:4px 10px;font-size:10px;font-weight:800;letter-spacing:.5px">SAMPLE</span></div>'
+   +'<div class="chartc"><div style="font-size:11px;color:var(--mut);font-weight:700;line-height:1.4;margin-bottom:8px">Example '+(rng==='7D'?'7-day':'30-day')+' shape — a preview of the chart you\'ll get here.</div>'+(m.bars?barChart(m,data):lineChart(m,data,rng))+'</div>'
+   +'<div class="coach"><div class="cic">📈</div><p>Your daily highs and lows, 28-day baseline and personalised insights for '+m.t.toLowerCase()+' appear here once your device has synced a few days of history.</p></div>';
   dbody.querySelectorAll('.rngs button').forEach(function(b){b.addEventListener('click',function(){buildDetail(key,b.dataset.r)})});
  }
  function readinessDetail(){

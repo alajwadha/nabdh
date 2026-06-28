@@ -9,6 +9,7 @@ import type { MetricKey } from '../store/app';
 import { useHealth } from '../store/health';
 import { DEMO_SUMMARY } from '../integrations/demo';
 import { readinessBreakdown } from '../data/workouts';
+import { weekdayName } from '../data/derive';
 
 function deltaColor(kind: DeltaKind, c: ReturnType<typeof useTheme>['colors']): string {
   return kind === 'good' ? c.accentText : kind === 'bad' ? c.danger : c.warning;
@@ -28,20 +29,6 @@ function InsightRow({ text }: { text: string }) {
   );
 }
 
-function SubTile({ label, value, color }: { label: string; value: string; color: 'mint' | 'lav' }) {
-  const { tiles } = useTheme();
-  const c = tiles[color];
-  return (
-    <View style={{ flex: 1, backgroundColor: c.bg, borderRadius: radii.xl, padding: spacing.lg }}>
-      <AppText variant="caption" color={c.ink} style={{ letterSpacing: 1.2 }}>
-        {label}
-      </AppText>
-      <AppText variant="h2" style={{ marginTop: 4 }}>
-        {value}
-      </AppText>
-    </View>
-  );
-}
 
 function RangeToggle({ range, onChange }: { range: '7D' | '30D'; onChange: (r: '7D' | '30D') => void }) {
   const { colors } = useTheme();
@@ -60,37 +47,60 @@ function RangeToggle({ range, onChange }: { range: '7D' | '30D'; onChange: (r: '
 
 function FullDetail({ def }: { def: MetricDef }) {
   const { colors } = useTheme();
+  const { summary } = useHealth();
+  const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [range, setRange] = useState<'7D' | '30D'>('7D');
   const d = def.detail!;
   const data = range === '7D' ? d.d7 : d.d30;
+  // Headline is the REAL current value from the device; only the trend below is
+  // illustrative until a real history store exists (clearly labelled SAMPLE).
+  const real = def.read?.(s);
+  const headline = real != null ? String(real) : def.sample;
+  const hasReal = real != null;
   return (
     <View style={{ gap: spacing.md }}>
       <View>
         <AppText variant="h2">{d.title}</AppText>
         <AppText variant="caption" color={colors.textMuted}>
-          Thursday · compared to your 28-day baseline
+          {weekdayName()} · {hasReal ? 'measured today' : 'sample value'}
         </AppText>
       </View>
-      <AppText style={{ fontSize: 44, fontWeight: '800', letterSpacing: -2 }}>
-        {def.sample}
-        {!!def.unit && <AppText variant="title" color={colors.textMuted}>{` ${def.unit}`}</AppText>}
-      </AppText>
-      <AppText variant="caption" color={deltaColor(d.deltaKind, colors)} style={{ fontSize: 12 }}>
-        {d.delta}
-      </AppText>
-      <RangeToggle range={range} onChange={setRange} />
-      <View style={{ backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.md }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+        <AppText style={{ fontSize: 44, fontWeight: '800', letterSpacing: -2 }}>
+          {headline}
+          {!!def.unit && <AppText variant="title" color={colors.textMuted}>{` ${def.unit}`}</AppText>}
+        </AppText>
+        {!hasReal && (
+          <View style={{ backgroundColor: colors.navBg, borderRadius: 99, paddingVertical: 4, paddingHorizontal: 10 }}>
+            <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10, letterSpacing: 0.5 }}>SAMPLE</AppText>
+          </View>
+        )}
+      </View>
+
+      {/* Trend section — an explicitly-labelled preview, not the user's real history */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <RangeToggle range={range} onChange={setRange} />
+        <View style={{ backgroundColor: colors.navBg, borderRadius: 99, paddingVertical: 4, paddingHorizontal: 10 }}>
+          <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10, letterSpacing: 0.5 }}>SAMPLE</AppText>
+        </View>
+      </View>
+      <View style={{ backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.md, gap: spacing.sm }}>
+        <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 11, lineHeight: 15 }}>
+          Example {range === '7D' ? '7-day' : '30-day'} shape — a preview of the chart you’ll get here.
+        </AppText>
         {d.bars ? (
           <BarChart data={data} goal={d.goal} color={d.chartColor} />
         ) : (
           <LineChart data={data} baseline={d.base} color={d.chartColor} />
         )}
       </View>
-      <View style={{ flexDirection: 'row', gap: spacing.md }}>
-        <SubTile label={d.tiles[0][0]} value={d.tiles[0][1]} color="mint" />
-        <SubTile label={d.tiles[1][0]} value={d.tiles[1][1]} color="lav" />
+      {/* Honest empty state in place of the old fabricated stat tiles + canned insight */}
+      <View style={{ backgroundColor: colors.navOn, borderRadius: radii.xl, padding: spacing.lg, flexDirection: 'row', gap: spacing.md }}>
+        <AppText style={{ fontSize: 16 }}>📈</AppText>
+        <AppText variant="caption" color={colors.navOnText} style={{ flex: 1, lineHeight: 18 }}>
+          Your daily highs and lows, 28-day baseline and personalised insights for {d.title.toLowerCase()} appear here once your device has synced a few days of history.
+        </AppText>
       </View>
-      <InsightRow text={d.ins} />
     </View>
   );
 }
