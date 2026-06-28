@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import Constants from 'expo-constants';
 import { AppText, Chip } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
 import { radii, spacing } from '../../src/design-system';
@@ -17,10 +18,6 @@ import { useAppState } from '../../src/store/app';
 import { useHealth } from '../../src/store/health';
 import { useIdentity } from '../../src/data/identity';
 import { DEMO_SUMMARY } from '../../src/integrations/demo';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// ⚠️ Move this to .env before production!
-
 
 type Msg = { id: number; from: 'c' | 'u'; text: string };
 
@@ -32,7 +29,7 @@ const CHIPS: [string, string][] = [
 
 export default function Coach() {
   const { colors, tiles } = useTheme();
-  const { toggleTask, water } = useAppState();
+  const { toggleTask, water, ramadan } = useAppState();
   const { summary } = useHealth();
   const identity = useIdentity();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
@@ -51,76 +48,54 @@ export default function Coach() {
   const idRef = useRef(2);
   const scrollRef = useRef<ScrollView>(null);
 
-  const buildSystemPrompt = () => `
-أنت "نبض" — مدرب صحي ذكي مخصص للسوق السعودي والخليجي.
-تتحدث العربية بشكل أساسي وتفهم السياق الثقافي السعودي.
+  // The app never holds a model key or the system prompt — it posts the
+  // conversation + today's minimized metrics to our in-region backend, which
+  // attaches the Saudi-context prompt and calls the model (Vertex Gemini).
+  const send = async (text: string) => {
+    const t = text.trim();
+    if (!t || loading) return;
 
-بيانات المستخدم اليوم:
-- الخطوات: ${s?.steps ?? '—'}
-- معدل ضربات القلب أثناء الراحة: ${s?.restingHeartRate ?? '—'} bpm
-- HRV: ${s?.hrvSdnn ?? '—'} ms
-- النوم: ${s?.sleepMinutes ? Math.round(s.sleepMinutes / 60 * 10) / 10 : '—'} ساعات
-- السعرات النشطة: ${s?.activeEnergyKcal ?? '—'} kcal
-- الماء: ${water} من 8 أكواب
-- المسافة: ${s?.distanceKm ?? '—'} كم
+    const history = msgs.map((m) => ({
+      role: m.from === 'u' ? ('user' as const) : ('assistant' as const),
+      content: m.text,
+    }));
+    const userMsg: Msg = { id: idRef.current++, from: 'u', text: t };
+    setMsgs((m) => [...m, userMsg]);
+    setInput('');
+    setLoading(true);
 
-قواعد المحادثة:
-- رد دائماً بالعربية ما لم يكتب المستخدم بالإنجليزية
-- خذ بعين الاعتبار الثقافة السعودية (رمضان، الحج، الطقس الحار، الأكل الخليجي)
-- اذكر أطعمة خليجية مثل الكبسة، المندي، الشوربة، السمك، التمر
-- ردودك قصيرة ومباشرة (3-4 جمل فقط)
-- لا تعطي نصائح طبية — أنت مدرب وليس طبيباً
-- كن ودوداً ومحفزاً
-`;
+    if (/walk|مشي/i.test(t)) toggleTask('walk');
+    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 50);
 
-const send = async (text: string) => {
-  const t = text.trim();
-  if (!t || loading) return;
-
-  const userMsg: Msg = { id: idRef.current++, from: 'u', text: t };
-  setMsgs((m) => [...m, userMsg]);
-  setInput('');
-  setLoading(true);
-
-  if (/walk|مشي/i.test(t)) toggleTask('walk');
-  setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 50);
-
-  try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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'
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-      messages: [
-  { role: 'system', content: buildSystemPrompt() },
-  ...msgs.map(m => ({
-    role: m.from === 'u' ? 'user' as const : 'assistant' as const,
-    content: m.text
-  })),
-  { role: 'user', content: t }
-],
-        max_tokens: 300,
-      }),
-    });
-
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message);
-    const aiText = data.choices[0].message.content;
-    setMsgs((m) => [...m, { id: idRef.current++, from: 'c', text: aiText }]);
-
-  } catch (error: any) {
-    setMsgs((m) => [
-      ...m,
-      { id: idRef.current++, from: 'c', text: 'خطأ: ' + error.message },
-    ]);
-  } finally {
-    setLoading(false);
-    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
-  }
-};
+    const backendUrl = (Constants.expoConfig?.extra?.backendUrl as string | undefined) ?? '';
+    try {
+      if (!backendUrl) throw new Error('الخادم غير مهيأ (أضف backendUrl في app.json)');
+      const response = await fetch(`${backendUrl}/ai/coach`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...history, { role: 'user', content: t }],
+          summary: s,
+          water,
+          locale: 'ar',
+          isRamadan: ramadan,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.detail || data.error || `HTTP ${response.status}`);
+      }
+      setMsgs((m) => [...m, { id: idRef.current++, from: 'c', text: data.reply }]);
+    } catch (error: any) {
+      setMsgs((m) => [
+        ...m,
+        { id: idRef.current++, from: 'c', text: 'خطأ: ' + (error?.message ?? 'تعذّر الاتصال') },
+      ]);
+    } finally {
+      setLoading(false);
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={['top']}>

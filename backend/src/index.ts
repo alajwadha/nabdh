@@ -1,6 +1,7 @@
 import express from 'express';
 import { DISHES } from './saudi-context/dishes';
 import { googleHealthRouter } from './google-health';
+import { aiRouter } from './ai';
 
 // In-region (Doha/Dammam) Node service. Holds provider keys, the Google Health
 // OAuth token exchange, the Saudi-context layer, data minimization, and the
@@ -14,7 +15,8 @@ app.get('/health', (_req, res) => {
 
 // Phase 2: Google Health API OAuth token exchange + in-region sync (Fitbit Air).
 app.use('/google-health', googleHealthRouter);
-// Phase 3: app.use('/ai', aiRouter)           Vertex AI proxy + Saudi context
+// Phase 3: AI coach proxy — Saudi-context system prompt + in-region Vertex Gemini.
+app.use('/ai', aiRouter);
 // Phase 4: app.use('/nutrition', nutritionRouter)
 
 const port = process.env.PORT ? Number(process.env.PORT) : 8080;

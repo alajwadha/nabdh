@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@google-cloud/vertexai": "^1.12.0",
     "@nabdh/shared": "*",
     "express": "^4.21.2"
   },
