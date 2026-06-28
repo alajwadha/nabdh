@@ -321,19 +321,20 @@ function Deadlift({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
 function Ohp({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
   const s = size / 116;
   const press = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 shoulders → 1 overhead
+  // deeper rack at the bottom (bar at the front of the shoulders = the OHP-identifying frame)
   const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-72 - press(phase.value) * 12}deg` }] }; });
-  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-36 + press(phase.value) * 30}deg` }] }; });
-  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${108 - press(phase.value) * 18}deg` }] }; }); // keep bar level
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-50 + press(phase.value) * 44}deg` }] }; });
+  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${122 - press(phase.value) * 32}deg` }] }; }); // = −(uarm+farm), keeps bar level
   return (
     <View style={{ width: size, height: size }}>
-      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
-      {/* standing figure: legs, torso, head */}
-      <View style={{ position: 'absolute', left: 54 * s, top: 76 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '5deg' }] }} />
-      <View style={{ position: 'absolute', left: 49 * s, top: 76 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-5deg' }] }} />
-      <View style={{ position: 'absolute', left: 49 * s, top: 46 * s, width: 10 * s, height: 32 * s, borderRadius: 99, backgroundColor: fg }} />
-      <View style={{ position: 'absolute', left: 40 * s, top: 30 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.08, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* standing figure (nudged down so the overhead bar has headroom): legs, torso, head */}
+      <View style={{ position: 'absolute', left: 54 * s, top: 79 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 79 * s, width: 9 * s, height: 24 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-5deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 49 * s, width: 10 * s, height: 32 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 40 * s, top: 33 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
       {/* pressing arm: upper arm → forearm → level bar */}
-      <Bone x={54 * s} y={48 * s} len={18 * s} w={9 * s} color={fg} rot={uarm}>
+      <Bone x={54 * s} y={51 * s} len={18 * s} w={9 * s} color={fg} rot={uarm}>
         <Bone x={0} y={0} len={16 * s} w={9 * s} color={fg} rot={farm}>
           <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: 0, height: 0 }, bar]}>
             <View style={{ position: 'absolute', left: -15 * s, top: -3 * s, width: 40 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
