@@ -3,6 +3,7 @@ import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText, Button, Card, Screen } from '../src/design-system/components';
 import { Sparkline } from '../src/components/Charts';
+import { Icon } from '../src/components/Icon';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 
@@ -31,10 +32,19 @@ export default function Trends() {
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 18 }}>‹</AppText>
+          <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Trends</AppText>
       </View>
+
+      <Pressable onPress={() => router.navigate('/vitals')} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
+        <Icon name="heart-pulse" size={22} color="#fff" />
+        <View style={{ flex: 1 }}>
+          <AppText variant="title" color="#fff">Vitals & medications</AppText>
+          <AppText variant="caption" color="rgba(255,255,255,0.85)">Log weight, blood pressure, glucose & meds</AppText>
+        </View>
+        <AppText variant="title" color="#fff">›</AppText>
+      </Pressable>
 
       <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4, alignSelf: 'flex-start' }}>
         {(['W', 'M', '6M'] as const).map((r) => (
@@ -48,7 +58,7 @@ export default function Trends() {
 
       <View style={{ backgroundColor: tiles.gold.bg, borderRadius: radii.lg, padding: spacing.lg }}>
         <AppText variant="title" color={tiles.gold.ink}>
-          📈 This {range === 'W' ? 'week' : range === 'M' ? 'month' : 'half-year'} in a line
+          This {range === 'W' ? 'week' : range === 'M' ? 'month' : 'half-year'} in a line
         </AppText>
         <AppText variant="caption" color={tiles.gold.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 18 }}>
           {SUMMARY[range]}
