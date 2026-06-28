@@ -48,6 +48,8 @@ const DURATION: Record<string, number> = {
   hipthrust: 1500, // drive the hips up to lockout and lower
   calfraise: 1300, // rise onto the toes and lower the heel below the step
   plank: 2200, // a slow forearm-plank hold with a gentle breathing lift
+  padel: 1150, // a forehand swing, low-back to high-front
+  tennis: 1150,
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -111,6 +113,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <CalfRaise phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'plank' ? (
         <Plank phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'padel' || kind === 'tennis' ? (
+        <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -791,6 +795,38 @@ function Plank({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
         </Bone>
       </Animated.View>
     </View>
+  );
+}
+
+// --- Padel / Tennis: a side-view forehand. The hitting arm (upper arm → forearm → racket)
+// sweeps the racket from low-behind to high-in-front; the racket head is equip (apparatus).
+// The whole player steps subtly into the shot (a small forward weight shift).
+function RacketSwing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const shX = 44 * s, shY = 38 * s; // hitting shoulder (arm pivot)
+  const p = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 backswing → 1 follow-through
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${120 - p(phase.value) * 140}deg` }] }; }); // back-low → front-high
+  const fore = { transform: [{ rotate: '-20deg' }] }; // slight constant elbow bend
+  // subtle weight shift: the whole player steps a touch forward into the contact
+  const step = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateX: (-1.5 + 3 * p(phase.value)) * s }] }; });
+  return (
+    <Animated.View style={[{ width: size, height: size }, step]}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.09, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* athletic stance + torso + head + balance arm (static base) */}
+      <View style={{ position: 'absolute', left: 40 * s, top: 63 * s, width: 9 * s, height: 34 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-10deg' }] }} />
+      <View style={{ position: 'absolute', left: 49 * s, top: 63 * s, width: 9 * s, height: 34 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '15deg' }] }} />
+      <View style={{ position: 'absolute', left: 40 * s, top: 36 * s, width: 11 * s, height: 30 * s, borderRadius: 99, backgroundColor: fg }} />
+      <View style={{ position: 'absolute', left: 43 * s, top: 44 * s, width: 7 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '35deg' }] }} />
+      <View style={{ position: 'absolute', left: 38 * s, top: 16 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* hitting arm: upper arm → forearm → racket (throat + head ring) */}
+      <Bone x={shX} y={shY} len={18 * s} w={8 * s} color={fg} rot={uarm}>
+        <Bone x={0} y={0} len={16 * s} w={7 * s} color={fg} rot={fore}>
+          {/* racket continues the forearm line: a throat then an open head ring (apparatus) */}
+          <View style={{ position: 'absolute', left: 0, top: -2 * s, width: 9 * s, height: 4 * s, borderRadius: 99, backgroundColor: equip }} />
+          <View style={{ position: 'absolute', left: 7 * s, top: -9 * s, width: 16 * s, height: 20 * s, borderRadius: 99, borderWidth: 3 * s, borderColor: equip, backgroundColor: 'transparent' }} />
+        </Bone>
+      </Bone>
+    </Animated.View>
   );
 }
 

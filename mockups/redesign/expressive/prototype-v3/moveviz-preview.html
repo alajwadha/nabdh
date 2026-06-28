@@ -180,6 +180,19 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* tennis/padel: side-view forehand, racket swept out front at contact (racket head = mut) */
+.te{position:relative;width:116px;height:116px}
+.te b{position:absolute;border-radius:99px;background:var(--grn)}
+.te .ground{left:8px;right:8px;bottom:10px;height:3px;background:var(--navbg)}
+.te .head{left:38px;top:16px;width:17px;height:17px}
+.te .torso{left:40px;top:36px;width:11px;height:30px}
+.te .legB{left:40px;top:63px;width:9px;height:34px;transform-origin:top center;transform:rotate(-10deg)}
+.te .legF{left:49px;top:63px;width:9px;height:34px;transform-origin:top center;transform:rotate(15deg)}
+.te .barm{left:43px;top:44px;width:7px;height:16px;transform-origin:top center;transform:rotate(35deg)} /* non-hitting arm, balance */
+.te .uarm{left:44px;top:34px;width:18px;height:8px;transform-origin:left center;transform:rotate(22deg)}
+.te .fore{left:18px;top:0;width:16px;height:7px;transform-origin:left center;transform:rotate(-20deg)} /* child of uarm */
+.te .throat{left:16px;top:1px;width:9px;height:4px;background:var(--mut)} /* child of fore: racket throat */
+.te .rhead{left:23px;top:-6px;width:16px;height:20px;border:3px solid var(--mut);border-radius:99px;background:transparent} /* child of fore: racket head */
 /* plank: forearm on the ground, straight body to the toes (forearm-plank pose; pushes to high plank) */
 .pl{position:relative;width:116px;height:116px}
 .pl b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -218,14 +231,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .hp .plate{left:56px;top:40px;width:23px;height:23px;border-radius:99px;background:var(--grn)} /* loaded plate, edge-on */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · HIP THRUST</div>
- <div class="stage"><div class="hp">
-  <b class="ground"></b><b class="benchpad"></b><b class="benchleg"></b>
-  <b class="torso"></b><b class="head"></b>
-  <b class="thigh"><b class="shin"><b class="foot"></b></b></b>
-  <b class="bar"></b><b class="plate"></b>
+ <div class="lbl">WORKOUT · SPORT · PADEL / TENNIS</div>
+ <div class="stage"><div class="te">
+  <b class="ground"></b>
+  <b class="legB"></b><b class="legF"></b><b class="torso"></b><b class="barm"></b><b class="head"></b>
+  <b class="uarm"><b class="fore"><b class="throat"></b><b class="rhead"></b></b></b>
  </div></div>
- <div class="name">🍑 Hip thrust</div>
+ <div class="name">🎾 Padel / Tennis</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · GYM · CALF RAISE</div>
