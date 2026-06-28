@@ -129,16 +129,29 @@ export function platesPerSide(totalKg: number, barKg = 20): number[] {
   return out;
 }
 
-/** Warm-up ramp up to a top working weight: bar → 50% → 70% → 85%, rounded to 2.5 kg. */
+/**
+ * Warm-up ramp up to a top working weight. Barbell (barKg>0): empty bar → 50% →
+ * 70% → 85%. Machine/dumbbell (barKg=0, no empty-bar concept): 40% → 60% → 80%.
+ * Rounded to 2.5 kg, strictly increasing.
+ */
 export function warmupRamp(topKg: number, barKg = 20): { weight: number; reps: number }[] {
-  if (topKg <= barKg) return [];
-  const round = (w: number) => Math.max(barKg, Math.round(w / 2.5) * 2.5);
-  return [
-    { weight: barKg, reps: 8 },
-    { weight: round(topKg * 0.5), reps: 5 },
-    { weight: round(topKg * 0.7), reps: 3 },
-    { weight: round(topKg * 0.85), reps: 1 },
-  ].filter((w, i, a) => i === 0 || w.weight > a[i - 1].weight); // strictly increasing
+  const minW = barKg > 0 ? barKg : 2.5;
+  if (topKg <= minW) return [];
+  const round = (w: number) => Math.max(minW, Math.round(w / 2.5) * 2.5);
+  const steps =
+    barKg > 0
+      ? [
+          { weight: barKg, reps: 8 },
+          { weight: round(topKg * 0.5), reps: 5 },
+          { weight: round(topKg * 0.7), reps: 3 },
+          { weight: round(topKg * 0.85), reps: 1 },
+        ]
+      : [
+          { weight: round(topKg * 0.4), reps: 8 },
+          { weight: round(topKg * 0.6), reps: 5 },
+          { weight: round(topKg * 0.8), reps: 3 },
+        ];
+  return steps.filter((w, i, a) => i === 0 || w.weight > a[i - 1].weight);
 }
 
 // --- Catalogs ---------------------------------------------------------------

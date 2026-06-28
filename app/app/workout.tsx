@@ -71,7 +71,7 @@ export default function Workout() {
   const topWeight = sets.reduce((m, st) => Math.max(m, st.weight), 0);
   const plates = platesPerSide(topWeight, barKg);
   const loaded = barKg + plates.reduce((a, b) => a + b, 0) * 2; // what the plates actually make
-  const warmup = warmupRamp(topWeight, barKg);
+  const warmup = warmupRamp(topWeight, ex.equipment === 'barbell' ? barKg : 0);
   const suggested = workingWeight(best || 80, 8, advice.factor);
 
   const last = lastFor(exKey);
@@ -196,12 +196,12 @@ export default function Workout() {
                 <AppText variant="caption" color={colors.textMuted}>
                   🏋️ Per side @ {topWeight} kg: {plates.length ? plates.join(' · ') : 'just the bar'}{loaded !== topWeight ? ` (≈ ${loaded} kg loadable)` : ''}
                 </AppText>
-                {warmup.length > 0 && (
-                  <AppText variant="caption" color={colors.textMuted}>
-                    🔥 Warm-up: {warmup.map((w) => `${w.weight}×${w.reps}`).join(' · ')}
-                  </AppText>
-                )}
               </View>
+            )}
+            {detailed && warmup.length > 0 && (
+              <AppText variant="caption" color={colors.textMuted} style={{ paddingBottom: 8 }}>
+                🔥 Warm-up: {warmup.map((w) => `${w.weight}×${w.reps}`).join(' · ')}
+              </AppText>
             )}
           </Card>
 
