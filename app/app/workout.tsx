@@ -21,6 +21,8 @@ import {
   metCalories,
   sweatLossLiters,
   rehydrationGlasses,
+  suggestProgression,
+  progressionIncrement,
   platesPerSide,
   restRecommendation,
   warmupRamp,
@@ -86,6 +88,11 @@ export default function Workout() {
   const trend = e1rmTrendFor(exKey);
   const prevBest = bestE1rmFor(exKey);
   const isPr = best > prevBest; // strict: ties aren't PRs
+  // Progressive-overload suggestion from last session's hardest set (heaviest, then most reps).
+  const lastTop = last?.sets?.length
+    ? [...last.sets].sort((a, b) => b.weight - a.weight || b.reps - a.reps)[0]
+    : null;
+  const nextTarget = lastTop ? suggestProgression(lastTop.weight, lastTop.reps, progressionIncrement(ex.muscle)) : null;
 
   const save = () => {
     const wasPr = mode === 'gym' && best > prevBest;
@@ -245,6 +252,19 @@ export default function Workout() {
                 </View>
                 {trend.length > 1 && <Sparkline data={trend} color={colors.accentText} />}
               </View>
+              {nextTarget && lastTop && (
+                <View style={{ marginTop: 12, borderTopWidth: 2, borderTopColor: colors.border, paddingTop: 10, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                  <View style={{ backgroundColor: nextTarget.action === 'increase' ? tiles.mint.bg : tiles.gold.bg, borderRadius: radii.md, paddingVertical: 8, paddingHorizontal: 12 }}>
+                    <AppText variant="caption" color={nextTarget.action === 'increase' ? tiles.mint.ink : tiles.gold.ink} style={{ fontSize: 9, letterSpacing: 1 }}>NEXT STEP</AppText>
+                    <AppText variant="title" color={nextTarget.action === 'increase' ? tiles.mint.ink : tiles.gold.ink}>{nextTarget.weight} kg × {nextTarget.reps}</AppText>
+                  </View>
+                  <AppText variant="caption" color={colors.textMuted} style={{ flex: 1, lineHeight: 16 }}>
+                    {nextTarget.action === 'increase'
+                      ? `You cleared ${nextTarget.repCeil} reps at ${lastTop.weight} kg — add a plate and reset to ${nextTarget.repFloor}.`
+                      : `Hold ${lastTop.weight} kg and chase ${nextTarget.reps} reps; hit ${nextTarget.repCeil} and you add weight.`}
+                  </AppText>
+                </View>
+              )}
             </Card>
           )}
         </>

@@ -237,6 +237,32 @@ export function percentLoads(oneRm: number): { pct: number; kg: number; reps: nu
   }));
 }
 
+/** Smallest sensible load jump for the next session — bigger on large lower-body lifts. */
+export function progressionIncrement(muscle: Muscle): number {
+  return muscle === 'legs' || muscle === 'glutes' ? 5 : 2.5;
+}
+
+export type NextTarget = { weight: number; reps: number; action: 'increase' | 'hold'; repFloor: number; repCeil: number };
+/**
+ * Double-progression — the standard sustainable overload model (Hevy/Strong/Boostcamp):
+ * work a rep range at a fixed load; when you clear the TOP of the range on your hardest
+ * set, add the smallest plate jump and reset to the bottom of the range; otherwise hold
+ * the weight and chase one more rep. Suggestion is vs your last session, not readiness-
+ * adjusted (the readiness card handles "push vs ease off" separately).
+ */
+export function suggestProgression(
+  lastTopWeight: number,
+  lastTopReps: number,
+  increment: number,
+  repFloor = 6,
+  repCeil = 10,
+): NextTarget | null {
+  if (lastTopWeight <= 0 || lastTopReps <= 0) return null;
+  if (lastTopReps >= repCeil)
+    return { weight: Math.round((lastTopWeight + increment) / 2.5) * 2.5, reps: repFloor, action: 'increase', repFloor, repCeil };
+  return { weight: lastTopWeight, reps: lastTopReps + 1, action: 'hold', repFloor, repCeil };
+}
+
 /** Rest-between-sets guidance from the working rep range (heavier/fewer → longer rest). */
 export function restRecommendation(reps: number): string {
   if (reps <= 0) return '';
