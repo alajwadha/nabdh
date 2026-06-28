@@ -866,7 +866,7 @@ function Pushup({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
   const toeX = 96 * s, toeY = 88 * s, hX = 33 * s, hY = 88 * s, U = 14 * s, F = 14 * s;
   const sh0x = 44 * s, sh0y = 74 * s; // shoulder at the bottom pose (translate anchor)
   const p = (v: number) => (1 - Math.cos((v - 0.25) * 2 * Math.PI)) / 2; // 0 chest-down (0.25) → 1 pressed-up (0.75)
-  const sh = useDerivedValue(() => { 'worklet'; const q = p(phase.value); return { x: (44 - 6 * q) * s, y: (74 - 14 * q) * s }; });
+  const sh = useDerivedValue(() => { 'worklet'; const q = p(phase.value); return { x: (44 - 6 * q) * s, y: (74 - 16 * q) * s }; });
   const ik = useDerivedValue(() => { 'worklet'; return solve2Bar(sh.value.x, sh.value.y, hX, hY, U, F, 1); });
   const bodyRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(sh.value.y - toeY, sh.value.x - toeX)}rad` }] }; });
   const bodyLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((sh.value.x - toeX) ** 2 + (sh.value.y - toeY) ** 2) }; });
