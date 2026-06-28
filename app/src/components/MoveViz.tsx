@@ -962,13 +962,14 @@ function Yoga({ phase, size, fg, equip }: { phase: SharedValue<number>; size: nu
   const s = size / 116;
   const hipX = 40 * s, hipY = 57 * s, shX = 76 * s, shY = 57 * s;
   // mid-spine travels: cat (arched up, y≈46) at phase 0.25 → cow (dipped, y≈64) at 0.75
-  const my = useDerivedValue(() => { 'worklet'; return (55 - 9 * Math.cos((phase.value - 0.25) * 2 * Math.PI)) * s; });
+  const my = useDerivedValue(() => { 'worklet'; return (54 - 11 * Math.cos((phase.value - 0.25) * 2 * Math.PI)) * s; });
   const spineBRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(my.value - hipY, 17 * s)}rad` }] }; });
   const spineBLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.hypot(17 * s, my.value - hipY) }; });
   const spineFRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(my.value - shY, -19 * s)}rad` }] }; });
   const spineFLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.hypot(19 * s, my.value - shY) }; });
-  // head nods: tucked down (+40°) at cat, lifted (−20°) at cow
-  const neck = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${10 + 30 * Math.cos((phase.value - 0.25) * 2 * Math.PI)}deg` }] }; });
+  // head nods: chin tucked steeply DOWN (~78°, dropping toward the chest just ahead of the
+  // shoulder — not flung forward) at cat, lifted to look up (−18°) at cow
+  const neck = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${30 + 48 * Math.cos((phase.value - 0.25) * 2 * Math.PI)}deg` }] }; });
   const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
   return (
     <View style={{ width: size, height: size }}>
