@@ -73,6 +73,14 @@ export function weekRangeLabel(d = new Date()): string {
   return `${fmt(start)} – ${fmt(end)}`;
 }
 
+/** Age-personalized sleep need in minutes (National Sleep Foundation bands). */
+export function sleepNeedMin(age: number): number {
+  if (age <= 13) return 9 * 60; // school-age/early teen 9–11h
+  if (age <= 17) return 8.5 * 60; // teens 8–10h
+  if (age >= 65) return 7.5 * 60; // older adults 7–8h
+  return 8 * 60; // adults 7–9h → target 8h
+}
+
 /** Active-energy ring progress against a goal. */
 export function energyProgress(s: HealthDaily | null, goal = 600): number {
   return Math.max(0, Math.min(1, (s?.activeEnergyKcal ?? 0) / goal));
