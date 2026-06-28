@@ -1,0 +1,116 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nabdh — Workout screens (RN render)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F1E8;--card:#FFFBF4;--bord:#EDE5D3;--ink:#1F1C17;--mut:#80796C;--grn:#2E7D5B;--grnD:#256A4C;--grnT:#2E7D5B;
+--peach:#F7E3C2;--peachT:#6B5328;--lav:#DDD6F6;--lavT:#4A4080;--mint:#D8EFE2;--mintT:#1E5A40;--pink:#F8DCE4;--pinkT:#7A3A52;--gold:#FBE5BE;--goldT:#8A6312;--blue:#D6EBF6;--blueT:#2C5C77;--navbg:#EFE8DA;--navon:#211E1A;--navonT:#FFF8EC;}
+body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;gap:26px;padding:26px;flex-wrap:wrap;justify-content:center}
+.frame{width:393px;height:852px;background:var(--bg);border-radius:46px;box-shadow:0 24px 60px rgba(60,48,20,.25);overflow:hidden;position:relative;padding:54px 24px 18px;display:flex;flex-direction:column;gap:13px}
+.row{display:flex;align-items:center;gap:12px}
+.bk{width:38px;height:38px;border-radius:14px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:18px}
+.h1{font-size:28px;font-weight:800;letter-spacing:-.9px}
+.flex1{flex:1}
+.seg{display:flex;background:var(--navbg);border-radius:99px;padding:4px}
+.seg b{padding:7px 13px;border-radius:99px;font-size:11px;font-weight:800;color:var(--mut)}
+.seg b.on{background:var(--navon);color:var(--navonT)}
+.hb{width:38px;height:38px;border-radius:14px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:16px}
+.advice{border-radius:26px;padding:16px 18px}
+.advice .t{font-size:10px;letter-spacing:1.2px;font-weight:800}
+.advice .lab{font-size:22px;font-weight:800;letter-spacing:-.6px;float:right}
+.advice .note{font-size:11.5px;font-weight:700;margin-top:5px;line-height:1.5;clear:both}
+.advice .calc{font-size:11px;font-weight:700;margin-top:7px;opacity:.85}
+.modeswitch{display:flex;background:var(--navbg);border-radius:99px;padding:4px}
+.modeswitch b{flex:1;text-align:center;padding:11px 0;border-radius:99px;font-size:12px;font-weight:800;color:var(--mut)}
+.modeswitch b.on{background:var(--navon);color:var(--navonT)}
+.chips{display:flex;gap:8px;overflow:hidden}
+.chip{padding:9px 13px;border-radius:99px;font-size:11px;font-weight:800;background:var(--card);border:2px solid var(--bord);white-space:nowrap}
+.chip.on{background:var(--grn);color:#fff;border-color:var(--grn)}
+.card{background:var(--card);border:2px solid var(--bord);border-radius:26px;padding:14px 16px}
+.muted{font-size:11px;color:var(--mut);font-weight:700}
+.setrow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:2px solid var(--bord)}
+.setrow:last-child{border-bottom:0}
+.idx{width:20px;font-size:11px;color:var(--mut);font-weight:800}
+.step{display:flex;align-items:center;gap:6px}
+.step .b{width:30px;height:30px;border-radius:10px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:16px}
+.step .v{min-width:48px;text-align:center}
+.step .v b{font-size:16px;font-weight:800}.step .v span{display:block;font-size:9px;color:var(--mut);font-weight:800}
+.oneRM{margin-left:auto;font-size:11px;font-weight:800;color:var(--grnT)}
+.addset{padding:9px 0;font-size:11px;font-weight:800;color:var(--grnT)}
+.stats{display:flex;gap:12px}
+.stat{flex:1;border-radius:22px;padding:13px 14px}
+.stat .l{font-size:9px;letter-spacing:1px;font-weight:800}
+.stat .v{font-size:21px;font-weight:800;letter-spacing:-.6px;margin-top:3px}
+.stat .v small{font-size:11px;font-weight:800;opacity:.6}
+.stat .hint{font-size:9px;font-weight:800;opacity:.75;margin-top:2px}
+.prog{display:flex;justify-content:space-between;align-items:center}
+.prog .nm{font-size:14px;font-weight:800}
+.prog .best{font-size:11px;font-weight:800;color:var(--grnT)}
+.lbl{font-size:10px;letter-spacing:1.4px;font-weight:800;color:var(--mut);margin:4px 2px}
+.save{background:var(--grn);color:#fff;border-radius:99px;padding:15px;text-align:center;font-size:14px;font-weight:800;margin-top:auto}
+.bars>div{display:flex;align-items:center;gap:11px;padding:6px 0}
+.bars .k{width:74px;font-size:11px;font-weight:700;color:var(--mut)}
+.bars .track{flex:1;height:10px;border-radius:99px;background:var(--navbg);overflow:hidden}
+.bars .track i{display:block;height:100%;border-radius:99px;background:var(--grn)}
+.bars .vv{width:56px;text-align:right;font-size:11px;font-weight:800}
+.pr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--bord);font-size:11px;font-weight:800}
+.pr:last-child{border-bottom:0}.pr .w{color:var(--grnT)}
+.saved{background:var(--mint);color:var(--mintT);border-radius:20px;padding:12px;text-align:center;font-size:14px;font-weight:800}
+.cap{position:absolute;top:16px;left:0;right:0;text-align:center;font-size:10px;font-weight:800;color:var(--mut);letter-spacing:1px}
+svg{display:block;width:100%}
+</style></head><body>
+
+<!-- ===== 1. WORKOUT — GYM (detailed) ===== -->
+<div class="frame" id="f1"><div class="cap">WORKOUT · GYM · DETAILED</div>
+ <div class="row"><div class="bk">‹</div><div class="h1 flex1">Workout</div><div class="hb">📈</div><div class="seg"><b>Simple</b><b class="on">Detailed</b></div></div>
+ <div class="advice" style="background:var(--mint)"><div class="t" style="color:var(--mintT)">TODAY · READINESS 82</div><div class="lab" style="color:var(--mintT)">Green light — push</div><div class="note" style="color:var(--mintT)">Recovery is high. Add ~5% or a top set and chase a PR.</div><div class="calc" style="color:var(--mintT)">Load factor ×1.05 · suggested top set ≈ 80 kg × 8 (from your 89 kg e1RM)</div></div>
+ <div class="modeswitch"><b class="on">🏋️ Gym</b><b>🎾 Sports</b></div>
+ <div class="chips"><div class="chip on">🦵 Leg press</div><div class="chip">🫁 Chest press</div><div class="chip">🔙 Lat pulldown</div></div>
+ <div class="card"><div class="muted" style="margin-bottom:4px">Legs · machine</div>
+  <div class="setrow"><div class="idx">1</div><div class="step"><div class="b">−</div><div class="v"><b>60</b><span>kg</span></div><div class="b">＋</div></div><div class="step"><div class="b">−</div><div class="v"><b>10</b><span>reps</span></div><div class="b">＋</div></div><div class="oneRM">80 1RM</div></div>
+  <div class="setrow"><div class="idx">2</div><div class="step"><div class="b">−</div><div class="v"><b>70</b><span>kg</span></div><div class="b">＋</div></div><div class="step"><div class="b">−</div><div class="v"><b>8</b><span>reps</span></div><div class="b">＋</div></div><div class="oneRM">87.5 1RM</div></div>
+  <div class="setrow"><div class="idx">3</div><div class="step"><div class="b">−</div><div class="v"><b>75</b><span>kg</span></div><div class="b">＋</div></div><div class="step"><div class="b">−</div><div class="v"><b>6</b><span>reps</span></div><div class="b">＋</div></div><div class="oneRM">88.5 1RM</div></div>
+  <div class="addset">＋ Add set</div></div>
+ <div class="stats"><div class="stat" style="background:var(--lav)"><div class="l" style="color:var(--lavT)">VOLUME</div><div class="v">1,610<small> kg</small></div></div><div class="stat" style="background:var(--peach)"><div class="l" style="color:var(--peachT)">EST 1RM</div><div class="v">89<small> kg</small></div></div><div class="stat" style="background:var(--mint)"><div class="l" style="color:var(--mintT)">REPS</div><div class="v">24</div></div></div>
+ <div class="card"><div class="prog"><div><div class="muted">PROGRESSION</div><div class="nm" style="margin-top:2px">best 91 kg</div><div class="muted" style="margin-top:2px">last 06-12: 67×10 · 72×8 · 77×6</div></div>
+   <svg viewBox="0 0 120 40" style="width:120px;height:40px"><path d="M4,30 L42,24 L80,16 L116,11" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-linecap="round"/><circle cx="116" cy="11" r="3.5" fill="#2E7D5B" stroke="#fff" stroke-width="2"/></svg></div></div>
+ <div class="save">Save workout · 1,610 kg volume</div>
+</div>
+
+<!-- ===== 2. WORKOUT — SPORTS (detailed, just logged) ===== -->
+<div class="frame" id="f2"><div class="cap">WORKOUT · SPORTS · DETAILED</div>
+ <div class="row"><div class="bk">‹</div><div class="h1 flex1">Workout</div><div class="hb">📈</div><div class="seg"><b>Simple</b><b class="on">Detailed</b></div></div>
+ <div class="advice" style="background:var(--mint)"><div class="t" style="color:var(--mintT)">TODAY · READINESS 82</div><div class="lab" style="color:var(--mintT)">Green light — push</div><div class="note" style="color:var(--mintT)">Recovery is high. Add ~5% or a top set and chase a PR.</div></div>
+ <div class="modeswitch"><b>🏋️ Gym</b><b class="on">🎾 Sports</b></div>
+ <div class="chips"><div class="chip on">🎾 Padel</div><div class="chip">🎾 Tennis</div><div class="chip">🏃 Running</div><div class="chip">🚴 Cycling</div></div>
+ <div class="card"><div class="row" style="justify-content:space-between"><b style="font-size:15px">🎾 Padel</b><div class="step"><div class="b">−</div><div class="v"><b>60</b><span>min</span></div><div class="b">＋</div></div></div>
+  <div class="row" style="justify-content:space-between;border-top:2px solid var(--bord);padding-top:10px;margin-top:6px"><div class="muted">Your weight</div><div class="step"><div class="b">−</div><div class="v"><b>80</b><span>kg</span></div><div class="b">＋</div></div></div></div>
+ <div class="stats"><div class="stat" style="background:var(--pink)"><div class="l" style="color:var(--pinkT)">CALORIES</div><div class="v">560<small> kcal</small></div></div><div class="stat" style="background:var(--gold)"><div class="l" style="color:var(--goldT)">MET</div><div class="v">7</div></div></div>
+ <div class="muted" style="margin:2px">9.3 kcal/min · kcal = MET 7 × 80 kg × 1.00 h</div>
+ <div class="lbl">RECENT</div>
+ <div class="card" style="padding:6px 16px"><div class="pr"><span>🎾 Padel · 560 kcal</span><span>06-13</span></div><div class="pr"><span>🏋️ Leg press · 1,610 kg</span><span>06-13</span></div><div class="pr"><span>🏃 Running · 612 kcal</span><span>06-11</span></div></div>
+ <div class="saved">Logged Padel ✓</div>
+ <div class="save">Log Padel · 560 kcal</div>
+</div>
+
+<!-- ===== 3. PROGRESS / HISTORY ===== -->
+<div class="frame" id="f3"><div class="cap">PROGRESS · HISTORY</div>
+ <div class="row"><div class="bk">‹</div><div class="h1">Progress</div></div>
+ <div class="stats"><div class="stat" style="background:var(--lav)"><div class="l" style="color:var(--lavT)">THIS WEEK</div><div class="v">6.4<small> t</small></div><div class="hint" style="color:var(--lavT)">tonnage lifted</div></div><div class="stat" style="background:var(--peach)"><div class="l" style="color:var(--peachT)">SESSIONS</div><div class="v">5</div><div class="hint" style="color:var(--peachT)">this week</div></div><div class="stat" style="background:var(--pink)"><div class="l" style="color:var(--pinkT)">SPORT</div><div class="v">1,172<small></small></div><div class="hint" style="color:var(--pinkT)">kcal this week</div></div></div>
+ <div class="lbl">PER-EXERCISE PROGRESSION</div>
+ <div class="chips"><div class="chip on">🦵 Leg press</div><div class="chip">🏋️ Bench press</div><div class="chip">🔙 Deadlift</div></div>
+ <div class="card"><div class="row" style="justify-content:space-between"><b style="font-size:14px">Leg press</b><span class="best">best 91 kg e1RM</span></div><div class="muted" style="margin:4px 0 8px">4 sessions · estimated 1RM by session</div>
+  <svg viewBox="0 0 318 120"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E7D5B" stop-opacity=".28"/><stop offset="1" stop-color="#2E7D5B" stop-opacity="0"/></linearGradient></defs>
+   <path d="M10,96 L106,80 L202,52 L308,30 L308,118 L10,118 Z" fill="url(#g)"/>
+   <path d="M10,96 L106,80 L202,52 L308,30" fill="none" stroke="#2E7D5B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+   <circle cx="308" cy="30" r="5" fill="#2E7D5B" stroke="#fff" stroke-width="2.5"/>
+   <text x="10" y="113" font-size="9" font-weight="700" fill="#8B8270">FIRST</text><text x="308" y="113" text-anchor="end" font-size="9" font-weight="700" fill="#8B8270">LATEST</text></svg></div>
+ <div class="lbl">30-DAY VOLUME BY MUSCLE</div>
+ <div class="card bars"><div><div class="k">Legs</div><div class="track"><i style="width:100%"></i></div><div class="vv">9.8 t</div></div><div><div class="k">Back</div><div class="track"><i style="width:52%"></i></div><div class="vv">5.1 t</div></div><div><div class="k">Chest</div><div class="track"><i style="width:38%"></i></div><div class="vv">3.7 t</div></div><div><div class="k">Shoulders</div><div class="track"><i style="width:21%"></i></div><div class="vv">2.1 t</div></div></div>
+ <div class="lbl">PERSONAL RECORDS</div>
+ <div class="card" style="padding:6px 16px"><div class="pr"><span>🦵 Leg press</span><span class="w">91 kg</span></div><div class="pr"><span>🏋️ Deadlift</span><span class="w">140 kg</span></div><div class="pr"><span>🏋️ Bench press</span><span class="w">82 kg</span></div></div>
+</div>
+
+</body></html>
