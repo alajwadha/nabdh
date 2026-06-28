@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from '../src/design-system/theme';
 import { AuthProvider, useAuth } from '../src/auth/AuthProvider';
 import { HealthProvider } from '../src/store/health';
 import { AppStateProvider } from '../src/store/app';
+import { WorkoutProvider } from '../src/store/workouts';
 import '../src/i18n';
 
 const AUTH_ROUTES = ['sign-in', 'phone'];
@@ -63,7 +64,9 @@ export default function RootLayout() {
           <AuthProvider>
             <HealthProvider>
               <AppStateProvider>
-                <RootNavigator />
+                <WorkoutProvider>
+                  <RootNavigator />
+                </WorkoutProvider>
               </AppStateProvider>
             </HealthProvider>
           </AuthProvider>

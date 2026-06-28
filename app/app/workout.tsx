@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import type { HealthDaily } from '@nabdh/shared';
-import { AppText, Button, Card, Screen } from '../src/design-system/components';
+import { AppText, Button, Card, Screen, SectionHeader } from '../src/design-system/components';
+import { Sparkline } from '../src/components/Charts';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useHealth } from '../src/store/health';
+import { useWorkouts } from '../src/store/workouts';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
 import {
   EXERCISES,
@@ -45,6 +47,7 @@ export default function Workout() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
   const { summary } = useHealth();
+  const { addSession, lastFor, bestE1rmFor, e1rmTrendFor, sessions } = useWorkouts();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
 
   const [detailed, setDetailed] = useState(false);
@@ -70,6 +73,17 @@ export default function Workout() {
   const vol = useMemo(() => volume(sets), [sets]);
   const best = useMemo(() => bestE1rm(sets), [sets]);
   const suggested = workingWeight(best || 80, 8, advice.factor);
+
+  const last = lastFor(exKey);
+  const trend = e1rmTrendFor(exKey);
+  const prevBest = bestE1rmFor(exKey);
+  const isPr = best > 0 && best >= prevBest;
+
+  const save = () => {
+    if (mode === 'gym') addSession({ kind: 'gym', exKey, sets, volume: vol, e1rm: best, readiness: r });
+    else addSession({ kind: 'sport', sportKey, minutes, kcal: cals, distanceKm: dist, readiness: r });
+    router.back();
+  };
 
   const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
   const cals = metCalories(sportMet, minutes, weight);
@@ -164,6 +178,27 @@ export default function Workout() {
             <Stat label="EST 1RM" value={`${Math.round(best)}`} unit="kg" color={tiles.peach} />
             {detailed && <Stat label="REPS" value={`${totalReps(sets)}`} unit="" color={tiles.mint} />}
           </View>
+
+          {(last || trend.length > 1) && (
+            <Card>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                  <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>
+                    PROGRESSION
+                  </AppText>
+                  <AppText variant="title" style={{ marginTop: 2 }}>
+                    best {Math.round(prevBest)} kg{isPr ? '  ·  🏆 PR today' : ''}
+                  </AppText>
+                  {!!last && (
+                    <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 2 }}>
+                      last {last.at.slice(5, 10)}: {(last.sets ?? []).map((st) => `${st.weight}×${st.reps}`).join(' · ')}
+                    </AppText>
+                  )}
+                </View>
+                {trend.length > 1 && <Sparkline data={trend} color={colors.accentText} />}
+              </View>
+            </Card>
+          )}
         </>
       ) : (
         <>
@@ -210,7 +245,24 @@ export default function Workout() {
         </>
       )}
 
-      <Button label={mode === 'gym' ? `Save workout · ${vol.toLocaleString()} kg volume` : `Log ${sport.name} · ${cals} kcal`} onPress={() => router.back()} />
+      {sessions.length > 0 && (
+        <View>
+          <SectionHeader title="Recent" />
+          {[...sessions].slice(-5).reverse().map((ws) => {
+            const title = ws.kind === 'gym'
+              ? `${EXERCISES.find((e) => e.key === ws.exKey)?.name ?? 'Lift'} · ${(ws.volume ?? 0).toLocaleString()} kg`
+              : `${SPORTS.find((sp) => sp.key === ws.sportKey)?.name ?? 'Sport'} · ${ws.kcal ?? 0} kcal`;
+            return (
+              <View key={ws.id} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+                <AppText variant="caption" color={colors.ink}>{ws.kind === 'gym' ? '🏋️' : '🎾'} {title}</AppText>
+                <AppText variant="caption" color={colors.textMuted}>{ws.at.slice(5, 10)}</AppText>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      <Button label={mode === 'gym' ? `Save workout · ${vol.toLocaleString()} kg volume` : `Log ${sport.name} · ${cals} kcal`} onPress={save} />
     </Screen>
   );
 }
