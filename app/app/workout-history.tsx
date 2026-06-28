@@ -6,7 +6,7 @@ import { LineChart } from '../src/components/Charts';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
-import { EXERCISES, SPORTS, MUSCLE_LABEL, percentLoads, type Muscle } from '../src/data/workouts';
+import { EXERCISES, SPORTS, MUSCLE_LABEL, percentLoads, trainingPaces, fmtPace, riegelTime, type Muscle } from '../src/data/workouts';
 import { computeAcwr, dotsScore, relativeStrength, strengthStandard, STRENGTH_LEVELS, type StrengthLevel } from '../src/data/health-metrics';
 import { useAppState } from '../src/store/app';
 
@@ -88,6 +88,16 @@ export default function WorkoutHistory() {
     intermediate: tiles.mint, advanced: tiles.gold, elite: tiles.peach,
   };
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  // Running training paces — derived from the best recent run (fastest 5 K-equivalent
+  // over the last 60 days). One real effort drives the whole zone table.
+  const recentRuns = sport.filter((s) => s.sportKey === 'running' && (s.distanceKm ?? 0) >= 1.5 && (s.minutes ?? 0) > 0 && inWindow(s.at, 60));
+  const bestRun = recentRuns.reduce<{ d: number; m: number; five: number } | null>((best, s) => {
+    const d = s.distanceKm!, m = s.minutes!;
+    const five = riegelTime(m, d, 5); // 5 K-equivalent minutes (lower = fitter) — one Riegel source
+    return !best || five < best.five ? { d, m, five } : best;
+  }, null);
+  const paces = bestRun ? trainingPaces(bestRun.d, bestRun.m) : null;
 
   return (
     <Screen>
@@ -272,6 +282,29 @@ export default function WorkoutHistory() {
                 </View>
               );
             })}
+          </Card>
+        </>
+      )}
+
+      {paces && bestRun && (
+        <>
+          <SectionHeader title="Running paces" />
+          <Card>
+            <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 8 }}>
+              From your fastest recent run ({Math.round(bestRun.d * 10) / 10} km · {Math.round(bestRun.m)} min) — training zones per km.
+            </AppText>
+            {paces.map((p, i) => (
+              <View key={p.key} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderTopWidth: i === 0 ? 0 : 2, borderTopColor: colors.border }}>
+                <View style={{ flex: 1 }}>
+                  <AppText variant="caption" color={colors.ink} style={{ fontWeight: '700' }}>{p.label}</AppText>
+                  {detailed && <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10 }}>{p.note}</AppText>}
+                </View>
+                <AppText variant="caption" color={colors.accentText} style={{ fontWeight: '800' }}>{fmtPace(p.secPerKm)} <AppText variant="caption" color={colors.textMuted}>/km</AppText></AppText>
+              </View>
+            ))}
+            <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
+              Assumes that run was a hard effort — log a fast or race-pace run for sharper zones. A guide, not a lab test.
+            </AppText>
           </Card>
         </>
       )}

@@ -80,6 +80,37 @@ export function distanceKm(minutes: number, paceMinPerKm: number): number {
   return paceMinPerKm > 0 ? Math.round((minutes / paceMinPerKm) * 10) / 10 : 0;
 }
 
+/**
+ * Daniels-style training paces (sec/km) from a recent run. We project the effort
+ * to an equivalent 5 K time with the same Riegel model used for race prediction,
+ * then scale 5 K pace by the standard zone multipliers (easy slower, intervals at
+ * 5 K pace, reps faster). Approximate VDOT — a guide built from one real run, not
+ * a lab test. Returns null if the reference run is too short to be meaningful.
+ */
+export type TrainingPace = { key: string; label: string; secPerKm: number; note: string };
+export function trainingPaces(refDistanceKm: number, refMinutes: number): TrainingPace[] | null {
+  if (refDistanceKm < 1.5 || refMinutes <= 0) return null; // need a real, sustained effort
+  const fiveKmin = riegelTime(refMinutes, refDistanceKm, 5);
+  const p5 = (fiveKmin * 60) / 5; // 5 K-equivalent pace, sec/km
+  const zones: { key: string; label: string; mult: number; note: string }[] = [
+    { key: 'easy', label: 'Easy / recovery', mult: 1.25, note: 'Conversational base miles' },
+    { key: 'long', label: 'Long run', mult: 1.18, note: 'Endurance, run-feel relaxed' },
+    { key: 'marathon', label: 'Marathon', mult: 1.10, note: 'Steady race-day effort' },
+    { key: 'threshold', label: 'Threshold / tempo', mult: 1.05, note: 'Comfortably hard, ~1 hr pace' },
+    { key: 'interval', label: 'Interval (VO₂)', mult: 0.98, note: '3–5 min reps at ~5 K pace' },
+    { key: 'rep', label: 'Reps / speed', mult: 0.95, note: 'Short, fast, full recovery' },
+  ];
+  return zones.map((z) => ({ key: z.key, label: z.label, secPerKm: Math.round(p5 * z.mult), note: z.note }));
+}
+
+/** Format a sec/km pace as m:ss /km. */
+export function fmtPace(secPerKm: number): string {
+  if (secPerKm <= 0) return '—';
+  const m = Math.floor(secPerKm / 60);
+  const s = Math.round(secPerKm % 60);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 // --- Readiness-adjusted training (the differentiator) -----------------------
 export type LoadAdvice = {
   factor: number; // multiply target load by this
