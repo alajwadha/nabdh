@@ -237,30 +237,57 @@ export function percentLoads(oneRm: number): { pct: number; kg: number; reps: nu
   }));
 }
 
-/** Smallest sensible load jump for the next session — bigger on large lower-body lifts. */
-export function progressionIncrement(muscle: Muscle): number {
+/** Smallest sensible load jump — bigger on big lower-body & deadlift, small on isolation. */
+export function progressionIncrement(muscle: Muscle, exKey?: string): number {
+  if (exKey === 'deadlift') return 5;
   return muscle === 'legs' || muscle === 'glutes' ? 5 : 2.5;
 }
 
-export type NextTarget = { weight: number; reps: number; action: 'increase' | 'hold'; repFloor: number; repCeil: number };
+/** Exercise-appropriate working rep range: compounds run lower, machines/isolation higher. */
+export function repRange(equipment: string): { floor: number; ceil: number } {
+  if (equipment === 'barbell') return { floor: 5, ceil: 8 };
+  if (equipment === 'machine' || equipment === 'cable') return { floor: 8, ceil: 15 };
+  return { floor: 6, ceil: 12 }; // dumbbell & everything else
+}
+
+export type NextTarget = {
+  weight: number; reps: number; action: 'increase' | 'hold';
+  workingWeight: number; limiterReps: number; repFloor: number; repCeil: number;
+};
 /**
- * Double-progression — the standard sustainable overload model (Hevy/Strong/Boostcamp):
- * work a rep range at a fixed load; when you clear the TOP of the range on your hardest
- * set, add the smallest plate jump and reset to the bottom of the range; otherwise hold
- * the weight and chase one more rep. Suggestion is vs your last session, not readiness-
- * adjusted (the readiness card handles "push vs ease off" separately).
+ * Double-progression vs your last session (Hevy/Strong/Boostcamp model). We anchor on
+ * the WORKING set — the most-used weight (mode), or the median weight when every set
+ * differs — not whatever single set was heaviest, so a top single/backoff doesn't drive
+ * the suggestion. Add weight only once EVERY working set clears the top of the range
+ * (the limiter = the weakest working set); otherwise hold and chase one more rep.
+ * Not readiness-adjusted — the readiness card handles today's push/ease-off.
  */
 export function suggestProgression(
-  lastTopWeight: number,
-  lastTopReps: number,
+  sets: SetEntry[],
   increment: number,
   repFloor = 6,
   repCeil = 10,
 ): NextTarget | null {
-  if (lastTopWeight <= 0 || lastTopReps <= 0) return null;
-  if (lastTopReps >= repCeil)
-    return { weight: Math.round((lastTopWeight + increment) / 2.5) * 2.5, reps: repFloor, action: 'increase', repFloor, repCeil };
-  return { weight: lastTopWeight, reps: lastTopReps + 1, action: 'hold', repFloor, repCeil };
+  const valid = sets.filter((s) => s.weight > 0 && s.reps > 0);
+  if (!valid.length) return null;
+
+  // Working weight: the most-frequently used weight (ties → heaviest); if all unique, the median.
+  const counts = new Map<number, number>();
+  valid.forEach((s) => counts.set(s.weight, (counts.get(s.weight) ?? 0) + 1));
+  const maxCount = Math.max(...counts.values());
+  let workingWeight: number;
+  if (maxCount > 1) {
+    workingWeight = Math.max(...[...counts.entries()].filter(([, c]) => c === maxCount).map(([w]) => w));
+  } else {
+    const uniq = [...new Set(valid.map((s) => s.weight))].sort((a, b) => a - b);
+    workingWeight = uniq[Math.floor((uniq.length - 1) / 2)];
+  }
+
+  const repsAtWorking = valid.filter((s) => s.weight === workingWeight).map((s) => s.reps);
+  const limiterReps = Math.min(...repsAtWorking); // weakest working set gates progression
+  if (limiterReps >= repCeil)
+    return { weight: Math.round((workingWeight + increment) / 2.5) * 2.5, reps: repFloor, action: 'increase', workingWeight, limiterReps, repFloor, repCeil };
+  return { weight: workingWeight, reps: limiterReps + 1, action: 'hold', workingWeight, limiterReps, repFloor, repCeil };
 }
 
 /** Rest-between-sets guidance from the working rep range (heavier/fewer → longer rest). */
