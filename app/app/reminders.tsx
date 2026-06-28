@@ -6,6 +6,9 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { REMINDER_COPY, notificationsAvailable, type ReminderKey } from '../src/services/notifications';
+import { Icon, type IconName } from '../src/components/Icon';
+
+const RICON: Record<ReminderKey, IconName> = { workout: 'dumbbell', meal_log: 'utensils', steps: 'footprints', sleep: 'moon', weigh_in: 'scale' };
 
 function Toggle({ on }: { on: boolean }) {
   const { colors } = useTheme();
@@ -77,7 +80,7 @@ export default function Reminders() {
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 18 }}>‹</AppText>
+          <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Reminders</AppText>
       </View>
@@ -108,7 +111,7 @@ export default function Reminders() {
           return (
             <View key={key} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 12, borderBottomWidth: i === order.length - 1 ? 0 : 2, borderBottomColor: colors.border }}>
               <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-                <AppText style={{ fontSize: 15 }}>{copy.icon}</AppText>
+                <Icon name={RICON[key]} size={18} color={colors.textSecondary} />
               </View>
               <View style={{ flex: 1, gap: 2 }}>
                 <AppText variant="title">{copy.label}</AppText>
@@ -125,7 +128,7 @@ export default function Reminders() {
       <Group title="HYDRATION">
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 12 }}>
           <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-            <AppText style={{ fontSize: 15 }}>💧</AppText>
+            <Icon name="droplet" size={18} color={colors.accent} />
           </View>
           <View style={{ flex: 1, gap: 2 }}>
             <AppText variant="title">Drink water</AppText>

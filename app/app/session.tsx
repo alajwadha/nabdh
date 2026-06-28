@@ -20,6 +20,7 @@ import {
   type SetEntry,
 } from '../src/data/workouts';
 import { programByKey, restSeconds } from '../src/data/programs';
+import { Icon } from '../src/components/Icon';
 
 const MUSCLE_LABEL: Record<string, string> = { chest: 'Chest', back: 'Back', legs: 'Legs', shoulders: 'Shoulders', arms: 'Arms', core: 'Core', glutes: 'Glutes' };
 
@@ -132,7 +133,7 @@ export default function Session() {
       {/* header: progress + close */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 18 }}>✕</AppText>
+          <Icon name="x" size={20} color={colors.ink} />
         </Pressable>
         <View style={{ flex: 1 }}>
           <AppText variant="h2">{prog?.name}</AppText>

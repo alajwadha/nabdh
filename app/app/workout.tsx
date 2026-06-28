@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Icon } from '../src/components/Icon';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText, Button, Card, Screen, SectionHeader } from '../src/design-system/components';
@@ -126,11 +127,11 @@ export default function Workout() {
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 18 }}>‹</AppText>
+          <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1" style={{ flex: 1 }}>Workout</AppText>
         <Pressable onPress={() => router.navigate('/workout-history')} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center', marginRight: spacing.sm }}>
-          <AppText style={{ fontSize: 16 }}>📈</AppText>
+          <Icon name="trending-up" size={18} color={colors.ink} />
         </Pressable>
         <Pressable
           onPress={() => setDetailed((d) => !d)}
@@ -149,7 +150,7 @@ export default function Workout() {
 
       {/* guided-session entry: pick a program and log it set-by-set */}
       <Pressable onPress={() => router.navigate('/programs')} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
-        <AppText style={{ fontSize: 22 }}>▶️</AppText>
+        <Icon name="play" size={22} color="#fff" />
         <View style={{ flex: 1 }}>
           <AppText variant="title" color="#fff">Start a guided session</AppText>
           <AppText variant="caption" color="rgba(255,255,255,0.85)">Full body · Push · Pull · Legs — logged with a rest timer</AppText>

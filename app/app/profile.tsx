@@ -9,6 +9,7 @@ import { useAppState } from '../src/store/app';
 import { useIdentity } from '../src/data/identity';
 import { useHealth } from '../src/store/health';
 import { useFitbitConnect, fitbitRedirectUri } from '../src/integrations/fitbit';
+import { Icon, type IconName } from '../src/components/Icon';
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   const { colors } = useTheme();
@@ -24,12 +25,12 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-function Row({ icon, label, right, onPress, last }: { icon: string; label: string; right?: React.ReactNode; onPress?: () => void; last?: boolean }) {
+function Row({ icon, label, right, onPress, last }: { icon: IconName; label: string; right?: React.ReactNode; onPress?: () => void; last?: boolean }) {
   const { colors } = useTheme();
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 14, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
       <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText style={{ fontSize: 15 }}>{icon}</AppText>
+        <Icon name={icon} size={18} color={colors.textSecondary} />
       </View>
       <AppText variant="title" style={{ flex: 1 }}>
         {label}
@@ -90,7 +91,7 @@ export default function Profile() {
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText style={{ fontSize: 18 }}>‹</AppText>
+          <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Profile</AppText>
       </View>
@@ -108,18 +109,18 @@ export default function Profile() {
       </View>
 
       <Group title="YOUR DAY">
-        <Row icon="🎛" label="Customize Today" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/(tabs)')} />
-        <Row icon="🫀" label="Body & metrics" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/body')} />
-        <Row icon="🔔" label="Reminders" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/reminders')} />
-        <Row icon="🏋️" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
-        <Row icon="☪" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
-        <Row icon="🕌" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
-        <Row icon={mode === 'dark' ? '☀️' : '🌙'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last />
+        <Row icon="sliders-horizontal" label="Customize Today" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/(tabs)')} />
+        <Row icon="heart-pulse" label="Body & metrics" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/body')} />
+        <Row icon="bell" label="Reminders" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/reminders')} />
+        <Row icon="dumbbell" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
+        <Row icon="moon-star" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
+        <Row icon="church" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
+        <Row icon={mode === 'dark' ? 'sun-medium' : 'moon'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last />
       </Group>
 
       <Group title="CONNECTED DEVICES">
-        <Row icon="⌚" label="Apple Health" right={<Status text="Synced" colors={colors} />} onPress={() => setConnect('apple')} />
-        <Row icon="⚡" label="Fitbit Air · Google Health" right={fitbitConnected ? <Status text="Synced" colors={colors} /> : <AppText variant="caption" color={colors.accentText}>Connect ›</AppText>} onPress={() => setConnect('fitbit')} last />
+        <Row icon="watch" label="Apple Health" right={<Status text="Synced" colors={colors} />} onPress={() => setConnect('apple')} />
+        <Row icon="zap" label="Fitbit Air · Google Health" right={fitbitConnected ? <Status text="Synced" colors={colors} /> : <AppText variant="caption" color={colors.accentText}>Connect ›</AppText>} onPress={() => setConnect('fitbit')} last />
       </Group>
 
       <Group title="AI COACH MODEL">
@@ -145,8 +146,8 @@ export default function Profile() {
             🛡 Your health data is processed and stored in the Kingdom (Dammam · me-central2). It never leaves the region unless you opt in to a Pro model.
           </AppText>
         </View>
-        <Row icon="📤" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} />
-        <Row icon="🗑" label="Delete everything" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} last />
+        <Row icon="download" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} />
+        <Row icon="trash-2" label="Delete everything" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} last />
       </Group>
 
       <Group title="FAMILY · RAMADAN STEP CHALLENGE">
@@ -162,7 +163,7 @@ export default function Profile() {
             <AppText variant="caption" style={{ width: 52, textAlign: 'right' }}>{[8432, 9610, 6120][i].toLocaleString()}</AppText>
           </View>
         ))}
-        <Row icon="➕" label="Invite family" right={<AppText variant="caption" color={colors.accentText}>Share ›</AppText>} last />
+        <Row icon="plus" label="Invite family" right={<AppText variant="caption" color={colors.accentText}>Share ›</AppText>} last />
       </Group>
 
       <Group title="ACHIEVEMENTS">
