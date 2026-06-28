@@ -7,7 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate, whtr } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate, whtr, goalProjection } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
@@ -35,6 +35,23 @@ export default function Body() {
   const wColor = w == null ? tiles.blue : w.band === 'Healthy' ? tiles.mint : w.band === 'Increased risk' ? tiles.gold : tiles.pink;
   // WHtR gauge on a 0.35–0.70 scale: healthy <0.5 (0–43%), increased 0.5–0.6 (43–71%), high ≥0.6 (71–100%)
   const wPos = w == null ? 0 : Math.max(0, Math.min(98, ((w.value - 0.35) / 0.35) * 100));
+  // Goal timeline — projected weeks to the target weight at the plan's energy delta.
+  const energyDelta = budget - energyTdee; // <0 deficit, >0 surplus
+  const target = body.targetWeightKg ?? 0;
+  const proj = body.goal !== 'maintain' && target > 0 ? goalProjection(body.weightKg, target, energyDelta) : null;
+  // Past ~16 weeks the constant-rate model drifts optimistic (TDEE falls as you lighten),
+  // so we coarsen both the week count and the date rather than imply false precision.
+  const longHorizon = !!proj && proj.reachable && !proj.atTarget && proj.weeks > 16;
+  const weeksText = proj ? (longHorizon ? '16+' : `${proj.weeks}`) : '';
+  const etaLabel = proj && proj.reachable && !proj.atTarget
+    ? (() => {
+        const d = new Date(Date.now() + proj.weeks * 7 * 86400000);
+        const monthYear = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        if (longHorizon) return `around ${monthYear}`;
+        const day = d.getDate();
+        return `by ${day <= 10 ? 'early' : day <= 20 ? 'mid' : 'late'} ${monthYear}`;
+      })()
+    : null;
   // BMI gauge on a 15–40 scale (severe obesity is common in-market — don't cap at 35)
   const bmiPos = Math.max(0, Math.min(100, ((b.value - 15) / 25) * 100));
 
@@ -179,6 +196,51 @@ export default function Body() {
           </AppText>
         )}
       </View>
+
+      {/* goal timeline — projected ETA to the target weight */}
+      {body.goal !== 'maintain' && (
+        <>
+          <SectionHeader title="Goal timeline" />
+          <View style={{ backgroundColor: tiles.lav.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+            <Stepper
+              label="Target weight"
+              value={target}
+              unit="kg"
+              placeholder="Set"
+              onMinus={() => setBody({ targetWeightKg: target > 0 ? Math.max(35, target - 1) : 0 })}
+              onPlus={() => setBody({ targetWeightKg: target > 0 ? target + 1 : (body.goal === 'cut' ? Math.max(35, Math.round(body.weightKg) - 5) : Math.round(body.weightKg) + 5) })}
+              colors={colors}
+              last
+            />
+            {proj == null ? (
+              <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.85, lineHeight: 17 }}>
+                Set a target weight to see roughly when you’ll reach it at your current plan.
+              </AppText>
+            ) : proj.atTarget ? (
+              <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.9, lineHeight: 17 }}>
+                You’re at your target 🎉 — switch your goal to Maintain to hold it.
+              </AppText>
+            ) : !proj.reachable ? (
+              <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.9, lineHeight: 17 }}>
+                Your target is {proj.kgToGo > 0 ? 'above' : 'below'} your current weight, but your plan runs a {energyDelta < 0 ? 'deficit' : 'surplus'}. Switch your goal to {proj.kgToGo > 0 ? 'Gain' : 'Lose'} (or adjust the target) to line them up.
+              </AppText>
+            ) : (
+              <>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 10 }}>
+                  <AppText variant="h2" color={tiles.lav.ink}>≈ {weeksText} weeks</AppText>
+                  <AppText variant="caption" color={tiles.lav.ink} style={{ fontWeight: '700' }}>{Math.abs(proj.kgToGo)} kg to go</AppText>
+                </View>
+                <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 6, fontWeight: '600', lineHeight: 17 }}>
+                  ~{target} kg {etaLabel}, at ~{Math.abs(proj.weeklyRateKg)} kg/week.
+                </AppText>
+                <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 4, opacity: 0.8, lineHeight: 16 }}>
+                  At this rate — real change isn’t linear{longHorizon ? ', and it slows as you lighten' : ''}, so trust your 2–3 week trend over the date.{detailed ? ` Based on a ${Math.abs(energyDelta)} kcal/day ${energyDelta < 0 ? 'deficit' : 'surplus'} (~7,700 kcal ≈ 1 kg).` : ''}
+                </AppText>
+              </>
+            )}
+          </View>
+        </>
+      )}
 
       {/* heart-rate training zones */}
       <SectionHeader title={`Heart-rate zones · max ${mhr} bpm`} />

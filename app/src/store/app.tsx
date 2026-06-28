@@ -49,6 +49,7 @@ export type Body = {
   // (strength standards, DOTS) must not score against the placeholder default.
   weightEntered: boolean;
   waistCm?: number; // optional — drives waist-to-height ratio; 0/undefined = not measured
+  targetWeightKg?: number; // optional — goal weight for the timeline projection
 };
 export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate', goal: 'maintain', weightEntered: false };
 

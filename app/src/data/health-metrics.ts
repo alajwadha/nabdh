@@ -247,6 +247,29 @@ export function calorieBudget(tdeeValue: number, goal: Goal, sex: 'male' | 'fema
   return Math.max(floor, tdeeValue + delta);
 }
 
+/**
+ * Goal-weight ETA from the planned daily energy delta. ~7,700 kcal ≈ 1 kg of body
+ * mass, so weekly rate = delta×7 / 7700. Honest about the cases the plan can't reach
+ * (e.g. wanting to lose while in a surplus). A steady-rate estimate — real loss is
+ * rarely linear, so the UI frames it as "at this rate", not a promise.
+ */
+export type GoalProjection = {
+  reachable: boolean; // false when the energy delta points the wrong way for the target
+  atTarget: boolean;
+  weeks: number;
+  weeklyRateKg: number; // signed: negative = losing
+  kgToGo: number; // signed: target − current
+};
+export function goalProjection(currentKg: number, targetKg: number, energyDeltaPerDay: number): GoalProjection | null {
+  if (currentKg <= 0 || targetKg <= 0) return null;
+  const kgToGo = Math.round((targetKg - currentKg) * 10) / 10;
+  const weeklyRateKg = Math.round((energyDeltaPerDay * 7 / 7700) * 100) / 100;
+  if (Math.abs(kgToGo) < 0.3) return { reachable: true, atTarget: true, weeks: 0, weeklyRateKg, kgToGo };
+  if (weeklyRateKg === 0 || Math.sign(kgToGo) !== Math.sign(weeklyRateKg))
+    return { reachable: false, atTarget: false, weeks: 0, weeklyRateKg, kgToGo };
+  return { reachable: true, atTarget: false, weeks: Math.round((kgToGo / weeklyRateKg) * 10) / 10, weeklyRateKg, kgToGo };
+}
+
 /** Daily protein target per kg bodyweight — higher on a cut to spare muscle. */
 export function proteinPerKgTarget(goal: Goal): number {
   return goal === 'cut' ? 2.0 : goal === 'gain' ? 1.8 : 1.6;
