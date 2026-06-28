@@ -1360,6 +1360,7 @@ function NeutralFigure({ phase, size, fg }: { phase: SharedValue<number>; size: 
 // --- ContactShadow: a soft, blurred ellipse on the ground beneath the figure (Skia). Adds the
 // single biggest "grounded/real" cue across every glyph. Subtle so it never competes.
 function ContactShadow({ size }: { size: number }) {
+  if (size < 60) return null; // imperceptible at chip sizes — skip the extra Canvas
   const s = size / 116;
   const w = 58 * s, h = 11 * s;
   return (
