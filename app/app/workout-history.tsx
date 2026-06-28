@@ -33,7 +33,7 @@ export default function WorkoutHistory() {
 
   // this-week headline stats
   const weekTonnage = gym.filter((s) => inWindow(s.at, 7)).reduce((sum, s) => sum + (s.volume ?? 0), 0);
-  const weekSessions = sessions.filter((s) => inWindow(s.at, 7)).length;
+  const weekSessions = real.filter((s) => inWindow(s.at, 7)).length;
   const weekKcal = sport.filter((s) => inWindow(s.at, 7)).reduce((sum, s) => sum + (s.kcal ?? 0), 0);
 
   // per-exercise progression
@@ -90,12 +90,16 @@ export default function WorkoutHistory() {
       <View style={{ backgroundColor: loadColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <AppText variant="caption" color={loadColor.ink} style={{ letterSpacing: 1.2 }}>TRAINING LOAD · ACUTE:CHRONIC</AppText>
-          <AppText variant="h2" color={loadColor.ink}>{acwr.ratio || '—'}</AppText>
+          <AppText variant="h2" color={loadColor.ink}>{acwr.hasRatio ? acwr.ratio : '—'}</AppText>
         </View>
-        <View style={{ height: 12, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 10, position: 'relative' }}>
-          {/* green sweet-spot band: 0.8–1.3 on a 0–2 scale */}
-          <View style={{ position: 'absolute', left: '40%', width: '25%', top: 0, bottom: 0, borderRadius: 99, backgroundColor: colors.accent, opacity: 0.35 }} />
-          <View style={{ position: 'absolute', left: `${Math.min(98, (acwr.ratio / 2) * 100)}%`, width: 3, top: -3, bottom: -3, borderRadius: 99, backgroundColor: colors.ink }} />
+        {/* full risk spectrum on a 0–2 scale: optimal 0.8–1.3 (40–65%), caution 1.3–1.5 (65–75%), high >1.5 (75–100%) */}
+        <View style={{ height: 14, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 10, position: 'relative', overflow: 'hidden' }}>
+          <View style={{ position: 'absolute', left: '40%', width: '25%', top: 0, bottom: 0, backgroundColor: colors.accent, opacity: 0.4 }} />
+          <View style={{ position: 'absolute', left: '65%', width: '10%', top: 0, bottom: 0, backgroundColor: '#E0A24E', opacity: 0.55 }} />
+          <View style={{ position: 'absolute', left: '75%', width: '25%', top: 0, bottom: 0, backgroundColor: colors.danger, opacity: 0.4 }} />
+          {acwr.hasRatio && (
+            <View style={{ position: 'absolute', left: `${Math.min(98, (acwr.ratio / 2) * 100)}%`, width: 3, top: 0, bottom: 0, backgroundColor: colors.ink }} />
+          )}
         </View>
         <AppText variant="title" color={loadColor.ink} style={{ marginTop: 8, textAlign: 'center' }}>{acwr.label}</AppText>
         <AppText variant="caption" color={loadColor.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 17 }}>{acwr.note}</AppText>

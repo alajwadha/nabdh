@@ -8,45 +8,55 @@ import type { WorkoutSession } from '../store/workouts';
 
 const DAY = 86400000;
 
-export type LoadStatus = 'detrained' | 'optimal' | 'caution' | 'high';
+export type LoadStatus = 'building' | 'detrained' | 'optimal' | 'caution' | 'high';
 
-/** One session's load in comparable units (sport kcal, or gym tonnage ÷ 50). */
+/**
+ * One session's load in comparable units. Sport uses kcal directly; gym tonnage
+ * is scaled to a kcal-equivalent (÷12) so a typical hard gym day (~5,000 kg →
+ * ~420) lands near a typical cardio session (~400 kcal) rather than being
+ * drowned out. A rough internal-load proxy, not a metabolic measurement.
+ */
 export function sessionLoad(s: WorkoutSession): number {
   if (s.kind === 'sport') return s.kcal ?? 0;
-  return Math.round((s.volume ?? 0) / 50);
+  return Math.round((s.volume ?? 0) / 12);
 }
 
 export type Acwr = {
   acute: number; // last 7 days total load
-  chronic: number; // average weekly load over last 28 days
+  chronic: number; // average weekly load over the PRIOR 3 weeks (decoupled from acute)
   ratio: number;
+  hasRatio: boolean; // false until there's enough chronic baseline to compute a ratio
   status: LoadStatus;
   label: string;
   note: string;
 };
 
 export function computeAcwr(sessions: WorkoutSession[], now: number): Acwr {
-  const within = (iso: string, days: number) => {
-    const d = now - Date.parse(iso);
-    return d >= 0 && d <= days * DAY;
-  };
-  const acute = sessions.filter((s) => within(s.at, 7)).reduce((sum, s) => sum + sessionLoad(s), 0);
-  const chronicTotal = sessions.filter((s) => within(s.at, 28)).reduce((sum, s) => sum + sessionLoad(s), 0);
-  const chronic = Math.round(chronicTotal / 4); // average weekly load across 4 weeks
-  const ratio = chronic > 0 ? acute / chronic : acute > 0 ? 1.5 : 0;
+  const ageDays = (iso: string) => (now - Date.parse(iso)) / DAY;
+  const valid = sessions.filter((s) => ageDays(s.at) >= 0); // ignore future-dated/skewed
+  const acute = valid.filter((s) => ageDays(s.at) <= 7).reduce((sum, s) => sum + sessionLoad(s), 0);
+  // Chronic EXCLUDES the acute week (days 8–28) so the ratio actually decouples.
+  const chronicTotal = valid
+    .filter((s) => ageDays(s.at) > 7 && ageDays(s.at) <= 28)
+    .reduce((sum, s) => sum + sessionLoad(s), 0);
+  const chronic = Math.round(chronicTotal / 3); // average weekly load over the prior 3 weeks
 
+  const base = { acute, chronic };
+  if (acute === 0 && chronic === 0)
+    return { ...base, ratio: 0, hasRatio: false, status: 'building', label: 'No load yet', note: 'Log a few workouts and your training load builds here.' };
+  if (chronic === 0)
+    return { ...base, ratio: 0, hasRatio: false, status: 'building', label: 'Building base', note: 'Keep logging — your baseline forms over the first weeks, then this shows your injury-safe zone.' };
+
+  const ratio = acute / chronic;
   let status: LoadStatus;
   let label: string;
   let note: string;
-  if (ratio === 0) {
-    status = 'detrained'; label = 'No load yet';
-    note = 'Log a few workouts and your training load builds here.';
-  } else if (ratio < 0.8) {
+  if (ratio < 0.8) {
     status = 'detrained'; label = 'Detraining';
     note = 'You’re doing less than your recent norm — fine for a deload, but fitness fades if it lasts.';
   } else if (ratio <= 1.3) {
     status = 'optimal'; label = 'Sweet spot';
-    note = 'This week matches your 4-week base — the safest zone for steady gains.';
+    note = 'This week matches your recent base — the safest zone for steady gains.';
   } else if (ratio <= 1.5) {
     status = 'caution'; label = 'Ramping fast';
     note = 'Loading above your base. Fine briefly, but protect recovery this week.';
@@ -54,7 +64,7 @@ export function computeAcwr(sessions: WorkoutSession[], now: number): Acwr {
     status = 'high'; label = 'Spike — ease off';
     note = 'Acute load is well above your base — where overuse risk climbs. Add a lighter day.';
   }
-  return { acute, chronic, ratio: Math.round(ratio * 100) / 100, status, label, note };
+  return { ...base, ratio: Math.round(ratio * 100) / 100, hasRatio: true, status, label, note };
 }
 
 // --- Bonus calculators (used by detail views / future screens) --------------
