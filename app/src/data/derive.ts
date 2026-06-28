@@ -41,19 +41,37 @@ export function sleepScore(asleepMin: number): number {
   return Math.max(0, Math.min(100, Math.round(duration + structureBonus)));
 }
 
+/** 12-hour clock string for a minutes-from-midnight value (wraps past 24h). */
+export function clockFromMins(mins: number): string {
+  const norm = ((Math.round(mins) % (24 * 60)) + 24 * 60) % (24 * 60);
+  const h24 = Math.floor(norm / 60) % 24;
+  const m = norm % 60;
+  const ampm = h24 < 12 ? 'AM' : 'PM';
+  const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+  return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
 /** Estimate bedtime/wake clock strings from in-bed minutes, anchored to a 7:00 wake. */
 export function sleepWindow(inBedMin: number, wakeHour = 7): { bed: string; wake: string } {
   const wake = wakeHour * 60;
-  let bed = wake - inBedMin;
-  if (bed < 0) bed += 24 * 60;
-  const clock = (mins: number) => {
-    const h24 = Math.floor(mins / 60) % 24;
-    const m = Math.round(mins % 60);
-    const ampm = h24 < 12 ? 'AM' : 'PM';
-    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
-    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+  // clockFromMins fully normalizes negatives, so no pre-guard needed.
+  return { bed: clockFromMins(wake - inBedMin), wake: clockFromMins(wake) };
+}
+
+/**
+ * Evening wind-down cut-off times relative to a target bedtime. Caffeine has a
+ * ~5–6 h half-life, so an afternoon karak/qahwa still has ~25% onboard at bedtime —
+ * the Sleep Foundation advises stopping ~8 h before sleep. Heavy meals ~3 h before
+ * (reflux/blood-sugar), and dimming screens ~1 h before (melatonin). All derived
+ * from the bedtime, not invented data.
+ */
+export function windDownTimes(inBedMin: number, wakeHour = 7): { caffeine: string; meal: string; screens: string } {
+  const bed = wakeHour * 60 - inBedMin;
+  return {
+    caffeine: clockFromMins(bed - 360), // 6 h before — the followable floor (8 h is ideal)
+    meal: clockFromMins(bed - 180), // 3 h before
+    screens: clockFromMins(bed - 60), // 1 h before
   };
-  return { bed: clock(bed), wake: clock(wake) };
 }
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

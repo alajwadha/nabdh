@@ -8,7 +8,7 @@ import { useTheme } from '../../src/design-system/theme';
 import { useHealth } from '../../src/store/health';
 import { useAppState } from '../../src/store/app';
 import { DEMO_SUMMARY } from '../../src/integrations/demo';
-import { hoursMinutes, sleepStages, sleepScore, sleepWindow, sleepNeedMin, weekdayName } from '../../src/data/derive';
+import { hoursMinutes, sleepStages, sleepScore, sleepWindow, sleepNeedMin, weekdayName, windDownTimes } from '../../src/data/derive';
 
 const STAGE_COLORS = { deep: '#8E81D6', rem: '#A99DE0', light: '#8FCBAA', awake: '#E0B070' };
 
@@ -27,7 +27,9 @@ export default function Sleep() {
   const needMin = sleepNeedMin(body.age); // age-personalized target
   const debtMin = Math.max(0, needMin - asleep);
   const efficiency = stages.inBedMin > 0 ? Math.round((asleep / stages.inBedMin) * 100) : 0;
-  const idealBed = sleepWindow(Math.round(needMin * 1.06)).bed; // bedtime to hit the need
+  const idealInBed = Math.round(needMin * 1.06);
+  const idealBed = sleepWindow(idealInBed).bed; // bedtime to hit the need
+  const windDown = windDownTimes(idealInBed); // caffeine/meal/screen cut-offs from that bedtime
   const deepPct = asleep > 0 ? Math.round((stages.deep / asleep) * 100) : 0;
   const remPct = asleep > 0 ? Math.round((stages.rem / asleep) * 100) : 0;
 
@@ -121,6 +123,18 @@ export default function Sleep() {
         </AppText>
       </View>
 
+      <Card style={{ gap: 2 }}>
+        <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 4 }}>WIND-DOWN · FOR {idealBed} LIGHTS-OUT</AppText>
+        <WindRow icon="☕️" label="Last qahwa / karak" value={windDown.caffeine} colors={colors} />
+        <WindRow icon="🍽️" label="Last heavy meal" value={windDown.meal} colors={colors} />
+        <WindRow icon="📵" label="Dim screens" value={windDown.screens} colors={colors} last />
+        {detailed && (
+          <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
+            Caffeine’s ~5–6 h half-life means an afternoon coffee is still ~25% active at bedtime. 6 h before is the followable floor; 8 h is ideal. Meals ~3 h, screens ~1 h.
+          </AppText>
+        )}
+      </Card>
+
       {detailed && (
         <Card style={{ gap: spacing.sm }}>
           <DRow label="Deep share" value={`${deepPct}% ${deepPct >= 13 ? '· adequate ✓' : '· low'}`} colors={colors} />
@@ -132,8 +146,8 @@ export default function Sleep() {
 
       <CoachCard>
         {score >= 80
-          ? 'Structure’s great — keep bedtime steady and skip late karak to hold this.'
-          : 'Structure’s fine, recovery isn’t. Lights out early, no karak after 6.'}
+          ? 'Structure’s great — keep bedtime steady and mind the wind-down cut-offs to hold this.'
+          : 'Structure’s fine, recovery isn’t. Lights out early — the wind-down card above has tonight’s cut-offs.'}
       </CoachCard>
     </Screen>
   );
@@ -144,6 +158,16 @@ function DRow({ label, value, colors, last }: { label: string; value: string; co
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
       <AppText variant="caption" color={colors.textMuted}>{label}</AppText>
       <AppText variant="title" style={{ fontSize: 14 }}>{value}</AppText>
+    </View>
+  );
+}
+
+function WindRow({ icon, label, value, colors, last }: { icon: string; label: string; value: string; colors: ReturnType<typeof useTheme>['colors']; last?: boolean }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
+      <AppText style={{ fontSize: 16 }}>{icon}</AppText>
+      <AppText variant="caption" color={colors.ink} style={{ flex: 1, fontWeight: '600' }}>{label}</AppText>
+      <AppText variant="title" style={{ fontSize: 14 }}>by {value}</AppText>
     </View>
   );
 }
