@@ -22,6 +22,7 @@ import { useHealth } from '../../src/store/health';
 import { useAppState, type MetricKey } from '../../src/store/app';
 import { ALL_METRICS, METRICS, METRIC_ICON } from '../../src/data/metrics';
 import { adjustForReadiness, computeReadiness } from '../../src/data/workouts';
+import { maxHr, vo2maxEstimate } from '../../src/data/health-metrics';
 import { useIdentity } from '../../src/data/identity';
 import { fetchGoogleHealthToday } from '../../src/integrations/googleHealth';
 import { isAvailable } from '../../src/integrations/healthkit';
@@ -32,7 +33,7 @@ export default function Today() {
   const { user, profile } = useAuth();
   const identity = useIdentity();
   const { summary, setSummary } = useHealth();
-  const { tiles, toggleTile, removeTile, showPrayers, setShowPrayers, ramadan, plan, toggleTask } = useAppState();
+  const { tiles, toggleTile, removeTile, showPrayers, setShowPrayers, ramadan, plan, toggleTask, body, water } = useAppState();
   const router = useRouter();
   const uid = user?.uid;
 
@@ -61,6 +62,12 @@ export default function Today() {
   const adviceTile =
     advice.tone === 'rest' ? tilePalette.pink : advice.tone === 'easy' ? tilePalette.gold : advice.tone === 'push' ? tilePalette.mint : tilePalette.blue;
   const tileValue = (k: MetricKey) => {
+    // Prefer real app/derived values over the metric def's static sample so tiles
+    // stay consistent with the Body/Food screens instead of showing demo numbers.
+    if (k === 'water') return String(water);
+    if (k === 'vo2' && summary?.restingHeartRate != null) {
+      return String(vo2maxEstimate(maxHr(body.age), summary.restingHeartRate));
+    }
     const def = METRICS[k];
     const v = def.read?.(summary);
     return v != null ? v : def.sample;
