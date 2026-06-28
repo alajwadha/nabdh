@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { motion, radii, shadow, spacing, typography, type TextVariant } from './index';
 import { useTheme } from './theme';
+import { Glass } from './glass';
 import { Icon, type IconName } from '../components/Icon';
 
 /** Screen: safe-area + scroll + themed background + comfortable padding. */
@@ -243,29 +244,33 @@ export function Sheet({
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={{ flex: 1, backgroundColor: 'rgba(15,12,8,0.45)' }} onPress={onClose} />
-      <View
-        style={{
-          backgroundColor: colors.bg,
-          borderTopLeftRadius: 32,
-          borderTopRightRadius: 32,
-          paddingHorizontal: spacing.xl,
-          paddingTop: spacing.md,
-          paddingBottom: spacing.xxl,
-          maxHeight: '88%',
-        }}
+      {/* Frosted-glass sheet: the blur reads against the dimmed app behind it. */}
+      <Glass
+        radius={32}
+        intensity={50}
+        style={{ borderTopLeftRadius: 32, borderTopRightRadius: 32, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
       >
         <View
           style={{
-            width: 44,
-            height: 5,
-            borderRadius: 99,
-            backgroundColor: colors.border,
-            alignSelf: 'center',
-            marginBottom: spacing.md,
+            paddingHorizontal: spacing.xl,
+            paddingTop: spacing.md,
+            paddingBottom: spacing.xxl,
+            maxHeight: '88%',
           }}
-        />
-        <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
-      </View>
+        >
+          <View
+            style={{
+              width: 44,
+              height: 5,
+              borderRadius: 99,
+              backgroundColor: colors.border,
+              alignSelf: 'center',
+              marginBottom: spacing.md,
+            }}
+          />
+          <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
+        </View>
+      </Glass>
     </Modal>
   );
 }

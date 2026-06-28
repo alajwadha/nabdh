@@ -9,6 +9,7 @@ import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
 import { useAppState } from '../../src/store/app';
 import { Icon, type IconName } from '../../src/components/Icon';
+import { Glass } from '../../src/design-system/glass';
 
 const TAB_LABELS: Record<string, string> = {
   index: 'tab.today',
@@ -46,23 +47,25 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: 20, paddingTop: 10, paddingBottom: 16 + insets.bottom }}>
-        <View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 999, padding: 6 }}>
-          {routes.map((route) => {
-            const i = state.routes.indexOf(route);
-            const focused = state.index === i;
-            return (
-              <Pressable
-                key={route.key}
-                onPress={() => navigation.navigate(route.name)}
-                style={{ flex: 1, alignItems: 'center', paddingVertical: 12, borderRadius: 999, backgroundColor: focused ? colors.navOn : 'transparent' }}
-              >
-                <AppText variant="caption" color={focused ? colors.navOnText : colors.textMuted} style={{ fontSize: 12.5 }}>
-                  {t(TAB_LABELS[route.name])}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
+        <Glass radius={999} intensity={36} style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', padding: 6 }}>
+            {routes.map((route) => {
+              const i = state.routes.indexOf(route);
+              const focused = state.index === i;
+              return (
+                <Pressable
+                  key={route.key}
+                  onPress={() => navigation.navigate(route.name)}
+                  style={{ flex: 1, alignItems: 'center', paddingVertical: 12, borderRadius: 999, backgroundColor: focused ? colors.navOn : 'transparent' }}
+                >
+                  <AppText variant="caption" color={focused ? colors.navOnText : colors.textSecondary} style={{ fontSize: 12.5 }}>
+                    {t(TAB_LABELS[route.name])}
+                  </AppText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </Glass>
         <Pressable
           onPress={() => setMenu(true)}
           style={{ width: 56, height: 56, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' }}
