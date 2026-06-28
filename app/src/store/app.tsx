@@ -39,6 +39,9 @@ export type Macros = { protein: number; carbs: number; fat: number };
 /** Daily macro goals (grams) used for the progress bars on the Food screen. */
 export const MACRO_GOALS: Macros = { protein: 120, carbs: 220, fat: 65 };
 
+export type Body = { age: number; heightCm: number; weightKg: number };
+export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80 };
+
 const DEFAULT_TILES: MetricKey[] = ['rhr', 'hrv', 'sleep', 'steps'];
 
 const DEFAULT_PLAN: PlanTask[] = [
@@ -78,6 +81,9 @@ type AppState = {
   kcal: number;
   macros: Macros;
   budget: number;
+
+  body: Body;
+  setBody: (patch: Partial<Body>) => void;
 };
 
 const Ctx = createContext<AppState | undefined>(undefined);
@@ -89,9 +95,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [plan, setPlan] = useState<PlanTask[]>(DEFAULT_PLAN);
   const [water, setWater] = useState(3);
   const [meals, setMeals] = useState<Meal[]>(DEFAULT_MEALS);
+  const [body, setBodyState] = useState<Body>(DEFAULT_BODY);
 
   useEffect(() => {
-    AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers']).then((pairs) => {
+    AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body']).then((pairs) => {
       for (const [k, v] of pairs) {
         if (k === 'nabdh.tiles' && v) {
           try {
@@ -102,9 +109,24 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           }
         }
         if (k === 'nabdh.prayers' && v) setShowPrayersState(v === '1');
+        if (k === 'nabdh.body' && v) {
+          try {
+            setBodyState({ ...DEFAULT_BODY, ...(JSON.parse(v) as Partial<Body>) });
+          } catch {
+            /* ignore */
+          }
+        }
       }
     });
   }, []);
+
+  const setBody = (patch: Partial<Body>) => {
+    setBodyState((b) => {
+      const next = { ...b, ...patch };
+      AsyncStorage.setItem('nabdh.body', JSON.stringify(next)).catch(() => {});
+      return next;
+    });
+  };
 
   const setTiles = (next: MetricKey[]) => {
     setTilesState(next);
@@ -150,6 +172,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     kcal,
     macros,
     budget: 1900,
+    body,
+    setBody,
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
