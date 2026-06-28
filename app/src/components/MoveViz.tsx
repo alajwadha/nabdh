@@ -40,6 +40,7 @@ const DURATION: Record<string, number> = {
   deadlift: 1700, // pull from the floor to lockout and back
   ohp: 1400, // press from the shoulders to overhead
   rowing: 1900, // drive, swing and pull, then recover
+  seatedrow: 1900, // same erg figure — keep the cadence identical to rowing
   cycling: 900, // one pedal revolution
   pullup: 1500, // pull up to the bar and lower
   dbcurl: 1300, // curl up and lower
