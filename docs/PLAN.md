@@ -31,6 +31,12 @@ Confirmed as-is: HealthKit via Expo dev builds works and is well-supported; Fire
 - **Decide the in-region path** (plain version: this is just which Gulf city's data center physically stores your users' data; both keep it out of the US): `me-central1` (Doha, Qatar) is self-serviceable on a normal Google Cloud project; `me-central2` (Dammam, inside Saudi Arabia) requires contracting through Google's exclusive KSA reseller **CNTXT**. **Recommended: start on Doha** (fast, self-serve, regional) for the MVP, then move to Dammam (in-Kingdom) for public launch at scale.
 - **Engage Saudi-qualified privacy counsel** before public launch to finalize Saudi SCCs + DPAs with AI/cloud vendors, the Transfer Risk Assessment, and SDAIA registration scope.
 - **Confirm the 99 SAR/year price** maps to an Apple SAR price point (prices are picked from Apple's fixed tiers, not free-form; the nearest tier may be 98.99 or 99.99).
+- **Verify Gemini model availability in the chosen Vertex region** (`me-central1` Doha / `me-central2` Dammam) before committing to it as the managed default. Vertex model-by-region availability changes, and the whole in-region compliance story depends on the picked model actually serving from a Middle-East region. If the target model isn't available there yet, either pick one that is or treat the nearest region as an interim, documented transfer. Confirm against the live Vertex "model locations" docs.
+- **Set Google Cloud budget alerts + per-user AI spend caps.** The managed default (Vertex Gemini) bills postpaid through Cloud, so add budget alerts and enforce the per-user rate/spend caps in the AI proxy before opening it up.
+
+---
+
+> **Implemented (Phase 3 start):** the AI coach proxy is live at `backend/src/ai` → `POST /ai/coach`. The app holds no model key and no prompt; it posts the conversation + a minimized health summary, and the backend attaches the Saudi-context system prompt and calls the model. Default provider is **Gemini on Vertex AI (in-region)**; `AI_PROVIDER=groq` is a US-hosted testing alternative. Adding Claude/GPT/Gemini-direct is a small per-provider block selected by `AI_PROVIDER` — all US-hosted, so they belong in the BYO "Pro" (opt-in, cross-border) bucket, not the managed default. Keys live in env only, never in the app or repo.
 
 ---
 
