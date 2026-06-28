@@ -5,7 +5,7 @@ import { DEMO_SUMMARY } from '../integrations/demo';
 // In-memory health summary + connected source. Lets the dashboard show data from
 // any device (Fitbit, Apple Health) without requiring Firebase to be configured.
 // When Firebase is set up, summaries also persist to Firestore (healthDaily).
-type Source = 'healthkit' | 'fitbit' | null;
+type Source = 'healthkit' | 'fitbit' | 'healthConnect' | null;
 
 type HealthState = {
   summary: HealthDaily | null;
@@ -27,7 +27,7 @@ export function HealthProvider({ children }: { children: ReactNode }) {
 
   const setSummary = (next: HealthDaily) => {
     setSummaryState(next);
-    setSource(next.source === 'fitbit' ? 'fitbit' : 'healthkit');
+    setSource(next.source === 'fitbit' ? 'fitbit' : next.source === 'merged' ? 'healthConnect' : 'healthkit');
     setConnected(true);
   };
 

@@ -126,7 +126,8 @@ export default function Profile() {
 
       <Group title="CONNECTED DEVICES">
         <Row icon="watch" label="Apple Health" right={<Status text="Synced" colors={colors} />} onPress={() => setConnect('apple')} />
-        <Row icon="zap" label="Fitbit Air · Google Health" right={fitbitConnected ? <Status text="Synced" colors={colors} /> : <AppText variant="caption" color={colors.accentText}>Connect ›</AppText>} onPress={() => setConnect('fitbit')} last />
+        <Row icon="zap" label="Fitbit Air · Google Health" right={fitbitConnected ? <Status text="Synced" colors={colors} /> : <AppText variant="caption" color={colors.accentText}>Connect ›</AppText>} onPress={() => setConnect('fitbit')} />
+        <Row icon="activity" label="Health Connect" right={<AppText variant="caption" color={colors.accentText}>Connect ›</AppText>} onPress={() => router.navigate('/health-connect')} last />
       </Group>
 
       <Group title="AI COACH MODEL">
