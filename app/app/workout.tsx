@@ -91,6 +91,12 @@ export default function Workout() {
   const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
   const cals = metCalories(sportMet, minutes, weight);
   const dist = sport.gps ? distanceKm(minutes, pace) : 0;
+  // Only predict distances within ~0.4×–3× the logged distance (Riegel's reliable range).
+  const raceTargets = [
+    { km: 5, label: '5K' },
+    { km: 10, label: '10K' },
+    { km: 21.1, label: 'Half' },
+  ].filter((d) => dist > 0 && d.km <= dist * 3 && d.km >= dist * 0.4);
 
   const setVal = (i: number, field: keyof SetEntry, delta: number) => {
     setSavedMsg(null);
@@ -275,9 +281,9 @@ export default function Workout() {
               {Math.round((cals / minutes) * 10) / 10} kcal/min · kcal = MET {Math.round(sportMet * 10) / 10} × {weight} kg × {(minutes / 60).toFixed(2)} h{sport.key === 'running' ? ` · ${pace}:00/km` : ''}
             </AppText>
           )}
-          {detailed && sport.key === 'running' && dist > 0 && (
+          {detailed && sport.key === 'running' && raceTargets.length > 0 && (
             <AppText variant="caption" color={colors.textMuted}>
-              🏁 At this pace → 5K {fmtDur(riegelTime(minutes, dist, 5))} · 10K {fmtDur(riegelTime(minutes, dist, 10))} · 21K {fmtDur(riegelTime(minutes, dist, 21.1))}
+              🏁 At this pace → {raceTargets.map((d) => `${d.label} ${fmtDur(riegelTime(minutes, dist, d.km))}`).join(' · ')}
             </AppText>
           )}
         </>
