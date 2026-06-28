@@ -7,7 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate, whtr, goalProjection } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate, whtr, goalProjection, navyBodyFat, bodyFatBand } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
@@ -35,6 +35,12 @@ export default function Body() {
   const wColor = w == null ? tiles.blue : w.band === 'Healthy' ? tiles.mint : w.band === 'Increased risk' ? tiles.gold : tiles.pink;
   // WHtR gauge on a 0.35–0.70 scale: healthy <0.5 (0–43%), increased 0.5–0.6 (43–71%), high ≥0.6 (71–100%)
   const wPos = w == null ? 0 : Math.max(0, Math.min(98, ((w.value - 0.35) / 0.35) * 100));
+  // US Navy body-fat % — needs neck + waist (+ hip for women).
+  const bf = navyBodyFat(body.sex, body.heightCm, body.neckCm ?? 0, body.waistCm ?? 0, body.hipCm ?? 0);
+  const bfBand = bf != null ? bodyFatBand(bf, body.sex) : null;
+  // Whole kg — the ±3–4% BF estimate carries ±2–3 kg, so 0.1-kg precision would overstate it.
+  const leanKg = bf != null ? Math.round(body.weightKg * (1 - bf / 100)) : null;
+  const bfColor = bf == null ? tiles.blue : bfBand === 'Fitness' || bfBand === 'Athletic' ? tiles.mint : bfBand === 'Average' ? tiles.gold : bfBand === 'Essential' ? tiles.blue : tiles.pink;
   // Goal timeline — projected weeks to the target weight at the plan's energy delta.
   const energyDelta = budget - energyTdee; // <0 deficit, >0 surplus
   const target = body.targetWeightKg ?? 0;
@@ -151,6 +157,31 @@ export default function Body() {
           <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>WAIST-TO-HEIGHT</AppText>
           <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 6, opacity: 0.85 }}>
             Add your waist measurement under “Your body” below to see your waist-to-height ratio — a better risk marker than BMI for most adults.
+          </AppText>
+        </View>
+      ) : null}
+
+      {/* US Navy body-fat % — separates fat from lean mass */}
+      {bf != null ? (
+        <View style={{ backgroundColor: bfColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <AppText variant="caption" color={bfColor.ink} style={{ letterSpacing: 1.2 }}>BODY FAT · NAVY METHOD</AppText>
+            <AppText variant="h2" color={bfColor.ink}>{bf}% · {bfBand}</AppText>
+          </View>
+          <AppText variant="caption" color={bfColor.ink} style={{ marginTop: 6, opacity: 0.9, lineHeight: 17 }}>
+            ≈ {leanKg} kg lean, {Math.round(body.weightKg - (leanKg ?? 0))} kg fat. A tape estimate (±3–4%) that can read high for muscular builds — track the trend, not the decimal.
+          </AppText>
+          {detailed && (
+            <AppText variant="caption" color={bfColor.ink} style={{ marginTop: 4, opacity: 0.8, lineHeight: 16 }}>
+              From neck {body.neckCm}{body.sex === 'female' ? `, waist ${body.waistCm}, hip ${body.hipCm}` : `, waist ${body.waistCm}`} & height {body.heightCm} cm (US Navy circumference method · ACE bands).
+            </AppText>
+          )}
+        </View>
+      ) : detailed ? (
+        <View style={{ backgroundColor: tiles.blue.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+          <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>BODY FAT · NAVY METHOD</AppText>
+          <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 6, opacity: 0.85 }}>
+            Add your neck{body.sex === 'female' ? ', waist & hip' : ' & waist'} measurements under “Your body” to estimate body-fat % and lean mass — what BMI can’t tell you apart.
           </AppText>
         </View>
       ) : null}
@@ -286,7 +317,12 @@ export default function Body() {
             <Stepper label="Height" value={body.heightCm} unit="cm" onMinus={() => setBody({ heightCm: Math.max(120, body.heightCm - 1) })} onPlus={() => setBody({ heightCm: body.heightCm + 1 })} colors={colors} />
             <Stepper label="Weight" value={body.weightKg} unit="kg" onMinus={() => setBody({ weightKg: Math.max(35, body.weightKg - 1) })} onPlus={() => setBody({ weightKg: body.weightKg + 1 })} colors={colors} />
             {/* waist drives the waist-to-height ratio; starts unset (placeholder) so we never assume a measurement */}
-            <Stepper label="Waist" value={body.waistCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? Math.max(50, body.waistCm! - 1) : 0 })} onPlus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? body.waistCm! + 1 : Math.round(body.heightCm * 0.5) })} colors={colors} last />
+            <Stepper label="Waist" value={body.waistCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? Math.max(50, body.waistCm! - 1) : 0 })} onPlus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? body.waistCm! + 1 : Math.round(body.heightCm * 0.5) })} colors={colors} />
+            {/* neck (+ hip for women) drive the Navy body-fat estimate */}
+            <Stepper label="Neck" value={body.neckCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ neckCm: (body.neckCm ?? 0) > 0 ? Math.max(25, body.neckCm! - 1) : 0 })} onPlus={() => setBody({ neckCm: (body.neckCm ?? 0) > 0 ? body.neckCm! + 1 : (body.sex === 'female' ? 32 : 38) })} colors={colors} last={body.sex !== 'female'} />
+            {body.sex === 'female' && (
+              <Stepper label="Hip" value={body.hipCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ hipCm: (body.hipCm ?? 0) > 0 ? Math.max(60, body.hipCm! - 1) : 0 })} onPlus={() => setBody({ hipCm: (body.hipCm ?? 0) > 0 ? body.hipCm! + 1 : Math.round(body.heightCm * 0.55) })} colors={colors} last />
+            )}
           </Card>
         </>
       )}

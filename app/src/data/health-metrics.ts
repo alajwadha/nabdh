@@ -209,6 +209,44 @@ export function whtr(waistCm: number, heightCm: number): { value: number; band: 
   return { value: Math.round(v * 100) / 100, band, note };
 }
 
+/**
+ * Body-fat % via the US Navy circumference method (metric form). Men need waist +
+ * neck + height; women add hip. A tape-measure estimate (±3–4%), not a DEXA scan,
+ * but far more informative than BMI because it separates fat from lean mass. Returns
+ * null until the needed measurements exist, and guards the log domain (waist > neck).
+ */
+export function navyBodyFat(
+  sex: 'male' | 'female',
+  heightCm: number,
+  neckCm: number,
+  waistCm: number,
+  hipCm = 0,
+): number | null {
+  if (heightCm <= 0 || neckCm <= 0 || waistCm <= 0) return null;
+  if (sex === 'female' && hipCm <= 0) return null;
+  const log10 = (x: number) => Math.log10(x);
+  let bf: number;
+  if (sex === 'female') {
+    const inner = waistCm + hipCm - neckCm;
+    if (inner <= 0) return null;
+    bf = 495 / (1.29579 - 0.35004 * log10(inner) + 0.22100 * log10(heightCm)) - 450;
+  } else {
+    const inner = waistCm - neckCm;
+    if (inner <= 0) return null; // waist must exceed neck or the log is undefined
+    bf = 495 / (1.0324 - 0.19077 * log10(inner) + 0.15456 * log10(heightCm)) - 450;
+  }
+  if (!isFinite(bf)) return null;
+  return Math.round(Math.max(2, Math.min(60, bf)) * 10) / 10;
+}
+
+/** Body-fat category by sex (ACE ranges). */
+export function bodyFatBand(bf: number, sex: 'male' | 'female'): string {
+  const cuts = sex === 'female'
+    ? [13, 20, 24, 31] // essential / athletic / fitness / average | obese
+    : [5, 13, 17, 24];
+  return bf <= cuts[0] ? 'Essential' : bf <= cuts[1] ? 'Athletic' : bf <= cuts[2] ? 'Fitness' : bf <= cuts[3] ? 'Average' : 'High';
+}
+
 /** Resting energy via Mifflin–St Jeor (the most accurate common BMR equation). */
 export function bmr(weightKg: number, heightCm: number, age: number, sex: 'male' | 'female'): number {
   const s = sex === 'female' ? -161 : 5;
