@@ -54,6 +54,7 @@ const DURATION: Record<string, number> = {
   swimming: 1500, // one freestyle stroke cycle (both arms)
   boxing: 900, // a jab then a cross (one each per cycle)
   yoga: 2600, // a slow cat→cow→cat breath
+  walking: 1050, // an unhurried stride
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -89,6 +90,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
       {kind === 'running' ? (
         <Runner phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'walking' ? (
+        <Walking phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'legpress' ? (
         <LegPress phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'squat' ? (
@@ -202,6 +205,39 @@ function Bone({ x, y, len, w, color, rot, children }: {
       <View style={{ position: 'absolute', left: 0, top: -w / 2, width: len, height: w, borderRadius: 99, backgroundColor: color }} />
       <View style={{ position: 'absolute', left: len, top: 0, width: 0, height: 0 }}>{children}</View>
     </Animated.View>
+  );
+}
+
+// --- Walking: the runner's swinging-limb gait, tuned DOWN — smaller leg/arm swing, an
+// upright posture and barely-there bob, so it reads as an unhurried walk rather than a run.
+function Walking({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const legFront = useAnimatedStyle(() => ({ transform: [{ rotate: `${Math.sin(phase.value * 2 * Math.PI) * 20}deg` }] }));
+  const legBack = useAnimatedStyle(() => ({ transform: [{ rotate: `${-Math.sin(phase.value * 2 * Math.PI) * 20}deg` }] }));
+  const armFront = useAnimatedStyle(() => ({ transform: [{ rotate: `${-Math.sin(phase.value * 2 * Math.PI) * 14}deg` }] }));
+  const armBack = useAnimatedStyle(() => ({ transform: [{ rotate: `${Math.sin(phase.value * 2 * Math.PI) * 14}deg` }] }));
+  const bob = useAnimatedStyle(() => ({ transform: [{ translateY: -Math.abs(Math.sin(phase.value * 2 * Math.PI)) * 1.5 * s }] }));
+
+  const hipX = size * 0.47;
+  const hipY = size * 0.52;
+  const shoX = size * 0.48;
+  const shoY = size * 0.28;
+
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.14, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, bob]}>
+        <Limb x={hipX} y={hipY} w={8 * s} h={34 * s} color={fg} rot={legBack} />
+        <Limb x={hipX + 5 * s} y={hipY} w={8 * s} h={34 * s} color={fg} rot={legFront} />
+      </Animated.View>
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, bob]}>
+        {/* upright torso (only a slight lean, vs the runner's forward pitch) */}
+        <View style={{ position: 'absolute', left: shoX - 1 * s, top: shoY, width: 9 * s, height: (hipY - shoY) + 6 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '3deg' }] }} />
+        <View style={{ position: 'absolute', left: shoX + 1 * s, top: shoY - 18 * s, width: 18 * s, height: 18 * s, borderRadius: 99, backgroundColor: fg }} />
+        <Limb x={shoX + 3 * s} y={shoY + 2 * s} w={6 * s} h={24 * s} color={fg} rot={armBack} />
+        <Limb x={shoX + 6 * s} y={shoY + 2 * s} w={6 * s} h={24 * s} color={fg} rot={armFront} />
+      </Animated.View>
+    </View>
   );
 }
 

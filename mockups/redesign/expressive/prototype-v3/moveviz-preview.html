@@ -180,6 +180,16 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* walking: calm upright stride — smaller leg/arm swing than the runner, little bob */
+.wk{position:relative;width:116px;height:116px}
+.wk b{position:absolute;border-radius:99px;background:var(--grn)}
+.wk .ground{left:9px;right:9px;bottom:14px;height:3px;background:var(--navbg)}
+.wk .legB{left:50px;top:60px;width:8px;height:34px;transform-origin:top center;transform:rotate(-20deg)}
+.wk .legF{left:54px;top:60px;width:8px;height:34px;transform-origin:top center;transform:rotate(20deg)}
+.wk .torso{left:52px;top:33px;width:9px;height:29px;transform:rotate(3deg)}
+.wk .head{left:48px;top:15px;width:17px;height:17px}
+.wk .armB{left:52px;top:35px;width:6px;height:24px;transform-origin:top center;transform:rotate(14deg)}
+.wk .armF{left:57px;top:35px;width:6px;height:24px;transform-origin:top center;transform:rotate(-14deg)}
 /* yoga (cat-cow): on hands and knees, spine arched UP (cat pose), head tucked down */
 .yg{position:relative;width:116px;height:116px}
 .yg b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -308,14 +318,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🧘 Yoga</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · SPORT · SWIMMING</div>
- <div class="stage"><div class="sw">
-  <b class="water"></b><b class="water2"></b>
-  <b class="legA"></b><b class="legB"></b><b class="torso"></b><b class="head"></b>
-  <b class="uarmA"><b class="foreA"><b class="hand"></b></b></b>
-  <b class="uarmB"><b class="foreB"><b class="hand"></b></b></b>
+ <div class="lbl">WORKOUT · SPORT · WALKING</div>
+ <div class="stage"><div class="wk">
+  <b class="ground"></b>
+  <b class="armB"></b><b class="legB"></b><b class="legF"></b>
+  <b class="torso"></b><b class="head"></b><b class="armF"></b>
  </div></div>
- <div class="name">🏊 Swimming</div>
+ <div class="name">🚶 Walking</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
