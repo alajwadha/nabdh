@@ -7,7 +7,7 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
 import { EXERCISES, SPORTS, MUSCLE_LABEL, type Muscle } from '../src/data/workouts';
-import { computeAcwr, dotsScore, relativeStrength } from '../src/data/health-metrics';
+import { computeAcwr, dotsScore, relativeStrength, strengthStandard, STRENGTH_LEVELS, type StrengthLevel } from '../src/data/health-metrics';
 import { useAppState } from '../src/store/app';
 
 const DAY = 86400000;
@@ -71,7 +71,23 @@ export default function WorkoutHistory() {
   const big3Keys = ['squat', 'bench', 'deadlift'] as const;
   const big3Vals = big3Keys.map((k) => prs.find((p) => p.k === k)?.best ?? 0);
   const big3 = big3Vals.reduce((a, b) => a + b, 0);
-  const dots = big3Vals.every((v) => v > 0) ? dotsScore(big3, body.weightKg, body.sex) : 0;
+  // Bodyweight-ratio metrics (DOTS, strength standards) must not score against the
+  // placeholder default weight — a wrong bodyweight shifts the verdict by a full tier.
+  const dots = body.weightEntered && big3Vals.every((v) => v > 0) ? dotsScore(big3, body.weightKg, body.sex) : 0;
+
+  // Strength standards — classify the four lifts with established norms against
+  // population levels (untrained→elite) by bodyweight ratio. Only logged lifts show.
+  const standings = (body.weightEntered ? (['squat', 'bench', 'deadlift', 'ohp'] as const) : [])
+    .map((k) => ({ k, best: prs.find((p) => p.k === k)?.best ?? 0 }))
+    .filter((x) => x.best > 0)
+    .map((x) => ({ k: x.k, best: x.best, s: strengthStandard(x.k, x.best, body.weightKg, body.sex) }))
+    .filter((x) => x.s) as { k: string; best: number; s: NonNullable<ReturnType<typeof strengthStandard>> }[];
+  // level → tile color (cool → warm as you advance)
+  const levelTile: Record<StrengthLevel, { bg: string; ink: string }> = {
+    untrained: tiles.blue, beginner: tiles.blue, novice: tiles.lav,
+    intermediate: tiles.mint, advanced: tiles.gold, elite: tiles.peach,
+  };
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return (
     <Screen>
@@ -186,6 +202,43 @@ export default function WorkoutHistory() {
               From your best squat·bench·deadlift estimated 1RM ({Math.round(big3)} kg) at {body.weightKg} kg — a rough DOTS.{detailed ? ` Squat ${Math.round(big3Vals[0])} · bench ${Math.round(big3Vals[1])} · deadlift ${Math.round(big3Vals[2])} kg. Normalized for bodyweight & sex — ~300 solid, 500+ elite.` : ''}
             </AppText>
           </View>
+        </>
+      )}
+
+      {standings.length > 0 && (
+        <>
+          <SectionHeader title="Strength standards" />
+          <Card>
+            {standings.map(({ k, s, best }, i) => {
+              const e = EXERCISES.find((x) => x.key === k);
+              const tile = levelTile[s.level];
+              const idx = STRENGTH_LEVELS.indexOf(s.level);
+              return (
+                <View key={k} style={{ paddingVertical: 9, borderTopWidth: i === 0 ? 0 : 2, borderTopColor: colors.border }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <AppText variant="caption" color={colors.ink}>{e?.emoji} {e?.name ?? k}</AppText>
+                    <View style={{ backgroundColor: tile.bg, borderRadius: 99, paddingVertical: 3, paddingHorizontal: 10 }}>
+                      <AppText variant="caption" color={tile.ink} style={{ fontWeight: '700', fontSize: 11 }}>{cap(s.level)}</AppText>
+                    </View>
+                  </View>
+                  {/* five-segment level ladder (untrained→elite), filled to current */}
+                  <View style={{ flexDirection: 'row', gap: 3, marginTop: 8 }}>
+                    {[0, 1, 2, 3, 4].map((seg) => (
+                      <View key={seg} style={{ flex: 1, height: 6, borderRadius: 99, backgroundColor: seg < idx ? tile.ink : colors.navBg }} />
+                    ))}
+                  </View>
+                  {detailed && (
+                    <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 6 }}>
+                      {s.next ? `+${Math.max(0, s.next.kg - Math.round(best))} kg to ${cap(s.next.level)}` : 'Top tier — elite'}
+                    </AppText>
+                  )}
+                </View>
+              );
+            })}
+            <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
+              From your best estimated 1RM vs population norms by bodyweight. Approximate — a guide, not a verdict.
+            </AppText>
+          </Card>
         </>
       )}
 

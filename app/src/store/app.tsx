@@ -45,8 +45,11 @@ export type Body = {
   sex: Sex;
   activity: string; // ActivityLevel key (see health-metrics)
   goal: Goal;
+  // True once the user has actually set their weight. Bodyweight-ratio metrics
+  // (strength standards, DOTS) must not score against the placeholder default.
+  weightEntered: boolean;
 };
-export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate', goal: 'maintain' };
+export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate', goal: 'maintain', weightEntered: false };
 
 const DEFAULT_TILES: MetricKey[] = ['rhr', 'hrv', 'sleep', 'steps'];
 
@@ -132,7 +135,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const setBody = (patch: Partial<Body>) => {
     setBodyState((b) => {
-      const next = { ...b, ...patch };
+      // Editing weight is the explicit signal that the profile is real, not the default.
+      const weightEntered = b.weightEntered || patch.weightKg !== undefined;
+      const next = { ...b, ...patch, weightEntered };
       AsyncStorage.setItem('nabdh.body', JSON.stringify(next)).catch(() => {});
       return next;
     });

@@ -95,6 +95,54 @@ export function relativeStrength(e1rm: number, bodyweightKg: number): number {
 }
 
 /**
+ * Strength standards — classifies a lift's estimated 1RM against population norms
+ * by bodyweight multiple, the way StrengthLevel / ExRx / Symmetric Strength do.
+ * Thresholds are the *entry* bodyweight-ratio for each level and are approximate
+ * population figures (men's barbell; women's set ~0.65–0.75× per the same sources),
+ * so we only classify the four lifts with well-established norms — others return
+ * null and the UI shows nothing rather than fabricating a level.
+ */
+export type StrengthLevel = 'untrained' | 'beginner' | 'novice' | 'intermediate' | 'advanced' | 'elite';
+export const STRENGTH_LEVELS: StrengthLevel[] = ['untrained', 'beginner', 'novice', 'intermediate', 'advanced', 'elite'];
+
+// Entry ratios for beginner / novice / intermediate / advanced / elite (×bodyweight).
+const STRENGTH_STANDARDS: Record<string, { male: number[]; female: number[] }> = {
+  squat: { male: [0.75, 1.25, 1.5, 2.0, 2.75], female: [0.5, 0.75, 1.25, 1.5, 2.0] },
+  bench: { male: [0.5, 0.75, 1.0, 1.5, 2.0], female: [0.25, 0.5, 0.75, 1.0, 1.5] },
+  deadlift: { male: [1.0, 1.5, 2.0, 2.5, 3.0], female: [0.5, 1.0, 1.25, 1.75, 2.5] },
+  ohp: { male: [0.35, 0.55, 0.8, 1.1, 1.4], female: [0.2, 0.35, 0.5, 0.75, 1.0] },
+};
+
+export type StrengthStanding = {
+  level: StrengthLevel;
+  ratio: number; // e1RM ÷ bodyweight
+  // The next level up and the e1RM (kg) needed to reach it — null once at elite.
+  next: { level: StrengthLevel; kg: number } | null;
+};
+
+export function strengthStandard(
+  exerciseKey: string,
+  e1rm: number,
+  bodyweightKg: number,
+  sex: 'male' | 'female',
+): StrengthStanding | null {
+  const std = STRENGTH_STANDARDS[exerciseKey];
+  if (!std || e1rm <= 0 || bodyweightKg <= 0) return null;
+  const cuts = std[sex];
+  const ratio = e1rm / bodyweightKg;
+  // How many thresholds we've cleared → index into the level list (0 = untrained).
+  let cleared = 0;
+  for (const c of cuts) if (ratio >= c) cleared++;
+  const level = STRENGTH_LEVELS[cleared];
+  // Only read the next entry ratio when there IS a level above (avoids cuts[5]=undefined at elite).
+  const next =
+    cleared < cuts.length
+      ? { level: STRENGTH_LEVELS[cleared + 1], kg: Math.ceil(cuts[cleared] * bodyweightKg) }
+      : null;
+  return { level, ratio: Math.round(ratio * 100) / 100, next };
+}
+
+/**
  * Daily water goal in 250 ml glasses. Base ~35 ml/kg, +~3 ml/kg per activity
  * level above sedentary, +25% for Gulf heat — because a flat temperate constant
  * under-serves an active user training outdoors in a Saudi summer. Clamped 6–16.
