@@ -175,8 +175,9 @@ export default function Workout() {
       {/* mode switch */}
       <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}>
         {(['gym', 'sports'] as const).map((m) => (
-          <Pressable key={m} onPress={() => { setMode(m); setSavedMsg(null); }} style={{ flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 99, backgroundColor: mode === m ? colors.navOn : 'transparent' }}>
-            <AppText variant="caption" color={mode === m ? colors.navOnText : colors.textMuted}>{m === 'gym' ? '🏋️ Gym' : '🎾 Sports'}</AppText>
+          <Pressable key={m} onPress={() => { setMode(m); setSavedMsg(null); }} style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 11, borderRadius: 99, backgroundColor: mode === m ? colors.navOn : 'transparent' }}>
+            <Icon name={m === 'gym' ? 'dumbbell' : 'activity'} size={15} color={mode === m ? colors.navOnText : colors.textMuted} />
+            <AppText variant="caption" color={mode === m ? colors.navOnText : colors.textMuted}>{m === 'gym' ? 'Gym' : 'Sports'}</AppText>
           </Pressable>
         ))}
       </View>
@@ -378,8 +379,11 @@ export default function Workout() {
               ? `${EXERCISES.find((e) => e.key === ws.exKey)?.name ?? 'Lift'} · ${(ws.volume ?? 0).toLocaleString()} kg`
               : `${SPORTS.find((sp) => sp.key === ws.sportKey)?.name ?? 'Sport'} · ${ws.kcal ?? 0} kcal`;
             return (
-              <View key={ws.id} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
-                <AppText variant="caption" color={colors.ink}>{ws.kind === 'gym' ? '🏋️' : '🎾'} {title}</AppText>
+              <View key={ws.id} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, flex: 1 }}>
+                  <Icon name={ws.kind === 'gym' ? 'dumbbell' : 'activity'} size={14} color={colors.textMuted} />
+                  <AppText variant="caption" color={colors.ink}>{title}</AppText>
+                </View>
                 <AppText variant="caption" color={colors.textMuted}>{ws.at.slice(5, 10)}</AppText>
               </View>
             );

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Icon } from './Icon';
 import { Pressable, View, type ViewStyle } from 'react-native';
 import { AppText } from '../design-system/components';
 import { radii, spacing, type TileColor } from '../design-system';
@@ -109,7 +110,7 @@ export function AddTile({ onPress }: { onPress: () => void }) {
         gap: 2,
       }}
     >
-      <AppText style={{ fontSize: 22, color: colors.textMuted }}>＋</AppText>
+      <Icon name="plus" size={20} color={colors.textMuted} />
       <AppText variant="caption" color={colors.textMuted}>
         Add metric
       </AppText>
@@ -194,7 +195,7 @@ export function CoachCard({ children }: { children: ReactNode }) {
   return (
     <View style={{ backgroundColor: colors.navOn, borderRadius: radii.xl, padding: spacing.lg, flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' }}>
       <View style={{ width: 35, height: 35, borderRadius: 18, backgroundColor: colors.yellow, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText style={{ fontSize: 16 }}>💬</AppText>
+        <Icon name="message-circle" size={18} color={colors.navOnText} />
       </View>
       <AppText variant="body" color={colors.navOnText} style={{ flex: 1, fontSize: 12.5, lineHeight: 19 }}>
         {children}

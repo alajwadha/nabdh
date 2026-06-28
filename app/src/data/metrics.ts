@@ -251,7 +251,8 @@ export const ALL_METRICS: MetricKey[] = [
   'rhr', 'hrv', 'sleep', 'steps', 'spo2', 'cals', 'water', 'vo2',
 ];
 
+// Line-icon name (lucide) per metric — rendered via the Skia <Icon>. (Was emoji.)
 export const METRIC_ICON: Record<MetricKey, string> = {
-  rhr: '❤️', hrv: '📈', sleep: '😴', steps: '🚶', stress: '🌀', spo2: '🩸',
-  resp: '🫁', cals: '🔥', water: '💧', vo2: '🏃', resil: '🛡',
+  rhr: 'heart', hrv: 'activity', sleep: 'moon', steps: 'footprints', stress: 'brain', spo2: 'droplets',
+  resp: 'wind', cals: 'flame', water: 'droplet', vo2: 'gauge', resil: 'shield',
 };

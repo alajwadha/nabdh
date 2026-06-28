@@ -21,6 +21,7 @@ import { useAuth } from '../../src/auth/AuthProvider';
 import { useHealth } from '../../src/store/health';
 import { useAppState, type MetricKey } from '../../src/store/app';
 import { ALL_METRICS, METRICS, METRIC_ICON } from '../../src/data/metrics';
+import { Icon, type IconName } from '../../src/components/Icon';
 import { adjustForReadiness, computeReadiness } from '../../src/data/workouts';
 import { useIdentity } from '../../src/data/identity';
 import { fetchGoogleHealthToday } from '../../src/integrations/googleHealth';
@@ -165,7 +166,7 @@ export default function Today() {
           style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}
         >
           <View style={{ width: 38, height: 38, borderRadius: 13, backgroundColor: tilePalette.mint.bg, alignItems: 'center', justifyContent: 'center' }}>
-            <AppText style={{ fontSize: 16 }}>🕌</AppText>
+            <Icon name="church" size={18} color={tilePalette.mint.ink} />
           </View>
           <View style={{ flex: 1 }}>
             <AppText variant="title">{t('home.prayerStrip')}</AppText>
@@ -182,7 +183,7 @@ export default function Today() {
             style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}
           >
             <View style={{ width: 38, height: 38, borderRadius: 13, backgroundColor: tilePalette[METRICS[k].color].bg, alignItems: 'center', justifyContent: 'center' }}>
-              <AppText style={{ fontSize: 16 }}>{METRIC_ICON[k]}</AppText>
+              <Icon name={METRIC_ICON[k] as IconName} size={18} color={tilePalette[METRICS[k].color].ink} />
             </View>
             <View style={{ flex: 1 }}>
               <AppText variant="title">{METRICS[k].label}</AppText>
