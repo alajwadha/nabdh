@@ -294,7 +294,7 @@ export default function Workout() {
           <Card>
             {/* moving glyph of the selected sport (runner stride, etc.) */}
             <View style={{ alignItems: 'center', backgroundColor: colors.navBg, borderRadius: radii.lg, paddingVertical: 6, marginBottom: spacing.md }}>
-              <MoveViz kind={sport.key} size={108} />
+              <MoveViz kind={sport.key} emoji={sport.emoji} size={108} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <AppText variant="title">{sport.emoji} {sport.name}</AppText>

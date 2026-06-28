@@ -25,10 +25,9 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 @keyframes legB{0%,100%{transform:rotate(0)}25%{transform:rotate(-32deg)}75%{transform:rotate(32deg)}}
 @keyframes armF{0%,100%{transform:rotate(0)}25%{transform:rotate(-26deg)}75%{transform:rotate(26deg)}}
 @keyframes armB{0%,100%{transform:rotate(0)}25%{transform:rotate(26deg)}75%{transform:rotate(-26deg)}}
-/* pulse fallback */
-.pulse{width:58px;height:58px;border-radius:99px;border:4px solid var(--grn);animation:pulse 1.1s ease-in-out infinite}
-.pulse-dot{position:absolute;width:14px;height:14px;border-radius:99px;background:var(--navbg)}
-@keyframes pulse{0%,100%{transform:scale(.7);opacity:.4}50%{transform:scale(1);opacity:.8}}
+/* emoji-pulse fallback — the sport's own emoji, gently pulsing */
+.pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
 </style></head><body>
 <div class="card">
  <div class="lbl">WORKOUT · SPORTS · RUNNING</div>
@@ -42,8 +41,8 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🏃 Running</div>
 </div>
 <div class="card">
- <div class="lbl">FALLBACK · CALM PULSE</div>
- <div class="stage"><div class="pulse"></div><div class="pulse-dot"></div></div>
+ <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
+ <div class="stage"><div class="pulse">🎾</div></div>
  <div class="name">🎾 Padel (until drawn)</div>
 </div>
 </body></html>
