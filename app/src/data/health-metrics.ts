@@ -191,6 +191,23 @@ export function bmi(weightKg: number, heightCm: number): { value: number; band: 
   return { value: Math.round(v * 10) / 10, band };
 }
 
+/**
+ * Waist-to-height ratio — a cardiometabolic risk marker that captures the fat
+ * *distribution* BMI misses (central/visceral fat). NICE and Ashwell back the
+ * simple "keep your waist under half your height" rule (boundary 0.5; ≥0.6 high
+ * risk). Sex-independent, and a better risk predictor than BMI for most adults.
+ */
+export function whtr(waistCm: number, heightCm: number): { value: number; band: string; note: string } {
+  const v = heightCm > 0 && waistCm > 0 ? waistCm / heightCm : 0;
+  // The validated NICE/Ashwell three-band set: healthy <0.5, increased <0.6, high ≥0.6.
+  let band: string;
+  let note: string;
+  if (v < 0.5) { band = 'Healthy'; note = 'Your waist is under half your height — the healthy zone.'; }
+  else if (v < 0.6) { band = 'Increased risk'; note = 'Above the half-height line — trimming the waist lowers metabolic risk.'; }
+  else { band = 'High risk'; note = 'Well above half your height — central fat raises heart & metabolic risk.'; }
+  return { value: Math.round(v * 100) / 100, band, note };
+}
+
 /** Resting energy via Mifflin–St Jeor (the most accurate common BMR equation). */
 export function bmr(weightKg: number, heightCm: number, age: number, sex: 'male' | 'female'): number {
   const s = sex === 'female' ? -161 : 5;

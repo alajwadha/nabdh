@@ -7,7 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate, whtr } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
@@ -30,6 +30,11 @@ export default function Body() {
   // The Daily target IS the store's Food budget — one number, never two that drift.
   const deficitCapped = body.goal === 'cut' && energyTdee - 500 < budget;
   const bmiBandColor = b.band === 'Healthy' ? tiles.mint : b.band === 'Underweight' ? tiles.blue : b.band === 'Overweight' ? tiles.gold : tiles.pink;
+  // Waist-to-height ratio — only when the user has actually measured their waist.
+  const w = (body.waistCm ?? 0) > 0 ? whtr(body.waistCm!, body.heightCm) : null;
+  const wColor = w == null ? tiles.blue : w.band === 'Healthy' ? tiles.mint : w.band === 'Increased risk' ? tiles.gold : tiles.pink;
+  // WHtR gauge on a 0.35–0.70 scale: healthy <0.5 (0–43%), increased 0.5–0.6 (43–71%), high ≥0.6 (71–100%)
+  const wPos = w == null ? 0 : Math.max(0, Math.min(98, ((w.value - 0.35) / 0.35) * 100));
   // BMI gauge on a 15–40 scale (severe obesity is common in-market — don't cap at 35)
   const bmiPos = Math.max(0, Math.min(100, ((b.value - 15) / 25) * 100));
 
@@ -103,6 +108,35 @@ export default function Body() {
           </AppText>
         )}
       </View>
+
+      {/* Waist-to-height ratio — captures the fat distribution BMI misses */}
+      {w ? (
+        <View style={{ backgroundColor: wColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <AppText variant="caption" color={wColor.ink} style={{ letterSpacing: 1.2 }}>WAIST-TO-HEIGHT</AppText>
+            <AppText variant="h2" color={wColor.ink}>{w.value.toFixed(2)} · {w.band}</AppText>
+          </View>
+          <View style={{ height: 14, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 10, position: 'relative', overflow: 'hidden' }}>
+            <View style={{ position: 'absolute', left: '0%', width: '43%', top: 0, bottom: 0, backgroundColor: colors.accent, opacity: 0.4 }} />
+            <View style={{ position: 'absolute', left: '43%', width: '28%', top: 0, bottom: 0, backgroundColor: '#E0A24E', opacity: 0.45 }} />
+            <View style={{ position: 'absolute', left: '71%', width: '29%', top: 0, bottom: 0, backgroundColor: colors.danger, opacity: 0.4 }} />
+            <View style={{ position: 'absolute', left: `${wPos}%`, width: 3, top: 0, bottom: 0, backgroundColor: colors.ink }} />
+          </View>
+          <AppText variant="caption" color={wColor.ink} style={{ marginTop: 6, opacity: 0.85 }}>{w.note}</AppText>
+          {detailed && (
+            <AppText variant="caption" color={wColor.ink} style={{ marginTop: 4, opacity: 0.85 }}>
+              WHtR = waist ÷ height = {body.waistCm} ÷ {body.heightCm} cm · healthy &lt;0.5, high ≥0.6 · captures central fat BMI can’t.
+            </AppText>
+          )}
+        </View>
+      ) : detailed ? (
+        <View style={{ backgroundColor: tiles.blue.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+          <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>WAIST-TO-HEIGHT</AppText>
+          <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 6, opacity: 0.85 }}>
+            Add your waist measurement under “Your body” below to see your waist-to-height ratio — a better risk marker than BMI for most adults.
+          </AppText>
+        </View>
+      ) : null}
 
       {/* energy needs — BMR / TDEE */}
       <SectionHeader title="Energy needs" />
@@ -188,7 +222,9 @@ export default function Body() {
             </View>
             <Stepper label="Age" value={body.age} unit="yrs" onMinus={() => setBody({ age: Math.max(12, body.age - 1) })} onPlus={() => setBody({ age: body.age + 1 })} colors={colors} />
             <Stepper label="Height" value={body.heightCm} unit="cm" onMinus={() => setBody({ heightCm: Math.max(120, body.heightCm - 1) })} onPlus={() => setBody({ heightCm: body.heightCm + 1 })} colors={colors} />
-            <Stepper label="Weight" value={body.weightKg} unit="kg" onMinus={() => setBody({ weightKg: Math.max(35, body.weightKg - 1) })} onPlus={() => setBody({ weightKg: body.weightKg + 1 })} colors={colors} last />
+            <Stepper label="Weight" value={body.weightKg} unit="kg" onMinus={() => setBody({ weightKg: Math.max(35, body.weightKg - 1) })} onPlus={() => setBody({ weightKg: body.weightKg + 1 })} colors={colors} />
+            {/* waist drives the waist-to-height ratio; starts unset (placeholder) so we never assume a measurement */}
+            <Stepper label="Waist" value={body.waistCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? Math.max(50, body.waistCm! - 1) : 0 })} onPlus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? body.waistCm! + 1 : Math.round(body.heightCm * 0.5) })} colors={colors} last />
           </Card>
         </>
       )}
@@ -208,13 +244,18 @@ function Vital({ label, value, unit, color }: { label: string; value?: number; u
   );
 }
 
-function Stepper({ label, value, unit, onMinus, onPlus, colors, last }: { label: string; value: number; unit: string; onMinus: () => void; onPlus: () => void; colors: ReturnType<typeof useTheme>['colors']; last?: boolean }) {
+function Stepper({ label, value, unit, onMinus, onPlus, colors, last, placeholder }: { label: string; value: number; unit: string; onMinus: () => void; onPlus: () => void; colors: ReturnType<typeof useTheme>['colors']; last?: boolean; placeholder?: string }) {
+  const showPlaceholder = placeholder != null && value <= 0;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
       <AppText variant="title" style={{ fontSize: 14 }}>{label}</AppText>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
         <Pressable onPress={onMinus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><AppText style={{ fontSize: 16 }}>−</AppText></Pressable>
-        <View style={{ minWidth: 64, alignItems: 'center' }}><AppText variant="title">{value} <AppText variant="caption" color={colors.textMuted}>{unit}</AppText></AppText></View>
+        <View style={{ minWidth: 64, alignItems: 'center' }}>
+          {showPlaceholder
+            ? <AppText variant="caption" color={colors.textMuted}>{placeholder}</AppText>
+            : <AppText variant="title">{value} <AppText variant="caption" color={colors.textMuted}>{unit}</AppText></AppText>}
+        </View>
         <Pressable onPress={onPlus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><AppText style={{ fontSize: 16 }}>＋</AppText></Pressable>
       </View>
     </View>

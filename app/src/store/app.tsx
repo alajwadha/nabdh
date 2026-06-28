@@ -48,6 +48,7 @@ export type Body = {
   // True once the user has actually set their weight. Bodyweight-ratio metrics
   // (strength standards, DOTS) must not score against the placeholder default.
   weightEntered: boolean;
+  waistCm?: number; // optional — drives waist-to-height ratio; 0/undefined = not measured
 };
 export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate', goal: 'maintain', weightEntered: false };
 
