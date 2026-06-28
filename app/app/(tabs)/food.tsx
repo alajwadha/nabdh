@@ -53,7 +53,7 @@ export default function Food() {
                 {grams}<AppText variant="caption" color={colors.textMuted}>/{macroGoals[key]}g</AppText>
               </AppText>
               <View style={{ height: 6, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 5, overflow: 'hidden' }}>
-                <View style={{ width: `${Math.min(100, (grams / macroGoals[key]) * 100)}%`, height: '100%', backgroundColor: MACRO_COLORS[key], borderRadius: 99 }} />
+                <View style={{ width: `${Math.min(100, (grams / (macroGoals[key] || 1)) * 100)}%`, height: '100%', backgroundColor: MACRO_COLORS[key], borderRadius: 99 }} />
               </View>
             </View>
           ))}
@@ -107,7 +107,11 @@ export default function Food() {
         </AppText>
       </View>
 
-      <CoachCard>Protein’s done for the day. Something light tonight: shorbat adas would fit perfectly.</CoachCard>
+      <CoachCard>
+        {macros.protein >= macroGoals.protein
+          ? `Protein’s done (${macros.protein}/${macroGoals.protein}g). Something light tonight — shorbat adas fits.`
+          : `${macroGoals.protein - macros.protein}g protein to go. Grilled chicken or laban closes the gap nicely.`}
+      </CoachCard>
     </Screen>
   );
 }
