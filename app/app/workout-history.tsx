@@ -66,9 +66,12 @@ export default function WorkoutHistory() {
     .filter((p) => p.best > 0)
     .sort((a, b) => b.best - a.best);
 
-  // DOTS strength score from the big-3 e1RM total, normalized for bodyweight + sex
-  const big3 = ['squat', 'bench', 'deadlift'].reduce((sum, k) => sum + (prs.find((p) => p.k === k)?.best ?? 0), 0);
-  const dots = dotsScore(big3, body.weightKg, body.sex);
+  // DOTS strength score from the big-3 e1RM total, normalized for bodyweight + sex.
+  // Only shown once ALL THREE lifts are logged — a partial total would mislead.
+  const big3Keys = ['squat', 'bench', 'deadlift'] as const;
+  const big3Vals = big3Keys.map((k) => prs.find((p) => p.k === k)?.best ?? 0);
+  const big3 = big3Vals.reduce((a, b) => a + b, 0);
+  const dots = big3Vals.every((v) => v > 0) ? dotsScore(big3, body.weightKg, body.sex) : 0;
 
   return (
     <Screen>
@@ -180,7 +183,7 @@ export default function WorkoutHistory() {
               <AppText variant="h2" color={tiles.peach.ink}>{dots}</AppText>
             </View>
             <AppText variant="caption" color={tiles.peach.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 17 }}>
-              From your best squat + bench + deadlift e1RM ({Math.round(big3)} kg) at {body.weightKg} kg.{detailed ? ' DOTS normalizes total for bodyweight & sex — ~300 solid, 500+ elite.' : ''}
+              From your best squat·bench·deadlift estimated 1RM ({Math.round(big3)} kg) at {body.weightKg} kg — a rough DOTS.{detailed ? ` Squat ${Math.round(big3Vals[0])} · bench ${Math.round(big3Vals[1])} · deadlift ${Math.round(big3Vals[2])} kg. Normalized for bodyweight & sex — ~300 solid, 500+ elite.` : ''}
             </AppText>
           </View>
         </>
