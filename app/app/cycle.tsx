@@ -93,17 +93,18 @@ export default function Cycle() {
             <Icon name="dumbbell" size={20} color="#fff" />
             <View style={{ flex: 1 }}>
               <AppText variant="title" color="#fff">{PHASE_META[info.phase].label} phase</AppText>
-              <AppText variant="caption" color="rgba(255,255,255,0.9)" style={{ lineHeight: 18, marginTop: 2 }}>{PHASE_META[info.phase].train}</AppText>
+              <AppText variant="caption" color="rgba(255,255,255,0.78)" style={{ lineHeight: 17, marginTop: 2 }}>{PHASE_META[info.phase].note}</AppText>
+              <AppText variant="caption" color="rgba(255,255,255,0.95)" style={{ lineHeight: 18, marginTop: 5 }}>{PHASE_META[info.phase].train}</AppText>
             </View>
           </View>
 
           {/* predictions */}
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <Stat icon="calendar" tintless label="NEXT PERIOD" value={`${info.daysUntilNext}`} sub={info.daysUntilNext === 1 ? 'day' : 'days'} colors={colors} />
-            <Stat icon="heart-pulse" tintless label="FERTILE WINDOW" value={`${info.fertile[0]}–${info.fertile[1]}`} sub="cycle days" colors={colors} />
+            <Stat icon="calendar" label="NEXT PERIOD" value={`${info.daysUntilNext}`} sub={info.daysUntilNext === 1 ? 'day' : 'days'} colors={colors} />
+            <Stat icon="heart-pulse" label="FERTILE WINDOW" value={`${info.fertile[0]}–${info.fertile[1]}`} sub="cycle days" colors={colors} />
           </View>
-          <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-            Avg cycle {info.cycleLen} days · period {info.periodLen} days · next on {info.nextStart.slice(5)}
+          <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center', lineHeight: 17 }}>
+            Avg cycle {info.cycleLen} days · period {info.periodLen} days · next on {info.nextStart.slice(5)}{'\n'}Fertile window = the 5 days before ovulation (cycle day {info.ovulationDay}) plus the day itself.
           </AppText>
 
           <Button label="Log period started today" variant="line" onPress={() => logPeriodStart(dayKey())} />
@@ -114,7 +115,7 @@ export default function Cycle() {
   );
 }
 
-function Stat({ icon, label, value, sub, colors }: { icon: 'calendar' | 'heart-pulse'; tintless?: boolean; label: string; value: string; sub: string; colors: ReturnType<typeof useTheme>['colors'] }) {
+function Stat({ icon, label, value, sub, colors }: { icon: 'calendar' | 'heart-pulse'; label: string; value: string; sub: string; colors: ReturnType<typeof useTheme>['colors'] }) {
   return (
     <View style={{ flex: 1, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.lg, padding: spacing.lg, gap: 4, shadowColor: '#3A2E1A', shadowOpacity: 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 5 }, elevation: 2 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
