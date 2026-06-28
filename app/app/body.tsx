@@ -7,7 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
-import { bmi, hrZones, maxHr } from '../src/data/health-metrics';
+import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee } from '../src/data/health-metrics';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
@@ -23,6 +23,9 @@ export default function Body() {
   const b = bmi(body.weightKg, body.heightCm);
   const mhr = maxHr(body.age);
   const zones = hrZones(body.age);
+  const energyBmr = bmr(body.weightKg, body.heightCm, body.age, body.sex);
+  const activity = ACTIVITY_LEVELS.find((a) => a.key === body.activity) ?? ACTIVITY_LEVELS[2];
+  const energyTdee = tdee(energyBmr, activity.factor);
   const bmiBandColor = b.band === 'Healthy' ? tiles.mint : b.band === 'Underweight' ? tiles.blue : b.band === 'Overweight' ? tiles.gold : tiles.pink;
   // BMI gauge on a 15–40 scale (severe obesity is common in-market — don't cap at 35)
   const bmiPos = Math.max(0, Math.min(100, ((b.value - 15) / 25) * 100));
@@ -87,6 +90,30 @@ export default function Body() {
         )}
       </View>
 
+      {/* energy needs — BMR / TDEE */}
+      <SectionHeader title="Energy needs" />
+      <View style={{ backgroundColor: tiles.gold.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <AppText variant="caption" color={tiles.gold.ink} style={{ letterSpacing: 1.2 }}>MAINTENANCE · {activity.label.toUpperCase()}</AppText>
+          <AppText variant="h2" color={tiles.gold.ink}>{energyTdee.toLocaleString()} <AppText variant="caption" color={tiles.gold.ink}>kcal</AppText></AppText>
+        </View>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+          {ACTIVITY_LEVELS.map((a) => {
+            const on = a.key === body.activity;
+            return (
+              <Pressable key={a.key} onPress={() => setBody({ activity: a.key })} style={{ paddingVertical: 7, paddingHorizontal: 11, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
+                <AppText variant="caption" color={on ? '#fff' : colors.ink} style={{ fontSize: 11 }}>{a.label}</AppText>
+              </Pressable>
+            );
+          })}
+        </View>
+        {detailed && (
+          <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 8, opacity: 0.85 }}>
+            BMR {energyBmr.toLocaleString()} kcal (Mifflin–St Jeor) × {activity.factor} = {energyTdee.toLocaleString()} kcal/day · eat ~500 under to lose ~0.5 kg/week
+          </AppText>
+        )}
+      </View>
+
       {/* heart-rate training zones */}
       <SectionHeader title={`Heart-rate zones · max ${mhr} bpm`} />
       <Card>
@@ -114,6 +141,19 @@ export default function Body() {
         <>
           <SectionHeader title="Your body" />
           <Card>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+              <AppText variant="title" style={{ fontSize: 14 }}>Sex</AppText>
+              <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 4 }}>
+                {(['male', 'female'] as const).map((sx) => {
+                  const on = body.sex === sx;
+                  return (
+                    <Pressable key={sx} onPress={() => setBody({ sex: sx })} style={{ paddingVertical: 6, paddingHorizontal: 14, borderRadius: 99, backgroundColor: on ? colors.navOn : 'transparent' }}>
+                      <AppText variant="caption" color={on ? colors.navOnText : colors.textMuted}>{sx === 'male' ? 'Male' : 'Female'}</AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
             <Stepper label="Age" value={body.age} unit="yrs" onMinus={() => setBody({ age: Math.max(12, body.age - 1) })} onPlus={() => setBody({ age: body.age + 1 })} colors={colors} />
             <Stepper label="Height" value={body.heightCm} unit="cm" onMinus={() => setBody({ heightCm: Math.max(120, body.heightCm - 1) })} onPlus={() => setBody({ heightCm: body.heightCm + 1 })} colors={colors} />
             <Stepper label="Weight" value={body.weightKg} unit="kg" onMinus={() => setBody({ weightKg: Math.max(35, body.weightKg - 1) })} onPlus={() => setBody({ weightKg: body.weightKg + 1 })} colors={colors} last />

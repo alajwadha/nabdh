@@ -39,8 +39,15 @@ export type Macros = { protein: number; carbs: number; fat: number };
 /** Daily macro goals (grams) used for the progress bars on the Food screen. */
 export const MACRO_GOALS: Macros = { protein: 120, carbs: 220, fat: 65 };
 
-export type Body = { age: number; heightCm: number; weightKg: number };
-export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80 };
+export type Sex = 'male' | 'female';
+export type Body = {
+  age: number;
+  heightCm: number;
+  weightKg: number;
+  sex: Sex;
+  activity: string; // ActivityLevel key (see health-metrics)
+};
+export const DEFAULT_BODY: Body = { age: 30, heightCm: 175, weightKg: 80, sex: 'male', activity: 'moderate' };
 
 const DEFAULT_TILES: MetricKey[] = ['rhr', 'hrv', 'sleep', 'steps'];
 

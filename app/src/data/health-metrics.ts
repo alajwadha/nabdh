@@ -99,3 +99,23 @@ export function bmi(weightKg: number, heightCm: number): { value: number; band: 
   const band = v < 18.5 ? 'Underweight' : v < 25 ? 'Healthy' : v < 30 ? 'Overweight' : 'Obese';
   return { value: Math.round(v * 10) / 10, band };
 }
+
+/** Resting energy via Mifflin–St Jeor (the most accurate common BMR equation). */
+export function bmr(weightKg: number, heightCm: number, age: number, sex: 'male' | 'female'): number {
+  const s = sex === 'female' ? -161 : 5;
+  return Math.round(10 * weightKg + 6.25 * heightCm - 5 * age + s);
+}
+
+export type ActivityLevel = { key: string; label: string; factor: number };
+export const ACTIVITY_LEVELS: ActivityLevel[] = [
+  { key: 'sedentary', label: 'Sedentary', factor: 1.2 },
+  { key: 'light', label: 'Light', factor: 1.375 },
+  { key: 'moderate', label: 'Moderate', factor: 1.55 },
+  { key: 'active', label: 'Active', factor: 1.725 },
+  { key: 'athlete', label: 'Athlete', factor: 1.9 },
+];
+
+/** Total daily energy expenditure = BMR × activity factor. */
+export function tdee(bmrValue: number, factor: number): number {
+  return Math.round(bmrValue * factor);
+}
