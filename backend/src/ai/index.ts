@@ -134,6 +134,13 @@ function callProvider(
 
 // --- BYO "Pro" providers (all US-hosted → cross-border, opt-in only). Keys from env. ---
 
+/** Anthropic requires the first message to be 'user'; drop leading assistant turns. */
+function dropLeadingAssistant(messages: ChatMsg[]): ChatMsg[] {
+  let i = 0;
+  while (i < messages.length && messages[i].role === 'assistant') i++;
+  return messages.slice(i);
+}
+
 async function callAnthropic(system: string, messages: ChatMsg[]): Promise<string | null> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return null;
@@ -145,7 +152,7 @@ async function callAnthropic(system: string, messages: ChatMsg[]): Promise<strin
       'x-api-key': key,
       'anthropic-version': '2023-06-01',
     },
-    body: JSON.stringify({ model, max_tokens: 320, system, messages }),
+    body: JSON.stringify({ model, max_tokens: 320, system, messages: dropLeadingAssistant(messages) }),
   });
   if (!r.ok) throw new Error(`anthropic ${r.status}`);
   const data = (await r.json()) as { content?: { text?: string }[] };
@@ -162,7 +169,7 @@ async function callOpenAI(system: string, messages: ChatMsg[]): Promise<string |
     body: JSON.stringify({
       model,
       max_tokens: 320,
-      messages: [{ role: 'system', content: system }, ...messages],
+      messages: [{ role: 'system', content: system }, ...dropLeadingAssistant(messages)],
     }),
   });
   if (!r.ok) throw new Error(`openai ${r.status}`);

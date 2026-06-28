@@ -17,6 +17,7 @@ import {
   distanceKm,
   e1rm,
   metCalories,
+  runningMet,
   totalReps,
   volume,
   workingWeight,
@@ -52,12 +53,14 @@ export default function Workout() {
   // gym state
   const [exKey, setExKey] = useState(EXERCISES[0].key);
   const [sets, setSets] = useState<SetEntry[]>(SEED_SETS);
-  const ex = EXERCISES.find((e) => e.key === exKey)!;
+  const ex = EXERCISES.find((e) => e.key === exKey) ?? EXERCISES[0];
 
   // sports state
   const [sportKey, setSportKey] = useState(SPORTS[0].key);
   const [minutes, setMinutes] = useState(45);
-  const sport = SPORTS.find((sp) => sp.key === sportKey)!;
+  const [pace, setPace] = useState(6); // min/km, for GPS sports
+  const [weight, setWeight] = useState(DEFAULT_WEIGHT_KG);
+  const sport = SPORTS.find((sp) => sp.key === sportKey) ?? SPORTS[0];
 
   const r = readiness(s);
   const advice = adjustForReadiness(r);
@@ -68,8 +71,9 @@ export default function Workout() {
   const best = useMemo(() => bestE1rm(sets), [sets]);
   const suggested = workingWeight(best || 80, 8, advice.factor);
 
-  const cals = metCalories(sport.met, minutes, DEFAULT_WEIGHT_KG);
-  const dist = sport.gps ? distanceKm(minutes, sportKey === 'walking' ? 11 : sportKey === 'cycling' ? 3 : 6) : 0;
+  const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
+  const cals = metCalories(sportMet, minutes, weight);
+  const dist = sport.gps ? distanceKm(minutes, pace) : 0;
 
   const setVal = (i: number, field: keyof SetEntry, delta: number) =>
     setSets((arr) => arr.map((st, j) => (j === i ? { ...st, [field]: Math.max(0, st[field] + delta) } : st)));
@@ -179,16 +183,28 @@ export default function Workout() {
               <AppText variant="title">{sport.emoji} {sport.name}</AppText>
               <Stepper label="min" value={minutes} onMinus={() => setMinutes((m) => Math.max(5, m - 5))} onPlus={() => setMinutes((m) => m + 5)} colors={colors} />
             </View>
+            {sport.gps && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 2, borderTopColor: colors.border, paddingTop: 10, marginTop: 4 }}>
+                <AppText variant="caption" color={colors.textMuted}>Pace</AppText>
+                <Stepper label="min/km" value={pace} onMinus={() => setPace((p) => Math.max(3, p - 1))} onPlus={() => setPace((p) => p + 1)} colors={colors} />
+              </View>
+            )}
+            {detailed && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 2, borderTopColor: colors.border, paddingTop: 10, marginTop: 4 }}>
+                <AppText variant="caption" color={colors.textMuted}>Your weight</AppText>
+                <Stepper label="kg" value={weight} onMinus={() => setWeight((w) => Math.max(35, w - 1))} onPlus={() => setWeight((w) => w + 1)} colors={colors} />
+              </View>
+            )}
           </Card>
 
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
             <Stat label="CALORIES" value={`${cals}`} unit="kcal" color={tiles.pink} />
             {sport.gps && <Stat label="DISTANCE" value={`${dist}`} unit="km" color={tiles.blue} />}
-            {detailed && <Stat label="MET" value={`${sport.met}`} unit="" color={tiles.gold} />}
+            {detailed && <Stat label="MET" value={`${Math.round(sportMet * 10) / 10}`} unit="" color={tiles.gold} />}
           </View>
           {detailed && (
             <AppText variant="caption" color={colors.textMuted}>
-              {Math.round((cals / minutes) * 10) / 10} kcal/min · kcal = MET {sport.met} × {DEFAULT_WEIGHT_KG} kg × {minutes / 60 < 1 ? (minutes / 60).toFixed(2) : minutes / 60} h
+              {Math.round((cals / minutes) * 10) / 10} kcal/min · kcal = MET {Math.round(sportMet * 10) / 10} × {weight} kg × {(minutes / 60).toFixed(2)} h{sport.key === 'running' ? ` · ${pace}:00/km` : ''}
             </AppText>
           )}
         </>

@@ -58,12 +58,15 @@ export function totalReps(sets: SetEntry[]): number {
 export function metCalories(met: number, minutes: number, weightKg = DEFAULT_WEIGHT_KG): number {
   return Math.round(met * weightKg * (minutes / 60));
 }
-/** Running MET from pace (min/km): faster pace → higher MET (rough ACSM fit). */
+/**
+ * Running MET from pace (min/km), ACSM running equation:
+ * VO2 (ml/kg/min) = 0.2 × speed(m/min) + 3.5, MET = VO2 / 3.5.
+ * speed(m/min) = 1000 / pace ⇒ MET ≈ 57.1/pace + 1.
+ * e.g. 5:00/km → 12.4, 6:00/km → 10.5, 4:00/km → 15.3.
+ */
 export function runningMet(paceMinPerKm: number): number {
   if (paceMinPerKm <= 0) return 9.8;
-  const speedKmh = 60 / paceMinPerKm;
-  // ~1 MET per km/h above rest, clamped to a sane range.
-  return Math.min(19, Math.max(6, speedKmh * 1.0 + 0.5));
+  return Math.min(20, Math.max(6, 57.1 / paceMinPerKm + 1));
 }
 /** Rough distance (km) for a steady-pace cardio session. */
 export function distanceKm(minutes: number, paceMinPerKm: number): number {
