@@ -1,0 +1,111 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F1E8;--card:#FFFBF4;--bord:#EDE5D3;--ink:#1F1C17;--mut:#80796C;--grn:#2E7D5B;--grnT:#2E7D5B;--navon:#211E1A;--navonT:#FFF8EC;--navbg:#EFE8DA;
+--peach:#F7E3C2;--peachT:#6B5328;--lav:#DDD6F6;--lavT:#4A4080;--mint:#D8EFE2;--mintT:#1E5A40;--pink:#F8DCE4;--pinkT:#7A3A52;--gold:#FBE5BE;--goldT:#8A6312;--blue:#D6EBF6;--blueT:#2C5C77;--danger:#D9534F}
+body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;gap:26px;padding:26px;justify-content:center}
+.frame{width:393px;height:852px;background:var(--bg);border-radius:46px;box-shadow:0 24px 60px rgba(60,48,20,.25);overflow:hidden;position:relative;padding:54px 24px 18px;display:flex;flex-direction:column;gap:12px}
+.cap{position:absolute;top:16px;left:0;right:0;text-align:center;font-size:10px;font-weight:800;color:var(--mut);letter-spacing:1px}
+.row{display:flex;align-items:center;gap:12px}
+.bk{width:38px;height:38px;border-radius:14px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:18px}
+.h1{font-size:28px;font-weight:800;letter-spacing:-.9px}.flex1{flex:1}
+.seg{display:flex;background:var(--navbg);border-radius:99px;padding:4px}
+.seg b{padding:7px 13px;border-radius:99px;font-size:11px;font-weight:800;color:var(--mut)}.seg b.on{background:var(--navon);color:var(--navonT)}
+.stats{display:flex;gap:12px}
+.stat{flex:1;border-radius:22px;padding:13px 14px}
+.stat .l{font-size:9px;letter-spacing:1px;font-weight:800}.stat .v{font-size:21px;font-weight:800;letter-spacing:-.6px;margin-top:4px}.stat .v small{font-size:11px;opacity:.6}.stat .hint{font-size:9px;font-weight:800;opacity:.8;margin-top:2px}
+.card{background:var(--card);border:2px solid var(--bord);border-radius:26px;padding:14px 16px}
+.lbl{font-size:10px;letter-spacing:1.4px;font-weight:800;color:var(--mut);margin:4px 2px}
+.tile{border-radius:26px;padding:16px 18px}
+.tile .top{display:flex;justify-content:space-between;align-items:baseline}
+.tile .t{font-size:10px;letter-spacing:1.2px;font-weight:800}.tile .big{font-size:22px;font-weight:800;letter-spacing:-.6px}
+.gauge{height:14px;border-radius:99px;background:var(--navbg);margin-top:10px;position:relative;overflow:hidden}
+.gauge .band{position:absolute;top:0;bottom:0}.gauge .mark{position:absolute;top:0;bottom:0;width:3px;background:var(--ink)}
+.note{font-size:11px;font-weight:700;margin-top:6px;line-height:1.5;opacity:.85}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{padding:7px 11px;border-radius:99px;font-size:11px;font-weight:800;background:var(--card);border:2px solid var(--bord)}
+.chip.on{background:var(--grn);color:#fff;border-color:var(--grn)}
+.goal{display:flex;gap:6px;margin-top:8px}
+.goal b{flex:1;text-align:center;padding:9px 0;border-radius:99px;font-size:11px;font-weight:800;background:var(--card);border:2px solid var(--bord)}
+.goal b.on{background:var(--navon);color:var(--navonT);border-color:var(--navon)}
+.zrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:2px solid var(--bord)}.zrow:last-child{border-bottom:0}
+.zbadge{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.zname{flex:1;font-size:14px;font-weight:800}.zr{font-size:11px;font-weight:700;color:var(--mut)}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:2px solid var(--bord)}.prow:last-child{border-bottom:0}
+.prow .seg2{display:flex;background:var(--navbg);border-radius:99px;padding:4px}.prow .seg2 b{padding:6px 14px;border-radius:99px;font-size:11px;font-weight:800;color:var(--mut)}.prow .seg2 b.on{background:var(--navon);color:var(--navonT)}
+.step{display:flex;align-items:center;gap:8px}.step .b{width:30px;height:30px;border-radius:10px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:16px}.step .vv{min-width:60px;text-align:center;font-size:15px;font-weight:800}
+.bbar{height:13px;border-radius:99px;background:var(--navbg);overflow:hidden;margin-top:5px}.bbar i{display:block;height:100%;border-radius:99px;background:var(--grn)}
+.macros{display:flex;gap:8px;margin-top:12px}.macros .m{flex:1;text-align:center}.macros .k{font-size:9px;letter-spacing:1px;font-weight:800;color:var(--mut)}.macros .pv{font-size:14px;font-weight:800;margin-top:2px}.macros .pv small{color:var(--mut);font-weight:700}.macros .t{height:6px;border-radius:99px;background:var(--navbg);margin-top:5px;overflow:hidden}.macros .t i{display:block;height:100%;border-radius:99px}
+.glasses{display:flex;flex-wrap:wrap;gap:6px;flex:1}.glasses i{width:20px;height:27px;border-radius:6px 6px 9px 9px;border:2px solid var(--bord);background:var(--navbg)}.glasses i.full{background:#9CCFE8;border-color:#6FB4D8}
+.wbtn{background:var(--navon);color:var(--navonT);border-radius:99px;padding:11px 16px;font-size:12px;font-weight:800}
+.meal{display:flex;align-items:center;gap:13px;background:var(--card);border:2px solid var(--bord);border-radius:24px;padding:12px}
+.mph{width:46px;height:46px;border-radius:15px}.meal .t{font-size:14px;font-weight:800}.meal .m{font-size:10px;color:var(--mut);font-weight:600;margin-top:2px}.meal .kc{margin-left:auto;font-size:15px;font-weight:800}
+.coach{background:var(--navon);border-radius:26px;padding:14px 16px;display:flex;gap:12px;color:var(--navonT)}.coach .ic{width:32px;height:32px;border-radius:50%;background:#F2C94C;display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}.coach p{font-size:12px;font-weight:600;line-height:1.5}
+</style></head><body>
+
+<!-- ===== BODY & METRICS (detailed) ===== -->
+<div class="frame" id="f1"><div class="cap">BODY &amp; METRICS · DETAILED</div>
+ <div class="row"><div class="bk">‹</div><div class="h1 flex1">Body</div><div class="seg"><b>Simple</b><b class="on">Detailed</b></div></div>
+ <div class="stats">
+  <div class="stat" style="background:var(--peach)"><div class="l" style="color:var(--peachT)">REST HR</div><div class="v">58<small>bpm</small></div></div>
+  <div class="stat" style="background:var(--lav)"><div class="l" style="color:var(--lavT)">HRV</div><div class="v">48<small>ms</small></div></div>
+  <div class="stat" style="background:var(--blue)"><div class="l" style="color:var(--blueT)">BLOOD O₂</div><div class="v">97<small>%</small></div></div>
+ </div>
+ <div class="lbl" style="margin-top:-2px">From your last overnight sync.</div>
+ <div class="tile" style="background:var(--gold)">
+  <div class="top"><div class="t" style="color:var(--goldT)">BODY MASS INDEX</div><div class="big" style="color:var(--goldT)">26.1 · Overweight</div></div>
+  <div class="gauge"><div class="band" style="left:14%;width:26%;background:var(--grn);opacity:.4"></div><div class="band" style="left:40%;width:20%;background:#E0A24E;opacity:.5"></div><div class="band" style="left:60%;width:40%;background:var(--danger);opacity:.4"></div><div class="mark" style="left:44%"></div></div>
+  <div class="note" style="color:var(--goldT)">BMI doesn’t account for muscle — a lean lifter can read high.</div>
+ </div>
+ <div class="lbl">ENERGY NEEDS</div>
+ <div class="tile" style="background:var(--gold)">
+  <div class="top"><div class="t" style="color:var(--goldT)">MAINTENANCE · MODERATE</div><div class="big" style="color:var(--goldT)">2,711 <small style="font-size:11px">kcal</small></div></div>
+  <div class="chips"><span class="chip">Sedentary</span><span class="chip">Light</span><span class="chip on">Moderate</span><span class="chip">Active</span><span class="chip">Athlete</span></div>
+  <div class="goal"><b class="on">Maintain</b><b>Lose</b><b>Gain</b></div>
+  <div class="top" style="margin-top:10px"><div style="font-size:14px;font-weight:800;color:var(--goldT)">Daily target</div><div class="big" style="color:var(--goldT)">2,711 <small style="font-size:11px">kcal</small></div></div>
+  <div class="note" style="color:var(--goldT)">An estimate (±10%) — trust your 2–3 week weight trend. This drives your Food budget.</div>
+ </div>
+ <div class="lbl">HEART-RATE ZONES · MAX 187 BPM</div>
+ <div class="card" style="padding:4px 16px">
+  <div class="zrow"><div class="zbadge" style="background:var(--blue);color:var(--blueT)">Z1</div><div class="zname">Recovery</div><div class="zr">94–112 bpm</div></div>
+  <div class="zrow"><div class="zbadge" style="background:var(--mint);color:var(--mintT)">Z2</div><div class="zname">Endurance</div><div class="zr">113–131 bpm</div></div>
+  <div class="zrow"><div class="zbadge" style="background:var(--gold);color:var(--goldT)">Z3</div><div class="zname">Tempo</div><div class="zr">132–150 bpm</div></div>
+  <div class="zrow"><div class="zbadge" style="background:var(--peach);color:var(--peachT)">Z4</div><div class="zname">Threshold</div><div class="zr">151–168 bpm</div></div>
+  <div class="zrow"><div class="zbadge" style="background:var(--pink);color:var(--pinkT)">Z5</div><div class="zname">VO₂ max</div><div class="zr">169–187 bpm</div></div>
+ </div>
+ <div class="lbl">YOUR BODY</div>
+ <div class="card" style="padding:2px 16px">
+  <div class="prow"><div style="font-size:14px;font-weight:800">Sex</div><div class="seg2"><b class="on">Male</b><b>Female</b></div></div>
+  <div class="prow"><div style="font-size:14px;font-weight:800">Height</div><div class="step"><div class="b">−</div><div class="vv">175 cm</div><div class="b">＋</div></div></div>
+  <div class="prow"><div style="font-size:14px;font-weight:800">Weight</div><div class="step"><div class="b">−</div><div class="vv">80 kg</div><div class="b">＋</div></div></div>
+ </div>
+</div>
+
+<!-- ===== FOOD (personalized macros + hydration) ===== -->
+<div class="frame" id="f2"><div class="cap">FOOD · PERSONALIZED BUDGET + MACROS + HYDRATION</div>
+ <div class="row"><div class="h1 flex1" style="font-size:24px">Food diary</div><div class="bk">A</div></div>
+ <div class="lbl" style="margin:-4px 2px 0">Thursday · budget 2,711 kcal · 🔥 12-day streak</div>
+ <div class="card">
+  <div class="top"><div style="font-size:21px;font-weight:800">1,084 <small style="font-size:11px;color:var(--mut);font-weight:700">/ 2,711 kcal</small></div><div style="font-size:12px;font-weight:800;color:var(--grnT)">1,627 left</div></div>
+  <div class="bbar"><i style="width:40%"></i></div>
+  <div class="macros">
+   <div class="m"><div class="k">PROTEIN</div><div class="pv">49<small>/128g</small></div><div class="t"><i style="width:38%;background:var(--grn)"></i></div></div>
+   <div class="m"><div class="k">CARBS</div><div class="pv">140<small>/381g</small></div><div class="t"><i style="width:37%;background:#E0A24E"></i></div></div>
+   <div class="m"><div class="k">FAT</div><div class="pv">32<small>/75g</small></div><div class="t"><i style="width:43%;background:#8E81D6"></i></div></div>
+  </div>
+ </div>
+ <div class="card">
+  <div class="lbl" style="margin:0 0 8px">WATER · 3 / 16 GLASSES · ~4.0 L</div>
+  <div class="row" style="gap:12px">
+   <div class="glasses"><i class="full"></i><i class="full"></i><i class="full"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+   <div class="wbtn">＋ Glass</div>
+  </div>
+ </div>
+ <div class="meal"><div class="mph" style="background:radial-gradient(20px at 40% 50%,#D9A45C,transparent),#7A4A1E"></div><div><div class="t">Dates &amp; laban</div><div class="m">7:12 AM · photo</div></div><div class="kc">310</div></div>
+ <div class="meal"><div class="mph" style="background:radial-gradient(120px 70px at 50% 50%,#8A4A22,#4A2A0E)"></div><div><div class="t">Kabsa with chicken</div><div class="m">1:42 PM · photo · 38g protein</div></div><div class="kc">642</div></div>
+ <div class="coach"><div class="ic">💬</div><p><b style="color:#F2C94C">79g protein to go.</b> Grilled chicken or laban closes the gap nicely.</p></div>
+</div>
+
+</body></html>
