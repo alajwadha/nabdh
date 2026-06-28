@@ -39,6 +39,7 @@ const DURATION: Record<string, number> = {
   deadlift: 1700, // pull from the floor to lockout and back
   ohp: 1400, // press from the shoulders to overhead
   rowing: 1900, // drive, swing and pull, then recover
+  cycling: 900, // one pedal revolution
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -46,6 +47,9 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
   const { colors } = useTheme();
   const fg = color ?? colors.accent;
   const bg = tint ?? colors.navBg;
+  // Equipment (bench, erg, bike frame) needs a mid-tone — `bg` matches the banner and
+  // would be invisible; `fg` is too heavy. textMuted reads as "apparatus" against navBg.
+  const equip = colors.textMuted;
   const reduced = useReducedMotion();
   const phase = useSharedValue(0);
 
@@ -76,13 +80,15 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
       ) : kind === 'squat' ? (
         <Squat phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'bench' ? (
-        <Bench phase={phase} size={size} fg={fg} bg={bg} />
+        <Bench phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'deadlift' ? (
         <Deadlift phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'ohp' ? (
         <Ohp phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'rowing' || kind === 'seatedrow' ? (
-        <Rowing phase={phase} size={size} fg={fg} bg={bg} />
+        <Rowing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'cycling' ? (
+        <Cycling phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -241,7 +247,7 @@ function Squat({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
 }
 
 // --- Bench press: a lying figure pressing a barbell up and lowering it to the chest ---
-function Bench({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+function Bench({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
   const press = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 chest → 1 locked out
   const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-60 - press(phase.value) * 20}deg` }] }; });
@@ -254,9 +260,9 @@ function Bench({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.1, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
       {/* bench: platform + legs */}
-      <View style={{ position: 'absolute', left: 22 * s, top: 81 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
-      <View style={{ position: 'absolute', left: 72 * s, top: 81 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
-      <View style={{ position: 'absolute', left: 16 * s, top: 74 * s, width: 66 * s, height: 7 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: 22 * s, top: 81 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 72 * s, top: 81 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 16 * s, top: 74 * s, width: 66 * s, height: 7 * s, borderRadius: 99, backgroundColor: equip }} />
       {/* lying lifter */}
       <View style={{ position: 'absolute', left: 12 * s, top: 58 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
       <View style={{ position: 'absolute', left: 26 * s, top: 66 * s, width: 38 * s, height: 10 * s, borderRadius: 99, backgroundColor: fg }} />
@@ -373,7 +379,7 @@ function rowHand(p: number, s: number): { x: number; y: number } {
 }
 
 // --- Rowing (erg): legs drive, torso swings back, arms pull — sequenced like a real stroke
-function Rowing({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+function Rowing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
   const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + rowE(phase.value, 0, 0.3, 0.7, 1) * 22}deg` }] }; });
   const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${36 - rowE(phase.value, 0, 0.3, 0.7, 1) * 40}deg` }] }; });
@@ -395,13 +401,13 @@ function Rowing({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
   return (
     <View style={{ width: size, height: size }}>
       {/* rail + flywheel + footplate + seat (static machine) */}
-      <View style={{ position: 'absolute', left: size * 0.07, right: size * 0.07, bottom: size * 0.15, height: 4 * s, borderRadius: 99, backgroundColor: bg }} />
-      <View style={{ position: 'absolute', left: 88 * s, top: 48 * s, width: 22 * s, height: 22 * s, borderRadius: 99, backgroundColor: bg }} />
-      <View style={{ position: 'absolute', left: 84 * s, top: 62 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
-      <View style={{ position: 'absolute', left: 34 * s, top: 74 * s, width: 18 * s, height: 6 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: size * 0.07, right: size * 0.07, bottom: size * 0.15, height: 4 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 88 * s, top: 48 * s, width: 22 * s, height: 22 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 84 * s, top: 62 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 34 * s, top: 74 * s, width: 18 * s, height: 6 * s, borderRadius: 99, backgroundColor: equip }} />
       {/* chain/cable: a Bone-style pivot at the flywheel with an animated-length bar to the handle */}
       <Animated.View style={[{ position: 'absolute', left: flyX, top: flyY, width: 0, height: 0 }, cableRot]}>
-        <Animated.View style={[{ position: 'absolute', left: 0, top: -1.5 * s, height: 3 * s, borderRadius: 99, backgroundColor: bg }, cableLen]} />
+        <Animated.View style={[{ position: 'absolute', left: 0, top: -1.5 * s, height: 3 * s, borderRadius: 99, backgroundColor: equip }, cableLen]} />
       </Animated.View>
       {/* legs extend from bent (catch) to straight (finish) */}
       <Bone x={hipX} y={hipY} len={24 * s} w={9 * s} color={fg} rot={thigh}>
@@ -418,6 +424,64 @@ function Rowing({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
           </Bone>
         </Bone>
       </Animated.View>
+    </View>
+  );
+}
+
+// Two-bar inverse kinematics: place a foot at (fx,fy) from a hip at (hx,hy) with thigh
+// L1 + shin L2. Returns the thigh's world angle and the shin angle RELATIVE to the thigh
+// (so they map straight onto nested Bones). `bend` (±1) picks which way the knee folds.
+function legIK(hx: number, hy: number, fx: number, fy: number, L1: number, L2: number, bend: number): { thigh: number; shinRel: number } {
+  'worklet';
+  const dx = fx - hx, dy = fy - hy;
+  let d = Math.sqrt(dx * dx + dy * dy);
+  const base = Math.atan2(dy, dx);
+  d = Math.min(d, L1 + L2 - 0.01); // clamp to reachable
+  let c = (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d);
+  c = Math.max(-1, Math.min(1, c));
+  const A = Math.acos(c);
+  const td = base + bend * A;
+  const kx = hx + L1 * Math.cos(td), ky = hy + L1 * Math.sin(td);
+  const sd = Math.atan2(fy - ky, fx - kx);
+  return { thigh: (td * 180) / Math.PI, shinRel: ((sd - td) * 180) / Math.PI };
+}
+
+// --- Cycling: a rider whose feet orbit the crank — legs solved by IK to follow the pedals
+function Cycling({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const cx = 58 * s, cy = 72 * s, r = 11 * s; // crank centre + radius
+  const hx = 44 * s, hy = 48 * s, L1 = 22 * s, L2 = 22 * s; // hip on the saddle, leg lengths
+  const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
+  // each leg's foot orbits the crank; IK solves thigh + shin to keep the foot on the pedal
+  const thighA = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).thigh}deg` }] }; });
+  const shinA = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).shinRel}deg` }] }; });
+  const thighB = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).thigh}deg` }] }; });
+  const shinB = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).shinRel}deg` }] }; });
+  const foot = { position: 'absolute' as const, left: 18 * s, top: -2 * s, width: 11 * s, height: 6 * s, borderRadius: 3 * s, backgroundColor: fg };
+  const wheel = (left: number) => ({ position: 'absolute' as const, left, top: 71 * s, width: 30 * s, height: 30 * s, borderRadius: 99, borderWidth: 4 * s, borderColor: equip });
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* bike: wheels, frame tubes, crank (mid-tone so it reads as apparatus) */}
+      <View style={wheel(11 * s)} />
+      <View style={wheel(75 * s)} />
+      <Bone x={58 * s} y={72 * s} len={35 * s} w={4 * s} color={equip} rot={stat(156)} />
+      <Bone x={58 * s} y={72 * s} len={28 * s} w={4 * s} color={equip} rot={stat(-120)} />
+      <Bone x={58 * s} y={72 * s} len={34 * s} w={4 * s} color={equip} rot={stat(-50)} />
+      <Bone x={80 * s} y={46 * s} len={41 * s} w={4 * s} color={equip} rot={stat(76)} />
+      <Bone x={44 * s} y={48 * s} len={36 * s} w={4 * s} color={equip} rot={stat(-3)} />
+      <View style={{ position: 'absolute', left: 55 * s, top: 69 * s, width: 7 * s, height: 7 * s, borderRadius: 99, backgroundColor: equip }} />
+      {/* far leg (behind the frame) */}
+      <Bone x={hx} y={hy} len={22 * s} w={8 * s} color={fg} rot={thighB}>
+        <Bone x={0} y={0} len={22 * s} w={8 * s} color={fg} rot={shinB}><View style={foot} /></Bone>
+      </Bone>
+      {/* rider: torso leaning to the bars, head, arm */}
+      <Bone x={44 * s} y={48 * s} len={22 * s} w={9 * s} color={fg} rot={stat(-34)} />
+      <View style={{ position: 'absolute', left: 56 * s, top: 22 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
+      <Bone x={62 * s} y={35 * s} len={20 * s} w={7 * s} color={fg} rot={stat(40)} />
+      {/* near leg */}
+      <Bone x={hx} y={hy} len={22 * s} w={8 * s} color={fg} rot={thighA}>
+        <Bone x={0} y={0} len={22 * s} w={8 * s} color={fg} rot={shinA}><View style={foot} /></Bone>
+      </Bone>
     </View>
   );
 }

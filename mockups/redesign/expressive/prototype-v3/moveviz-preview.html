@@ -28,6 +28,28 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 /* emoji-pulse fallback — the sport's own emoji, gently pulsing */
 .pulse{font-size:48px;animation:pulse 1.1s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+/* cycling: figure on a bike, IK legs on the pedals (static frame: 2 pedal positions) */
+.cy{position:relative;width:116px;height:116px}
+.cy b{position:absolute;border-radius:99px;background:var(--grn)}
+.cy .tube{position:absolute;height:4px;background:var(--mut);transform-origin:left center;border-radius:99px}
+.cy .wheel{position:absolute;border:4px solid var(--mut);border-radius:99px}
+.cy .wR{left:11px;top:71px;width:30px;height:30px}
+.cy .wF{left:75px;top:71px;width:30px;height:30px}
+.cy .chainstay{left:58px;top:72px;width:35px;transform:rotate(156deg)}
+.cy .seattube{left:58px;top:72px;width:28px;transform:rotate(-120deg)}
+.cy .downtube{left:58px;top:72px;width:34px;transform:rotate(-50deg)}
+.cy .fork{left:80px;top:46px;width:41px;transform:rotate(76deg)}
+.cy .toptube{left:44px;top:48px;width:36px;transform:rotate(-3deg)}
+.cy .crank{left:55px;top:69px;width:7px;height:7px;background:var(--mut)}
+.cy .head{left:56px;top:22px;width:15px;height:15px}
+.cy .torso{left:44px;top:48px;width:22px;height:9px;transform-origin:left center;transform:rotate(-34deg)}
+.cy .arm{left:62px;top:32px;width:20px;height:7px;transform-origin:left center;transform:rotate(40deg)}
+.cy .thighA{left:44px;top:48px;width:22px;height:8px;transform-origin:left center;transform:rotate(25deg)}
+.cy .shinA{left:22px;top:0;width:22px;height:8px;transform-origin:left center;transform:rotate(59deg)}
+.cy .footA{left:18px;top:-2px;width:11px;height:6px;border-radius:3px}
+.cy .thighB{left:44px;top:48px;width:22px;height:8px;transform-origin:left center;transform:rotate(6deg)}
+.cy .shinB{left:22px;top:0;width:22px;height:8px;transform-origin:left center;transform:rotate(132deg)}
+.cy .footB{left:18px;top:-2px;width:11px;height:6px;border-radius:3px}
 /* rowing (erg): seated, leaning back at the finish, handle pulled to the chest */
 .row{position:relative;width:116px;height:116px}
 .row b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -107,20 +129,9 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
 </style></head><body>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · DEADLIFT</div>
- <div class="stage"><div class="dl">
-  <b class="ground"></b>
-  <b class="thigh"><b class="shin"></b></b>
-  <b class="torso"></b><b class="head"></b>
-  <b class="arm"></b><b class="bar"></b><b class="plL"></b><b class="plR"></b>
- </div></div>
- <div class="name">🏋️ Deadlift</div>
-</div>
-<div class="card">
  <div class="lbl">WORKOUT · GYM · OVERHEAD PRESS</div>
  <div class="stage"><div class="ohp">
-  <b class="ground"></b>
-  <b class="legF"></b><b class="legB"></b>
+  <b class="ground"></b><b class="legF"></b><b class="legB"></b>
   <b class="torso"></b><b class="head"></b>
   <b class="uarm"><b class="farm"><b class="bar"></b><b class="plL"></b><b class="plR"></b></b></b>
  </div></div>
@@ -135,6 +146,18 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   <b class="uarm"><b class="farm"><b class="handle"></b></b></b>
  </div></div>
  <div class="name">🚣 Rowing</div>
+</div>
+<div class="card">
+ <div class="lbl">WORKOUT · SPORT · CYCLING</div>
+ <div class="stage"><div class="cy">
+  <div class="wheel wR"></div><div class="wheel wF"></div>
+  <div class="tube chainstay"></div><div class="tube seattube"></div><div class="tube downtube"></div><div class="tube fork"></div><div class="tube toptube"></div>
+  <b class="crank"></b>
+  <b class="thighB"><b class="shinB"><b class="footB"></b></b></b>
+  <b class="torso"></b><b class="head"></b><b class="arm"></b>
+  <b class="thighA"><b class="shinA"><b class="footA"></b></b></b>
+ </div></div>
+ <div class="name">🚴 Cycling</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>
