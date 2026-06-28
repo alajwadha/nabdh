@@ -6,7 +6,8 @@ import { CoachCard } from '../../src/components/Dashboard';
 import { radii, spacing } from '../../src/design-system';
 import { useTheme } from '../../src/design-system/theme';
 import { useAppState } from '../../src/store/app';
-import { DEMO_IDENTITY } from '../../src/integrations/demo';
+import { useHealth } from '../../src/store/health';
+import { DEMO_IDENTITY, DEMO_SUMMARY } from '../../src/integrations/demo';
 import { weekdayName } from '../../src/data/derive';
 import { proteinPerKgTarget, fiberTarget, macroEnergySplit } from '../../src/data/health-metrics';
 
@@ -15,9 +16,18 @@ const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 export default function Food() {
   const { colors, tiles } = useTheme();
   const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget, body } = useAppState();
+  const { summary } = useHealth();
+  const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [detailed, setDetailed] = useState(false);
   const left = Math.max(0, budget - kcal);
   const shownWater = Math.min(water, waterGoal); // a lowered goal can't show a maxed-out bar
+
+  // Measured energy out today = basal + active (active is incremental over basal,
+  // so no double-counting). Only when both device fields exist. We deliberately do
+  // NOT compute a net "deficit" here: intake accrues all day while burn is whole-day,
+  // so any midday net is structurally a large deficit — misleading. We show the
+  // measured figures and let the deficit settle by bedtime.
+  const burn = s && s.basalEnergyKcal != null && s.activeEnergyKcal != null ? s.basalEnergyKcal + s.activeEnergyKcal : null;
 
   // Nutrition detail — all from real consumed macros + the body profile.
   const proteinPerKg = body.weightKg > 0 ? Math.round((macros.protein / body.weightKg) * 10) / 10 : 0;
@@ -79,6 +89,25 @@ export default function Food() {
           ))}
         </View>
       </Card>
+
+      {detailed && burn != null && (
+        <Card>
+          <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 8 }}>TODAY’S ENERGY · MEASURED</AppText>
+          <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+            <View style={{ flex: 1, alignItems: 'center', backgroundColor: tiles.gold.bg, borderRadius: radii.lg, paddingVertical: 12 }}>
+              <AppText variant="caption" color={tiles.gold.ink} style={{ fontSize: 9, letterSpacing: 1 }}>EATEN SO FAR</AppText>
+              <AppText variant="h2" color={tiles.gold.ink} style={{ fontSize: 19 }}>{kcal.toLocaleString()}</AppText>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', backgroundColor: tiles.blue.bg, borderRadius: radii.lg, paddingVertical: 12 }}>
+              <AppText variant="caption" color={tiles.blue.ink} style={{ fontSize: 9, letterSpacing: 1 }}>BURNED</AppText>
+              <AppText variant="h2" color={tiles.blue.ink} style={{ fontSize: 19 }}>{burn.toLocaleString()}</AppText>
+            </View>
+          </View>
+          <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
+            Burned = basal {s!.basalEnergyKcal!.toLocaleString()} + active {s!.activeEnergyKcal!.toLocaleString()}, measured by your device today. The gap becomes your deficit or surplus once the day’s done — your plan targets {budget.toLocaleString()} kcal in.
+          </AppText>
+        </Card>
+      )}
 
       {detailed && (
         <Card>
