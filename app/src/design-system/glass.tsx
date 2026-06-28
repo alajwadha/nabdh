@@ -35,6 +35,7 @@ export function Glass({ children, style, radius = radii.xl, intensity, scrim = '
   const dark = mode === 'dark';
   const tint = dark ? 'dark' : 'light';
   // A thin colour wash over the blur keeps text readable regardless of what's behind it.
+  // (Only affects the BLUR path; the solid fallback is always near-opaque.)
   const fillAlpha = scrim === 'strong' ? (dark ? 0.55 : 0.6) : dark ? 0.32 : 0.4;
   const fill = dark ? `rgba(28,24,18,${fillAlpha})` : `rgba(255,251,244,${fillAlpha})`;
   const edge = dark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.6)';

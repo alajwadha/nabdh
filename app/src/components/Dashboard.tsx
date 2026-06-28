@@ -5,6 +5,7 @@ import { AppText } from '../design-system/components';
 import { radii, spacing, type TileColor } from '../design-system';
 import { useTheme } from '../design-system/theme';
 import { PRAYERS, shortLabel } from '../data/prayer';
+import { Glass } from '../design-system/glass';
 import { EnergyCurve } from './Charts';
 
 /** A colored hero card (used by the insight carousel and elsewhere). */
@@ -126,22 +127,25 @@ export function PrayerStrip({
 }) {
   const { colors } = useTheme();
   // Single source of truth — same prayer times the planner and fasting timer read.
+  // A frosted-glass strip (chrome, not dense data) so it reads as a floating layer.
   return (
-    <View style={{ flexDirection: 'row', gap: 6, backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.lg, padding: 8 }}>
-      {PRAYERS.map((p) => {
-        const on = p.key === highlight;
-        return (
-          <View key={p.key} style={{ flex: 1, alignItems: 'center', borderRadius: radii.sm, paddingVertical: 7, backgroundColor: on ? colors.accent : 'transparent' }}>
-            <AppText variant="caption" color={on ? '#fff' : colors.textMuted} style={{ fontSize: 9, letterSpacing: 0.6 }}>
-              {p.label.toUpperCase()}
-            </AppText>
-            <AppText variant="caption" color={on ? '#fff' : colors.ink} style={{ fontSize: 11.5, marginTop: 3 }}>
-              {shortLabel(p.time)}
-            </AppText>
-          </View>
-        );
-      })}
-    </View>
+    <Glass radius={radii.lg} intensity={28} scrim="strong">
+      <View style={{ flexDirection: 'row', gap: 6, padding: 8 }}>
+        {PRAYERS.map((p) => {
+          const on = p.key === highlight;
+          return (
+            <View key={p.key} style={{ flex: 1, alignItems: 'center', borderRadius: radii.sm, paddingVertical: 7, backgroundColor: on ? colors.accent : 'transparent' }}>
+              <AppText variant="caption" color={on ? '#fff' : colors.textSecondary} style={{ fontSize: 9, letterSpacing: 0.6 }}>
+                {p.label.toUpperCase()}
+              </AppText>
+              <AppText variant="caption" color={on ? '#fff' : colors.ink} style={{ fontSize: 11.5, marginTop: 3 }}>
+                {shortLabel(p.time)}
+              </AppText>
+            </View>
+          );
+        })}
+      </View>
+    </Glass>
   );
 }
 

@@ -6,15 +6,26 @@ import { useTheme } from '../design-system/theme';
 import { useAppState } from '../store/app';
 import { useIdentity } from '../data/identity';
 import { Icon, type IconName } from './Icon';
+import { Glass } from '../design-system/glass';
 
 function HBtn({ icon, active, onPress }: { icon: IconName; active?: boolean; onPress: () => void }) {
   const { colors } = useTheme();
+  // Active = solid accent (a clear toggle state); inactive = a frosted-glass control that
+  // echoes the glass tab bar.
+  if (active) {
+    return (
+      <Pressable onPress={onPress} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name={icon} size={19} color="#fff" />
+      </Pressable>
+    );
+  }
   return (
-    <Pressable
-      onPress={onPress}
-      style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: active ? colors.accent : colors.navBg, alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Icon name={icon} size={19} color={active ? '#fff' : colors.ink} />
+    <Pressable onPress={onPress}>
+      <Glass radius={radii.md} intensity={26} scrim="subtle" floating={false} style={{ width: 38, height: 38 }}>
+        <View style={{ width: 38, height: 38, alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name={icon} size={19} color={colors.ink} />
+        </View>
+      </Glass>
     </Pressable>
   );
 }
