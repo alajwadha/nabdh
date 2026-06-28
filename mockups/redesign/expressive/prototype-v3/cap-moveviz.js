@@ -4,7 +4,7 @@ const path = require('path');
   const dir = path.join(__dirname);
   const browser = await puppeteer.launch({ headless:'new', args:['--no-sandbox','--disable-gpu','--force-color-profile=srgb'] });
   const page = await browser.newPage();
-  await page.setViewport({ width: 2360, height: 280, deviceScaleFactor: 2 });
+  await page.setViewport({ width: 1700, height: 300, deviceScaleFactor: 2 });
   await page.goto('file://'+path.join(dir,'moveviz-preview.html'), { waitUntil:'networkidle0' });
   // let the animation reach a clear mid-stride frame
   await page.evaluate(() => new Promise(r => requestAnimationFrame(() => setTimeout(r, 190))));

@@ -38,6 +38,7 @@ const DURATION: Record<string, number> = {
   bench: 1400, // press up and lower to the chest
   deadlift: 1700, // pull from the floor to lockout and back
   ohp: 1400, // press from the shoulders to overhead
+  rowing: 1900, // drive, swing and pull, then recover
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -80,6 +81,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Deadlift phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'ohp' ? (
         <Ohp phase={phase} size={size} fg={fg} bg={bg} />
+      ) : kind === 'rowing' || kind === 'seatedrow' ? (
+        <Rowing phase={phase} size={size} fg={fg} bg={bg} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -343,6 +346,51 @@ function Ohp({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number
           </Animated.View>
         </Bone>
       </Bone>
+    </View>
+  );
+}
+
+// --- Rowing (erg): legs drive, torso swings back, arms pull the handle to the chest --
+function Rowing({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
+  const s = size / 116;
+  const st = (v: number) => (1 - Math.cos(v * 2 * Math.PI)) / 2; // 0 catch → 1 finish
+  const A0 = -124; // torso angle at the (authored) finish
+  const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-100 - st(phase.value) * 24}deg` }] }; });
+  const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + st(phase.value) * 22}deg` }] }; });
+  const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${36 - st(phase.value) * 40}deg` }] }; });
+  const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${20 - st(phase.value) * 28}deg` }] }; });
+  const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + st(phase.value) * 54}deg` }] }; });
+  // head + arm follow the shoulder as the torso swings (authored at the finish lean)
+  const upper = useAnimatedStyle(() => {
+    'worklet';
+    const a0 = (A0 * Math.PI) / 180;
+    const a = ((-100 - st(phase.value) * 24) * Math.PI) / 180;
+    const L = 30 * s;
+    return { transform: [{ translateX: L * (Math.cos(a) - Math.cos(a0)) }, { translateY: L * (Math.sin(a) - Math.sin(a0)) }] };
+  });
+  const hipX = 44 * s, hipY = 70 * s;
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* rail + flywheel + footplate + seat (static machine) */}
+      <View style={{ position: 'absolute', left: size * 0.07, right: size * 0.07, bottom: size * 0.15, height: 4 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: 88 * s, top: 48 * s, width: 22 * s, height: 22 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: 84 * s, top: 62 * s, width: 6 * s, height: 18 * s, borderRadius: 99, backgroundColor: bg }} />
+      <View style={{ position: 'absolute', left: 34 * s, top: 74 * s, width: 18 * s, height: 6 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* legs extend from bent (catch) to straight (finish) */}
+      <Bone x={hipX} y={hipY} len={24 * s} w={9 * s} color={fg} rot={thigh}>
+        <Bone x={0} y={0} len={20 * s} w={9 * s} color={fg} rot={shin} />
+      </Bone>
+      {/* torso swing from the hip */}
+      <Bone x={hipX} y={hipY} len={30 * s} w={10 * s} color={fg} rot={torso} />
+      {/* head + pulling arm, following the shoulder */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, upper]}>
+        <View style={{ position: 'absolute', left: 20 * s, top: 30 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+        <Bone x={30 * s} y={46 * s} len={14 * s} w={8 * s} color={fg} rot={uarm}>
+          <Bone x={0} y={0} len={15 * s} w={8 * s} color={fg} rot={farm}>
+            <View style={{ position: 'absolute', left: -2 * s, top: -8 * s, width: 6 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+          </Bone>
+        </Bone>
+      </Animated.View>
     </View>
   );
 }
