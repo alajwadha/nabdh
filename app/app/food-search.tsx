@@ -79,7 +79,7 @@ export default function FoodSearch() {
           autoCorrect={false}
           autoCapitalize="none"
           returnKeyType="search"
-          style={{ flex: 1, color: colors.ink, fontSize: 15, fontWeight: '500' }}
+          style={{ flex: 1, color: colors.ink, fontSize: 15, fontFamily: 'Jakarta-Medium' }}
         />
         {q.length > 0 && (
           <Pressable onPress={() => setQ('')} hitSlop={8}>

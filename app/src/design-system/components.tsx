@@ -43,23 +43,59 @@ export function Screen({
   );
 }
 
-/** AppText: typographic variants, themed color, RTL-aware. */
+// Per-weight font families. Latin = Plus Jakarta Sans, Arabic = Tajawal (both geometric
+// humanist sans, so they pair cleanly). A specific-weight font file means fontWeight is
+// encoded in the family, so we resolve the family from the effective weight.
+const LATIN_FAMILY: Record<string, string> = { '400': 'Jakarta-Medium', '500': 'Jakarta-Medium', '600': 'Jakarta-Bold', '700': 'Jakarta-Bold', '800': 'Jakarta-ExtraBold', '900': 'Jakarta-ExtraBold' };
+const ARABIC_FAMILY: Record<string, string> = { '400': 'Tajawal-Regular', '500': 'Tajawal-Medium', '600': 'Tajawal-Bold', '700': 'Tajawal-Bold', '800': 'Tajawal-ExtraBold', '900': 'Tajawal-ExtraBold' };
+const ARABIC_RE = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+
+function containsArabic(node: ReactNode): boolean {
+  if (node == null || typeof node === 'boolean' || typeof node === 'number') return false;
+  if (typeof node === 'string') return ARABIC_RE.test(node);
+  if (Array.isArray(node)) return node.some(containsArabic);
+  const ch = (node as { props?: { children?: ReactNode } })?.props?.children;
+  return ch != null ? containsArabic(ch) : false;
+}
+
+// Last fontWeight found in a (possibly nested/array) style prop.
+function weightFromStyle(style: TextProps['style']): string | undefined {
+  if (!style) return undefined;
+  if (Array.isArray(style)) {
+    for (let i = style.length - 1; i >= 0; i--) {
+      const w = weightFromStyle(style[i] as TextProps['style']);
+      if (w) return w;
+    }
+    return undefined;
+  }
+  const w = (style as TextStyle).fontWeight;
+  return w != null ? String(w) : undefined;
+}
+
+/** AppText: typographic variants, themed color, RTL-aware, real fonts (Latin + Arabic). */
 export function AppText({
   variant = 'body',
   color,
   style,
+  children,
   ...rest
 }: TextProps & { variant?: TextVariant; color?: string }) {
   const { colors } = useTheme();
+  const base = typography[variant] as TextStyle;
+  const weight = weightFromStyle(style) ?? String(base.fontWeight ?? '500');
+  const arabic = containsArabic(children);
+  const fontFamily = (arabic ? ARABIC_FAMILY : LATIN_FAMILY)[weight] ?? (arabic ? 'Tajawal-Regular' : 'Jakarta-Medium');
   return (
     <Text
       {...rest}
       style={[
-        typography[variant] as TextStyle,
-        { color: color ?? colors.ink, writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
+        base,
+        { color: color ?? colors.ink, fontFamily, writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
         style,
       ]}
-    />
+    >
+      {children}
+    </Text>
   );
 }
 
