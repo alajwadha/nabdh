@@ -104,7 +104,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [water, setWater] = useState(3);
   const [meals, setMeals] = useState<Meal[]>(DEFAULT_MEALS);
   const [body, setBodyState] = useState<Body>(DEFAULT_BODY);
-  const waterGoal = hydrationGlasses(body.weightKg);
+  // Saudi-first: scale hydration by activity and assume Gulf heat by default.
+  const waterGoal = hydrationGlasses(body.weightKg, resolveActivityFactor(body.activity), true);
 
   useEffect(() => {
     AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body']).then((pairs) => {

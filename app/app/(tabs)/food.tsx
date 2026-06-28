@@ -14,6 +14,7 @@ export default function Food() {
   const { colors, tiles } = useTheme();
   const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget } = useAppState();
   const left = Math.max(0, budget - kcal);
+  const shownWater = Math.min(water, waterGoal); // a lowered goal can't show a maxed-out bar
 
   const macroRows: [string, number, keyof typeof MACRO_COLORS][] = [
     ['PROTEIN', macros.protein, 'protein'],
@@ -62,14 +63,14 @@ export default function Food() {
 
       <Card>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4 }}>
-          WATER · GOAL {waterGoal} GLASSES (~{((waterGoal * 250) / 1000).toFixed(1)} L)
+          WATER · {shownWater} / {waterGoal} GLASSES · ~{((waterGoal * 250) / 1000).toFixed(1)} L
         </AppText>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, flex: 1 }}>
             {Array.from({ length: waterGoal }).map((_, i) => (
               <View
                 key={i}
-                style={{ width: 20, height: 27, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderBottomLeftRadius: 9, borderBottomRightRadius: 9, borderWidth: 2, backgroundColor: i < water ? '#9CCFE8' : colors.navBg, borderColor: i < water ? '#6FB4D8' : colors.border }}
+                style={{ width: 20, height: 27, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderBottomLeftRadius: 9, borderBottomRightRadius: 9, borderWidth: 2, backgroundColor: i < shownWater ? '#9CCFE8' : colors.navBg, borderColor: i < shownWater ? '#6FB4D8' : colors.border }}
               />
             ))}
           </View>

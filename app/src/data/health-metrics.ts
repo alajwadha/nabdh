@@ -94,9 +94,15 @@ export function relativeStrength(e1rm: number, bodyweightKg: number): number {
   return bodyweightKg > 0 ? Math.round((e1rm / bodyweightKg) * 100) / 100 : 0;
 }
 
-/** Daily water goal in 250 ml glasses (~35 ml/kg), clamped to a sane 6–14. */
-export function hydrationGlasses(weightKg: number): number {
-  return Math.max(6, Math.min(14, Math.round((weightKg * 35) / 250)));
+/**
+ * Daily water goal in 250 ml glasses. Base ~35 ml/kg, +~3 ml/kg per activity
+ * level above sedentary, +25% for Gulf heat — because a flat temperate constant
+ * under-serves an active user training outdoors in a Saudi summer. Clamped 6–16.
+ */
+export function hydrationGlasses(weightKg: number, activityFactor = 1.2, hot = false): number {
+  const perKg = 35 + ((activityFactor - 1.2) / 0.175) * 3;
+  const ml = weightKg * perKg * (hot ? 1.25 : 1);
+  return Math.max(6, Math.min(16, Math.round(ml / 250)));
 }
 
 export function bmi(weightKg: number, heightCm: number): { value: number; band: string } {
