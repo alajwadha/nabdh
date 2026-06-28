@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { AppText, Card, Screen } from '../../src/design-system/components';
 import { AppHeader } from '../../src/components/AppHeader';
@@ -20,6 +21,18 @@ export default function Food() {
   const { summary } = useHealth();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [detailed, setDetailed] = useState(false);
+
+  // The "Add water" home-screen / voice shortcut deep-links here with ?quickWater=1.
+  // Log the glass once, then it's a normal visit.
+  const { quickWater } = useLocalSearchParams<{ quickWater?: string }>();
+  const loggedQuick = useRef(false);
+  useEffect(() => {
+    if (quickWater && !loggedQuick.current) {
+      loggedQuick.current = true;
+      addWater();
+    }
+  }, [quickWater, addWater]);
+
   const left = Math.max(0, budget - kcal);
   const shownWater = Math.min(water, waterGoal); // a lowered goal can't show a maxed-out bar
 

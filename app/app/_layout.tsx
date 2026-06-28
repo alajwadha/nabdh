@@ -14,6 +14,7 @@ import { HealthLogsProvider } from '../src/store/health-logs';
 import { CycleProvider } from '../src/store/cycle';
 import { MindfulProvider } from '../src/store/mindful';
 import { SocialProvider } from '../src/store/social';
+import { initialHref, subscribe } from '../src/services/quickActions';
 import '../src/i18n';
 
 const AUTH_ROUTES = ['sign-in', 'phone'];
@@ -36,7 +37,15 @@ function useProtectedRoute() {
 function RootNavigator() {
   const { loading } = useAuth();
   const { mode, colors: c } = useTheme();
+  const router = useRouter();
   useProtectedRoute();
+
+  // Route home-screen quick actions (long-press the app icon) to their deep links.
+  useEffect(() => {
+    const href = initialHref();
+    if (href) router.navigate(href as never);
+    return subscribe((h) => router.navigate(h as never));
+  }, [router]);
 
   if (loading) {
     return (
