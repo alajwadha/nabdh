@@ -22,6 +22,7 @@ import { useAuth } from '../../src/auth/AuthProvider';
 import { useHealth } from '../../src/store/health';
 import { useAppState, type MetricKey } from '../../src/store/app';
 import { ALL_METRICS, METRICS, METRIC_ICON } from '../../src/data/metrics';
+import { adjustForReadiness } from '../../src/data/workouts';
 import { useIdentity } from '../../src/data/identity';
 import { fetchGoogleHealthToday } from '../../src/integrations/googleHealth';
 import { isAvailable } from '../../src/integrations/healthkit';
@@ -68,6 +69,9 @@ export default function Today() {
   }
 
   const readiness = computeReadiness(summary) ?? 64;
+  const advice = adjustForReadiness(readiness);
+  const adviceTile =
+    advice.tone === 'rest' ? tilePalette.pink : advice.tone === 'easy' ? tilePalette.gold : advice.tone === 'push' ? tilePalette.mint : tilePalette.blue;
   const tileValue = (k: MetricKey) => {
     const def = METRICS[k];
     const v = def.read?.(summary);
@@ -138,6 +142,17 @@ export default function Today() {
       </TileGrid>
 
       <EnergyMini onPress={() => setDetailKey('cals')} />
+
+      {/* readiness-adjusted training CTA → Workout screen */}
+      <Pressable onPress={() => router.navigate('/workout')} style={{ backgroundColor: adviceTile.bg, borderRadius: radii.xl, padding: spacing.lg }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <AppText variant="caption" color={adviceTile.ink} style={{ letterSpacing: 1.2 }}>TRAIN TODAY · READINESS {readiness}</AppText>
+          <AppText variant="title" color={adviceTile.ink}>{advice.label} ›</AppText>
+        </View>
+        <AppText variant="caption" color={adviceTile.ink} style={{ fontWeight: '600', marginTop: 5, lineHeight: 17 }}>
+          {advice.note}
+        </AppText>
+      </Pressable>
 
       <PlanList items={plan} onToggle={toggleTask} labelFor={(k) => t(k)} anchorFor={(k) => t(k)} />
 
