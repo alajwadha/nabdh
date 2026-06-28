@@ -440,7 +440,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 
    <!-- TODAY -->
    <section class="view" id="view-today">
-    <div class="greet anim" id="greet" style="--d:.05s">Easy does it<br>today, <i>Ali.</i></div>
+    <div class="greet anim" id="greet" style="--d:.05s">Strong start<br>today, <i>Ali.</i></div>
 
     <!-- ramadan banner (hidden unless mode on) -->
     <div class="ramadan anim" id="ramBanner" style="--d:.1s;display:none"><div class="bub"></div>
@@ -454,8 +454,8 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
       <div class="slide" data-act="readiness">
        <div class="hero hgrn"><div class="bub"></div>
         <div class="top"><div class="n" id="readiness">0</div>
-         <div><div class="l">READINESS</div><div class="bd">HRV dipped a third night — recovery beats grind today.</div>
-          <div class="segs"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div></div>
+         <div><div class="l">READINESS</div><div class="bd">Sleep and resting HR are strong — green light to push today.</div>
+          <div class="segs"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div></div>
        </div>
       </div>
       <div class="slide" data-act="hrv">
@@ -781,7 +781,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
  // readiness count-up
  var counted=false;
  function countUp(){if(counted)return;counted=true;var el=document.getElementById('readiness'),t0=performance.now();
-  (function tick(t){var p=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*64);if(p<1)requestAnimationFrame(tick);})(t0);}
+  (function tick(t){var p=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*82);if(p<1)requestAnimationFrame(tick);})(t0);}
  // food budget
  var kcal=1412,BUDGET=1900;
  function paintBudget(){document.getElementById('kcal').textContent=kcal.toLocaleString();
@@ -1108,16 +1108,14 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
  }
  function readinessDetail(){
   dbody.innerHTML=
-   '<div class="dhead"><div class="t">Readiness 64 — why?</div><div class="s">Score contributors · what\'s helping and what\'s hurting</div></div>'
+   '<div class="dhead"><div class="t">Readiness 82 — why?</div><div class="s">The exact signals behind your score · sleep 40% · resting HR 30% · HRV 30%</div></div>'
    +'<div class="card" style="padding:8px 18px;margin:14px 0 12px">'
-    +'<div class="crow"><span class="k">Sleep</span><div class="cb"><i style="width:84%;background:var(--grn)"></i></div><span class="cv" style="color:var(--grnT)">Good ▲</span></div>'
-    +'<div class="crow"><span class="k">HRV balance</span><div class="cb"><i style="width:34%;background:#C26B4A"></i></div><span class="cv" style="color:#C26B4A">Attention ▼</span></div>'
-    +'<div class="crow"><span class="k">Resting HR</span><div class="cb"><i style="width:42%;background:#C26B4A"></i></div><span class="cv" style="color:#C26B4A">Elevated ▼</span></div>'
-    +'<div class="crow"><span class="k">Activity load</span><div class="cb"><i style="width:76%;background:var(--grn)"></i></div><span class="cv" style="color:var(--grnT)">Light ✓</span></div>'
-    +'<div class="crow"><span class="k">Consistency</span><div class="cb"><i style="width:60%;background:#E0B070"></i></div><span class="cv" style="color:#B98A2F">Fair —</span></div>'
+    +'<div class="crow"><span class="k">Sleep<small style="display:block;font-size:10px;opacity:.6">7h 17m</small></span><div class="cb"><i style="width:97%;background:var(--grn)"></i></div><span class="cv" style="color:var(--grnT)">+39 · Strong ▲</span></div>'
+    +'<div class="crow"><span class="k">Resting HR<small style="display:block;font-size:10px;opacity:.6">58 bpm</small></span><div class="cb"><i style="width:75%;background:var(--grn)"></i></div><span class="cv" style="color:var(--grnT)">+23 · Strong ▲</span></div>'
+    +'<div class="crow"><span class="k">HRV<small style="display:block;font-size:10px;opacity:.6">48 ms</small></span><div class="cb"><i style="width:69%;background:#E0B070"></i></div><span class="cv" style="color:#B98A2F">+21 · Fair —</span></div>'
    +'</div>'
    +'<button class="breath">🫁 1-minute recovery breath</button>'
-   +'<div class="coach"><div class="cic">💡</div><p><b>The verdict</b> — sleep is carrying the score; your nervous system is dragging it down. One easy day + an early night usually returns you to the mid-70s.</p></div>';
+   +'<div class="coach"><div class="cic">💡</div><p><b>The verdict</b> — sleep is leading and nothing\'s dragging hard — keep the rhythm steady.</p></div>';
  }
  function openDetail(key){
   if(key==='readiness')readinessDetail();
@@ -1231,7 +1229,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
   document.getElementById('ramadan').classList.toggle('on',on);
   document.getElementById('ramBanner').style.display=on?'block':'none';
   document.getElementById('ramState').textContent=on?'On':'Off';
-  document.getElementById('greet').innerHTML=on?'Ramadan mubarak,<br><i>Ali.</i>':'Easy does it<br>today, <i>Ali.</i>';
+  document.getElementById('greet').innerHTML=on?'Ramadan mubarak,<br><i>Ali.</i>':'Strong start<br>today, <i>Ali.</i>';
   // emphasise iftar in prayer strip
   var prs=document.querySelectorAll('#prayers .pr');prs.forEach(function(p){p.classList.remove('now')});
   if(on){prs[3].classList.add('now');}else{prs[2].classList.add('now');}

@@ -155,6 +155,44 @@ export function computeReadiness(s: HealthDaily | null): number {
   return weight === 0 ? 64 : Math.round((score / weight) * 100);
 }
 
+export type ReadinessFactor = {
+  key: 'sleep' | 'rhr' | 'hrv';
+  label: string;
+  weight: number; // share of the score (sleep 40, RHR 30, HRV 30)
+  present: boolean;
+  pct: number | null; // sub-score 0–100 for this signal
+  points: number; // points this signal contributes to the final 0–100 score
+  value: string; // human-readable measured value
+  status: 'good' | 'warn' | 'bad' | 'none';
+};
+
+/**
+ * Transparent decomposition of the readiness score — the SAME sleep/RHR/HRV inputs
+ * and weights computeReadiness uses, so the breakdown always reconciles with the
+ * headline number (no fabricated contributors). Points are each signal's share of
+ * the final 0–100 score; with all three present they sum to the score.
+ */
+export function readinessBreakdown(s: HealthDaily | null): { score: number; factors: ReadinessFactor[] } {
+  const clamp = (n: number) => Math.max(0, Math.min(1, n));
+  const band = (p: number | null): ReadinessFactor['status'] =>
+    p == null ? 'none' : p >= 70 ? 'good' : p >= 45 ? 'warn' : 'bad';
+  const defs = [
+    { key: 'sleep' as const, label: 'Sleep', weight: 40, sub: s?.sleepMinutes != null ? clamp(s.sleepMinutes / 450) : null,
+      value: s?.sleepMinutes != null ? `${Math.floor(s.sleepMinutes / 60)}h ${s.sleepMinutes % 60}m` : 'No data' },
+    { key: 'rhr' as const, label: 'Resting HR', weight: 30, sub: s?.restingHeartRate != null ? clamp((70 - s.restingHeartRate) / 16) : null,
+      value: s?.restingHeartRate != null ? `${s.restingHeartRate} bpm` : 'No data' },
+    { key: 'hrv' as const, label: 'HRV', weight: 30, sub: s?.hrvSdnn != null ? clamp(s.hrvSdnn / 70) : null,
+      value: s?.hrvSdnn != null ? `${s.hrvSdnn} ms` : 'No data' },
+  ];
+  const totalWeight = defs.reduce((w, d) => w + (d.sub != null ? d.weight : 0), 0);
+  const factors: ReadinessFactor[] = defs.map((d) => {
+    const pct = d.sub != null ? Math.round(d.sub * 100) : null;
+    const points = d.sub != null && totalWeight > 0 ? Math.round((d.sub * d.weight / totalWeight) * 100) : 0;
+    return { key: d.key, label: d.label, weight: d.weight, present: d.sub != null, pct, points, value: d.value, status: band(pct) };
+  });
+  return { score: computeReadiness(s), factors };
+}
+
 export function adjustForReadiness(readiness: number): LoadAdvice {
   if (readiness < 50)
     return { factor: 0, tone: 'rest', label: 'Recover today', note: 'Readiness is low — swap lifting for mobility or an easy walk. Lifting now costs more than it gives.' };

@@ -6,6 +6,9 @@ import { useTheme } from '../design-system/theme';
 import { BarChart, LineChart } from './Charts';
 import { METRICS, type DeltaKind, type MetricDef } from '../data/metrics';
 import type { MetricKey } from '../store/app';
+import { useHealth } from '../store/health';
+import { DEMO_SUMMARY } from '../integrations/demo';
+import { readinessBreakdown } from '../data/workouts';
 
 function deltaColor(kind: DeltaKind, c: ReturnType<typeof useTheme>['colors']): string {
   return kind === 'good' ? c.accentText : kind === 'bad' ? c.danger : c.warning;
@@ -92,39 +95,56 @@ function FullDetail({ def }: { def: MetricDef }) {
   );
 }
 
+const READINESS_STATUS: Record<'good' | 'warn' | 'bad' | 'none', { kind: DeltaKind; tag: string }> = {
+  good: { kind: 'good', tag: 'Strong ▲' },
+  warn: { kind: 'warn', tag: 'Fair —' },
+  bad: { kind: 'bad', tag: 'Low ▼' },
+  none: { kind: 'warn', tag: 'No data' },
+};
+
 function ReadinessBody() {
   const { colors } = useTheme();
-  const rows: [string, number, string, DeltaKind][] = [
-    ['Sleep', 0.84, 'Good ▲', 'good'],
-    ['HRV balance', 0.34, 'Attention ▼', 'bad'],
-    ['Resting HR', 0.42, 'Elevated ▼', 'bad'],
-    ['Activity load', 0.76, 'Light ✓', 'good'],
-    ['Consistency', 0.6, 'Fair —', 'warn'],
-  ];
+  const { summary } = useHealth();
+  const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
+  const { score, factors } = readinessBreakdown(s);
+  const present = factors.filter((f) => f.present);
+  // Dynamic insight: name the signal helping most and the one hurting most.
+  const sorted = [...present].sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0));
+  const top = sorted[0];
+  const low = sorted[sorted.length - 1];
+  const insight = present.length === 0
+    ? 'Connect a device with sleep, resting-HR and HRV to see what’s driving your readiness.'
+    : top && low && top.key !== low.key && (low.pct ?? 0) < 60
+      ? `${top.label} is carrying the score; ${low.label.toLowerCase()} is the drag. Lift the weakest signal and the number follows.`
+      : `${top?.label ?? 'Sleep'} is leading and nothing’s dragging hard — keep the rhythm steady.`;
   return (
     <View style={{ gap: spacing.md }}>
       <View>
-        <AppText variant="h2">Readiness 64 — why?</AppText>
+        <AppText variant="h2">Readiness {score} — why?</AppText>
         <AppText variant="caption" color={colors.textMuted}>
-          Score contributors · what’s helping and what’s hurting
+          The exact signals behind your score · sleep 40% · resting HR 30% · HRV 30%
         </AppText>
       </View>
       <View style={{ backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.lg, gap: spacing.md }}>
-        {rows.map(([k, w, status, kind]) => (
-          <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-            <AppText variant="caption" color={colors.textMuted} style={{ width: 92 }}>
-              {k}
-            </AppText>
-            <View style={{ flex: 1, height: 9, borderRadius: 99, backgroundColor: colors.navBg, overflow: 'hidden' }}>
-              <View style={{ width: `${w * 100}%`, height: '100%', borderRadius: 99, backgroundColor: deltaColor(kind, colors) }} />
+        {factors.map((f) => {
+          const st = READINESS_STATUS[f.status];
+          return (
+            <View key={f.key} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+              <View style={{ width: 92 }}>
+                <AppText variant="caption" color={colors.textMuted}>{f.label}</AppText>
+                <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10, opacity: 0.7 }}>{f.value}</AppText>
+              </View>
+              <View style={{ flex: 1, height: 9, borderRadius: 99, backgroundColor: colors.navBg, overflow: 'hidden' }}>
+                <View style={{ width: `${f.pct ?? 0}%`, height: '100%', borderRadius: 99, backgroundColor: deltaColor(st.kind, colors) }} />
+              </View>
+              <AppText variant="caption" color={deltaColor(st.kind, colors)} style={{ width: 84, textAlign: 'right' }}>
+                {f.present ? `+${f.points} · ${st.tag}` : st.tag}
+              </AppText>
             </View>
-            <AppText variant="caption" color={deltaColor(kind, colors)} style={{ width: 84, textAlign: 'right' }}>
-              {status}
-            </AppText>
-          </View>
-        ))}
+          );
+        })}
       </View>
-      <InsightRow text="Sleep is carrying the score; your nervous system is dragging it down. One easy day + an early night usually returns you to the mid-70s." />
+      <InsightRow text={insight} />
     </View>
   );
 }
