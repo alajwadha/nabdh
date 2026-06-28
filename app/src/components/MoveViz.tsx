@@ -50,6 +50,7 @@ const DURATION: Record<string, number> = {
   plank: 2200, // a slow forearm-plank hold with a gentle breathing lift
   padel: 1150, // a forehand swing, low-back to high-front
   tennis: 1150,
+  jumprope: 620, // one rope revolution = one hop
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -115,6 +116,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <Plank phase={phase} size={size} fg={fg} bg={bg} />
       ) : kind === 'padel' || kind === 'tennis' ? (
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'jumprope' ? (
+        <JumpRope phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -827,6 +830,35 @@ function RacketSwing({ phase, size, fg, bg, equip }: { phase: SharedValue<number
         </Bone>
       </Bone>
     </Animated.View>
+  );
+}
+
+// --- Jump rope: the rope (one circle's bottom-edge arc) ORBITS around the jumper once per
+// cycle; the figure does a small hop, timed so it's at the top of the bob when the rope
+// passes under the feet (rope at the bottom = phase 0/1) and grounded when it's overhead.
+function JumpRope({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
+  const s = size / 116;
+  const rope = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360}deg` }] }; });
+  const hop = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: -7 * s * (0.5 + 0.5 * Math.cos(phase.value * 2 * Math.PI)) }] }; });
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.07, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
+      {/* rope: a circle showing only its bottom-edge arc, rotated about its centre so the
+          arc sweeps under the feet → up the side → over the head → down the other side */}
+      <Animated.View style={[{ position: 'absolute', left: 10 * s, top: 14 * s, width: 84 * s, height: 84 * s, borderWidth: 3 * s, borderColor: 'transparent', borderBottomColor: equip, borderRadius: 99 }, rope]} />
+      {/* the jumper hops within the rope's loop */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, hop]}>
+        <View style={{ position: 'absolute', left: 44 * s, top: 22 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 46 * s, top: 37 * s, width: 10 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg }} />
+        <View style={{ position: 'absolute', left: 44 * s, top: 61 * s, width: 8 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-5deg' }] }} />
+        <View style={{ position: 'absolute', left: 50 * s, top: 61 * s, width: 8 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '5deg' }] }} />
+        {/* arms out to the sides holding the handles */}
+        <View style={{ position: 'absolute', left: 47 * s, top: 40 * s, width: 7 * s, height: 19 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '40deg' }] }} />
+        <View style={{ position: 'absolute', left: 51 * s, top: 40 * s, width: 7 * s, height: 19 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-40deg' }] }} />
+        <View style={{ position: 'absolute', left: 33 * s, top: 56 * s, width: 8 * s, height: 4 * s, borderRadius: 99, backgroundColor: equip, transform: [{ rotate: '40deg' }] }} />
+        <View style={{ position: 'absolute', left: 59 * s, top: 56 * s, width: 8 * s, height: 4 * s, borderRadius: 99, backgroundColor: equip, transform: [{ rotate: '-40deg' }] }} />
+      </Animated.View>
+    </View>
   );
 }
 

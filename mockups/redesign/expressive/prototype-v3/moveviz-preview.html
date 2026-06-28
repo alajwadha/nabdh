@@ -180,6 +180,20 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* jump rope: figure mid-hop, the rope orbiting (a circle's bottom arc) under the feet here */
+.jr{position:relative;width:116px;height:116px}
+.jr b{position:absolute;border-radius:99px;background:var(--grn)}
+.jr .ground{left:8px;right:8px;bottom:8px;height:3px;background:var(--navbg)}
+.jr .rope{position:absolute;left:10px;top:14px;width:84px;height:84px;border:3px solid transparent;border-bottom-color:var(--mut);border-radius:99px} /* orbiting rope = a CIRCLE's bottom arc (so rotation stays round) */
+.jr .grip{position:absolute;width:8px;height:4px;background:var(--mut);border-radius:99px}
+.jr .gripL{left:33px;top:56px;transform:rotate(40deg)}
+.jr .gripR{left:59px;top:56px;transform:rotate(-40deg)}
+.jr .head{left:44px;top:22px;width:16px;height:16px}
+.jr .torso{left:46px;top:37px;width:10px;height:26px}
+.jr .legB{left:44px;top:61px;width:8px;height:26px;transform-origin:top center;transform:rotate(-5deg)}
+.jr .legF{left:50px;top:61px;width:8px;height:26px;transform-origin:top center;transform:rotate(5deg)}
+.jr .armB{left:47px;top:40px;width:7px;height:19px;transform-origin:top center;transform:rotate(40deg)}
+.jr .armF{left:51px;top:40px;width:7px;height:19px;transform-origin:top center;transform:rotate(-40deg)}
 /* tennis/padel: side-view forehand, racket swept out front at contact (racket head = mut) */
 .te{position:relative;width:116px;height:116px}
 .te b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -240,15 +254,14 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🎾 Padel / Tennis</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · GYM · CALF RAISE</div>
- <div class="stage"><div class="cf">
-  <b class="ground"></b><b class="block"></b>
-  <b class="instep"></b><b class="toe"></b>
-  <b class="legB"></b><b class="legF"></b>
-  <b class="torso"></b><b class="armB"></b><b class="armF"></b><b class="head"></b>
-  <b class="heel"></b>
+ <div class="lbl">WORKOUT · SPORT · JUMP ROPE</div>
+ <div class="stage"><div class="jr">
+  <b class="ground"></b>
+  <b class="legB"></b><b class="legF"></b><b class="torso"></b>
+  <b class="armB"></b><b class="armF"></b><b class="head"></b>
+  <div class="rope"></div><div class="grip gripL"></div><div class="grip gripR"></div>
  </div></div>
- <div class="name">🦵 Calf raise</div>
+ <div class="name">🤸 Jump rope</div>
 </div>
 <div class="card">
  <div class="lbl">WORKOUT · CORE · PLANK</div>
