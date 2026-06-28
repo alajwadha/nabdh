@@ -44,6 +44,7 @@ export default function Workout() {
   const [detailed, setDetailed] = useState(false);
   const [mode, setMode] = useState<'gym' | 'sports'>('gym');
   const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [barKg, setBarKg] = useState(20);
 
   // gym state
   const [exKey, setExKey] = useState(EXERCISES[0].key);
@@ -67,6 +68,8 @@ export default function Workout() {
   const vol = useMemo(() => volume(sets), [sets]);
   const best = useMemo(() => bestE1rm(sets), [sets]);
   const topWeight = sets.reduce((m, st) => Math.max(m, st.weight), 0);
+  const plates = platesPerSide(topWeight, barKg);
+  const loaded = barKg + plates.reduce((a, b) => a + b, 0) * 2; // what the plates actually make
   const suggested = workingWeight(best || 80, 8, advice.factor);
 
   const last = lastFor(exKey);
@@ -174,9 +177,24 @@ export default function Workout() {
               <AppText variant="caption" color={colors.accentText}>＋ Add set</AppText>
             </Pressable>
             {detailed && ex.equipment === 'barbell' && (
-              <AppText variant="caption" color={colors.textMuted} style={{ paddingBottom: 8 }}>
-                🏋️ Per side (20 kg bar) @ {topWeight} kg: {platesPerSide(topWeight).length ? platesPerSide(topWeight).join(' · ') : 'just the bar'}
-              </AppText>
+              <View style={{ paddingBottom: 8, gap: 6 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <AppText variant="caption" color={colors.textMuted}>Bar</AppText>
+                  <View style={{ flexDirection: 'row', backgroundColor: colors.navBg, borderRadius: 99, padding: 3 }}>
+                    {[20, 15, 25].map((b) => {
+                      const on = barKg === b;
+                      return (
+                        <Pressable key={b} onPress={() => setBarKg(b)} style={{ paddingVertical: 5, paddingHorizontal: 11, borderRadius: 99, backgroundColor: on ? colors.navOn : 'transparent' }}>
+                          <AppText variant="caption" color={on ? colors.navOnText : colors.textMuted} style={{ fontSize: 10 }}>{b}kg</AppText>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
+                <AppText variant="caption" color={colors.textMuted}>
+                  🏋️ Per side @ {topWeight} kg: {plates.length ? plates.join(' · ') : 'just the bar'}{loaded !== topWeight ? ` (≈ ${loaded} kg loadable)` : ''}
+                </AppText>
+              </View>
             )}
           </Card>
 
