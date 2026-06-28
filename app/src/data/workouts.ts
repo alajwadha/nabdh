@@ -185,12 +185,25 @@ export function readinessBreakdown(s: HealthDaily | null): { score: number; fact
       value: s?.hrvSdnn != null ? `${s.hrvSdnn} ms` : 'No data' },
   ];
   const totalWeight = defs.reduce((w, d) => w + (d.sub != null ? d.weight : 0), 0);
+  const score = computeReadiness(s);
+
+  // Points per signal, allocated by largest-remainder so they sum EXACTLY to the
+  // headline score (independent rounding would otherwise drift, e.g. 39+23+21=83 vs 82).
+  const present = defs.filter((d) => d.sub != null);
+  const raw = present.map((d) => (d.sub! * d.weight / totalWeight) * 100);
+  const pts = raw.map(Math.floor);
+  let rem = (totalWeight > 0 ? score : 0) - pts.reduce((a, b) => a + b, 0);
+  const byFrac = raw.map((v, i) => ({ i, frac: v - Math.floor(v) })).sort((a, b) => b.frac - a.frac);
+  for (let k = 0; rem > 0 && k < byFrac.length; k++, rem--) pts[byFrac[k].i]++;
+  for (let k = byFrac.length - 1; rem < 0 && k >= 0; k--, rem++) pts[byFrac[k].i] = Math.max(0, pts[byFrac[k].i] - 1);
+  const pointsByKey: Partial<Record<ReadinessFactor['key'], number>> = {};
+  present.forEach((d, i) => { pointsByKey[d.key] = pts[i]; });
+
   const factors: ReadinessFactor[] = defs.map((d) => {
     const pct = d.sub != null ? Math.round(d.sub * 100) : null;
-    const points = d.sub != null && totalWeight > 0 ? Math.round((d.sub * d.weight / totalWeight) * 100) : 0;
-    return { key: d.key, label: d.label, weight: d.weight, present: d.sub != null, pct, points, value: d.value, status: band(pct) };
+    return { key: d.key, label: d.label, weight: d.weight, present: d.sub != null, pct, points: pointsByKey[d.key] ?? 0, value: d.value, status: band(pct) };
   });
-  return { score: computeReadiness(s), factors };
+  return { score, factors };
 }
 
 export function adjustForReadiness(readiness: number): LoadAdvice {
