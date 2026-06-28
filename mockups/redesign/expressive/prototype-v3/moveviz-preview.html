@@ -180,6 +180,19 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .lp .thigh{left:46px;top:60px;width:24px;height:9px;transform-origin:left center;transform:rotate(-20deg)}
 .lp .shin{left:24px;top:0;width:24px;height:9px;transform-origin:left center;transform:rotate(16deg)} /* child of thigh */
 .lp .foot{left:22px;top:-15px;width:8px;height:34px;border-radius:5px;background:var(--grn)} /* child of shin: footplate */
+/* swimming (freestyle): horizontal body at a waterline, arms windmilling (one pull, one recover) */
+.sw{position:relative;width:116px;height:116px}
+.sw b{position:absolute;border-radius:99px;background:var(--grn)}
+.sw .water{position:absolute;left:6px;right:6px;top:57px;height:3px;background:var(--mut);border-radius:99px}
+.sw .water2{position:absolute;left:14px;right:20px;top:64px;height:2px;background:var(--mut);opacity:.5;border-radius:99px}
+.sw .torso{left:42px;top:51px;width:28px;height:11px;transform-origin:left center;transform:rotate(-2deg)}
+.sw .head{left:70px;top:47px;width:15px;height:15px}
+.sw .legA{left:42px;top:53px;width:24px;height:8px;transform-origin:left center;transform:rotate(174deg)}
+.sw .legB{left:42px;top:53px;width:24px;height:8px;transform-origin:left center;transform:rotate(184deg)}
+.sw .armA{left:68px;top:52px;width:22px;height:8px;transform-origin:left center;transform:rotate(120deg)} /* pull, under water */
+.sw .armB{left:68px;top:52px;width:22px;height:8px;transform-origin:left center;transform:rotate(300deg)} /* recover, over water */
+.sw .handA{left:20px;top:-3px;width:7px;height:7px} /* child of armA */
+.sw .handB{left:20px;top:-3px;width:7px;height:7px} /* child of armB */
 /* jump rope: figure mid-hop, the rope orbiting (a circle's bottom arc) under the feet here */
 .jr{position:relative;width:116px;height:116px}
 .jr b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -268,13 +281,13 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="name">🤸 Jump rope</div>
 </div>
 <div class="card">
- <div class="lbl">WORKOUT · CORE · PLANK</div>
- <div class="stage"><div class="pl">
-  <b class="ground"></b>
-  <b class="body"></b><b class="foot"></b>
-  <b class="uarm"></b><b class="fore"></b><b class="head"></b>
+ <div class="lbl">WORKOUT · SPORT · SWIMMING</div>
+ <div class="stage"><div class="sw">
+  <b class="water"></b><b class="water2"></b>
+  <b class="legA"></b><b class="legB"></b><b class="torso"></b><b class="head"></b>
+  <b class="armA"><b class="handA"></b></b><b class="armB"><b class="handB"></b></b>
  </div></div>
- <div class="name">🧘 Plank</div>
+ <div class="name">🏊 Swimming</div>
 </div>
 <div class="card">
  <div class="lbl">FALLBACK · SPORT EMOJI PULSE</div>

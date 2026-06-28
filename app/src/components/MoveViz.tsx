@@ -51,6 +51,7 @@ const DURATION: Record<string, number> = {
   padel: 1150, // a forehand swing, low-back to high-front
   tennis: 1150,
   jumprope: 620, // one rope revolution = one hop
+  swimming: 1500, // one freestyle stroke cycle (both arms)
 };
 const STATIC_PHASE = 0.25; // mid-movement pose used when motion is reduced
 
@@ -118,6 +119,8 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
         <RacketSwing phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
       ) : kind === 'jumprope' ? (
         <JumpRope phase={phase} size={size} fg={fg} bg={bg} equip={equip} />
+      ) : kind === 'swimming' ? (
+        <Swimming phase={phase} size={size} fg={fg} equip={equip} />
       ) : (
         <EmojiPulse phase={phase} size={size} emoji={emoji ?? '🏅'} />
       )}
@@ -864,6 +867,35 @@ function JumpRope({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
         <View style={{ position: 'absolute', left: 33 * s, top: 56 * s, width: 8 * s, height: 4 * s, borderRadius: 99, backgroundColor: equip, transform: [{ rotate: '40deg' }] }} />
         <View style={{ position: 'absolute', left: 59 * s, top: 56 * s, width: 8 * s, height: 4 * s, borderRadius: 99, backgroundColor: equip, transform: [{ rotate: '-40deg' }] }} />
       </Animated.View>
+    </View>
+  );
+}
+
+// --- Swimming (freestyle): a horizontal body at a waterline; the two arms windmill 180°
+// apart (one pulling under, one recovering over) and the legs flutter-kick. The +30° base
+// makes the reduce-motion still (phase 0.25) a clear mid-stroke (one arm down, one up).
+function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
+  const s = size / 116;
+  const armA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 30}deg` }] }; });
+  const armB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 210}deg` }] }; });
+  // flutter kick: legs scissor a few beats per stroke, small amplitude
+  const legA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${174 + 6 * Math.sin(phase.value * 2 * Math.PI * 3)}deg` }] }; });
+  const legB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${184 - 6 * Math.sin(phase.value * 2 * Math.PI * 3)}deg` }] }; });
+  const hand = { position: 'absolute' as const, left: -3 * s, top: -3 * s, width: 7 * s, height: 7 * s, borderRadius: 99, backgroundColor: fg };
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* water surface (apparatus) */}
+      <View style={{ position: 'absolute', left: size * 0.05, right: size * 0.05, top: 57 * s, height: 3 * s, borderRadius: 99, backgroundColor: equip }} />
+      <View style={{ position: 'absolute', left: 14 * s, right: 20 * s, top: 64 * s, height: 2 * s, borderRadius: 99, backgroundColor: equip, opacity: 0.5 }} />
+      {/* flutter-kicking legs trailing behind */}
+      <Bone x={42 * s} y={57 * s} len={24 * s} w={8 * s} color={fg} rot={legA} />
+      <Bone x={42 * s} y={57 * s} len={24 * s} w={8 * s} color={fg} rot={legB} />
+      {/* horizontal body + head at the front, at the surface */}
+      <View style={{ position: 'absolute', left: 42 * s, top: 51 * s, width: 28 * s, height: 11 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-2deg' }] }} />
+      <View style={{ position: 'absolute', left: 70 * s, top: 47 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
+      {/* windmilling arms (one pulls under, one recovers over) */}
+      <Bone x={68 * s} y={56 * s} len={22 * s} w={8 * s} color={fg} rot={armA}><View style={hand} /></Bone>
+      <Bone x={68 * s} y={56 * s} len={22 * s} w={8 * s} color={fg} rot={armB}><View style={hand} /></Bone>
     </View>
   );
 }
