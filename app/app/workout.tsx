@@ -21,6 +21,7 @@ import {
   metCalories,
   platesPerSide,
   warmupRamp,
+  riegelTime,
   runningMet,
   totalReps,
   volume,
@@ -274,6 +275,11 @@ export default function Workout() {
               {Math.round((cals / minutes) * 10) / 10} kcal/min · kcal = MET {Math.round(sportMet * 10) / 10} × {weight} kg × {(minutes / 60).toFixed(2)} h{sport.key === 'running' ? ` · ${pace}:00/km` : ''}
             </AppText>
           )}
+          {detailed && sport.key === 'running' && dist > 0 && (
+            <AppText variant="caption" color={colors.textMuted}>
+              🏁 At this pace → 5K {fmtDur(riegelTime(minutes, dist, 5))} · 10K {fmtDur(riegelTime(minutes, dist, 10))} · 21K {fmtDur(riegelTime(minutes, dist, 21.1))}
+            </AppText>
+          )}
         </>
       )}
 
@@ -302,6 +308,16 @@ export default function Workout() {
       <Button label={mode === 'gym' ? `Save workout · ${vol.toLocaleString()} kg volume` : `Log ${sport.name} · ${cals} kcal`} onPress={save} />
     </Screen>
   );
+}
+
+function fmtDur(min: number): string {
+  const totalSec = Math.round(min * 60);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const sec = totalSec % 60;
+  return h > 0
+    ? `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+    : `${m}:${String(sec).padStart(2, '0')}`;
 }
 
 function Stepper({ label, value, onMinus, onPlus, colors }: { label: string; value: number; onMinus: () => void; onPlus: () => void; colors: ReturnType<typeof useTheme>['colors'] }) {

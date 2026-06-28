@@ -70,6 +70,11 @@ export function runningMet(paceMinPerKm: number): number {
   if (paceMinPerKm <= 0) return 9.8;
   return Math.min(20, Math.max(6, 57.1 / paceMinPerKm + 1));
 }
+/** Riegel race-time prediction: T2 = T1 × (D2/D1)^1.06 (the standard endurance model). */
+export function riegelTime(t1Min: number, d1Km: number, d2Km: number): number {
+  return d1Km > 0 ? t1Min * Math.pow(d2Km / d1Km, 1.06) : 0;
+}
+
 /** Rough distance (km) for a steady-pace cardio session. */
 export function distanceKm(minutes: number, paceMinPerKm: number): number {
   return paceMinPerKm > 0 ? Math.round((minutes / paceMinPerKm) * 10) / 10 : 0;
