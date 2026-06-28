@@ -7,7 +7,8 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useWorkouts } from '../src/store/workouts';
 import { EXERCISES, SPORTS, MUSCLE_LABEL, type Muscle } from '../src/data/workouts';
-import { computeAcwr } from '../src/data/health-metrics';
+import { computeAcwr, relativeStrength } from '../src/data/health-metrics';
+import { useAppState } from '../src/store/app';
 
 const DAY = 86400000;
 
@@ -15,6 +16,7 @@ export default function WorkoutHistory() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
   const { sessions } = useWorkouts();
+  const { body } = useAppState();
   const now = Date.now();
   const [detailed, setDetailed] = useState(false);
 
@@ -127,7 +129,7 @@ export default function WorkoutHistory() {
           <Card>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <AppText variant="title">{selEx?.name ?? sel}</AppText>
-              <AppText variant="caption" color={colors.accentText}>best {Math.round(best)} kg e1RM</AppText>
+              <AppText variant="caption" color={colors.accentText}>best {Math.round(best)} kg · {relativeStrength(best, body.weightKg)}× BW</AppText>
             </View>
             <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 6 }}>
               {selSessions.length} sessions · estimated 1RM by session
@@ -171,7 +173,7 @@ export default function WorkoutHistory() {
               return (
                 <View key={p.k} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 2, borderBottomColor: colors.border }}>
                   <AppText variant="caption" color={colors.ink}>{e?.emoji} {e?.name ?? p.k}</AppText>
-                  <AppText variant="caption" color={colors.accentText}>{Math.round(p.best)} kg</AppText>
+                  <AppText variant="caption" color={colors.accentText}>{Math.round(p.best)} kg · {relativeStrength(p.best, body.weightKg)}× BW</AppText>
                 </View>
               );
             })}

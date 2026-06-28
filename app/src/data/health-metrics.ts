@@ -89,6 +89,11 @@ export function hrZones(age: number): HrZone[] {
   return z;
 }
 
+/** Strength relative to bodyweight (e1RM ÷ bodyweight) — a factual ratio, lift-agnostic. */
+export function relativeStrength(e1rm: number, bodyweightKg: number): number {
+  return bodyweightKg > 0 ? Math.round((e1rm / bodyweightKg) * 100) / 100 : 0;
+}
+
 export function bmi(weightKg: number, heightCm: number): { value: number; band: string } {
   const v = heightCm > 0 ? weightKg / (heightCm / 100) ** 2 : 0;
   const band = v < 18.5 ? 'Underweight' : v < 25 ? 'Healthy' : v < 30 ? 'Overweight' : 'Obese';

@@ -8,12 +8,12 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useHealth } from '../src/store/health';
 import { useWorkouts } from '../src/store/workouts';
+import { useAppState } from '../src/store/app';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
 import {
   EXERCISES,
   SPORTS,
   MUSCLE_LABEL,
-  DEFAULT_WEIGHT_KG,
   adjustForReadiness,
   bestE1rm,
   distanceKm,
@@ -48,6 +48,7 @@ export default function Workout() {
   const router = useRouter();
   const { summary } = useHealth();
   const { addSession, lastFor, bestE1rmFor, e1rmTrendFor, sessions } = useWorkouts();
+  const { body } = useAppState();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
 
   const [detailed, setDetailed] = useState(false);
@@ -63,7 +64,7 @@ export default function Workout() {
   const [sportKey, setSportKey] = useState(SPORTS[0].key);
   const [minutes, setMinutes] = useState(45);
   const [pace, setPace] = useState(6); // min/km, for GPS sports
-  const [weight, setWeight] = useState(DEFAULT_WEIGHT_KG);
+  const [weight, setWeight] = useState(body.weightKg);
   const sport = SPORTS.find((sp) => sp.key === sportKey) ?? SPORTS[0];
 
   const r = readiness(s);
