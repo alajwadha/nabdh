@@ -1,8 +1,12 @@
 import type { HealthDaily } from '@nabdh/shared';
 import type { TileColor } from '../design-system';
-import type { MetricKey } from '../store/app';
+import type { MetricKey, Body } from '../store/app';
+import { maxHr, vo2maxEstimate } from './health-metrics';
 
 export type DeltaKind = 'good' | 'bad' | 'warn';
+
+/** Extra app/profile context a metric may need to compute a real value. */
+export type MetricContext = { body: Body; water: number };
 
 export type MetricDetail = {
   title: string;
@@ -24,8 +28,8 @@ export type MetricDef = {
   color: TileColor;
   unit?: string;
   hint: string;
-  /** Pull a real value from the health summary; falls back to `sample`. */
-  read?: (s: HealthDaily | null) => string | number | undefined;
+  /** Pull a real value from the health summary (+ app context); falls back to `sample`. */
+  read?: (s: HealthDaily | null, ctx?: MetricContext) => string | number | undefined;
   sample: string;
   detail?: MetricDetail;
 };
@@ -183,8 +187,9 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     key: 'water',
     label: 'Water',
     color: 'blue',
-    unit: '/8',
+    unit: 'glasses',
     hint: '5 glasses to go',
+    read: (_s, ctx) => (ctx ? String(ctx.water) : undefined),
     sample: '3',
     detail: {
       title: 'Water',
@@ -204,6 +209,8 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     label: 'VO₂ max',
     color: 'mint',
     hint: 'good · top 25%',
+    read: (s, ctx) =>
+      s?.restingHeartRate != null && ctx ? vo2maxEstimate(maxHr(ctx.body.age), s.restingHeartRate) : undefined,
     sample: '42',
     detail: {
       title: 'VO₂ max',
@@ -237,8 +244,11 @@ export const METRICS: Record<MetricKey, MetricDef> = {
   },
 };
 
+// Only metrics with a real data source are offered as addable tiles — stress,
+// resp and resilience have no signal yet, so we don't surface a tile that could
+// only ever show an invented number.
 export const ALL_METRICS: MetricKey[] = [
-  'rhr', 'hrv', 'sleep', 'steps', 'stress', 'spo2', 'resp', 'cals', 'water', 'vo2', 'resil',
+  'rhr', 'hrv', 'sleep', 'steps', 'spo2', 'cals', 'water', 'vo2',
 ];
 
 export const METRIC_ICON: Record<MetricKey, string> = {

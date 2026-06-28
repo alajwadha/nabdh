@@ -7,6 +7,7 @@ import { BarChart, LineChart } from './Charts';
 import { METRICS, type DeltaKind, type MetricDef } from '../data/metrics';
 import type { MetricKey } from '../store/app';
 import { useHealth } from '../store/health';
+import { useAppState } from '../store/app';
 import { DEMO_SUMMARY } from '../integrations/demo';
 import { readinessBreakdown } from '../data/workouts';
 import { weekdayName } from '../data/derive';
@@ -48,13 +49,14 @@ function RangeToggle({ range, onChange }: { range: '7D' | '30D'; onChange: (r: '
 function FullDetail({ def }: { def: MetricDef }) {
   const { colors } = useTheme();
   const { summary } = useHealth();
+  const { body, water } = useAppState();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [range, setRange] = useState<'7D' | '30D'>('7D');
   const d = def.detail!;
   const data = range === '7D' ? d.d7 : d.d30;
-  // Headline is the REAL current value from the device; only the trend below is
-  // illustrative until a real history store exists (clearly labelled SAMPLE).
-  const real = def.read?.(s);
+  // Headline is the REAL current value from the device (+ app context, so vo2/water
+  // match the tile and Body screen); only the trend below is illustrative (SAMPLE).
+  const real = def.read?.(s, { body, water });
   const headline = real != null ? String(real) : def.sample;
   const hasReal = real != null;
   return (
