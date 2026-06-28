@@ -19,6 +19,7 @@ export default function Sleep() {
   const [detailed, setDetailed] = useState(false);
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const asleep = s?.sleepMinutes ?? 0;
+  const hasSleep = asleep > 0;
 
   const stages = sleepStages(asleep);
   const score = sleepScore(asleep);
@@ -29,6 +30,21 @@ export default function Sleep() {
   const idealBed = sleepWindow(Math.round(needMin * 1.06)).bed; // bedtime to hit the need
   const deepPct = asleep > 0 ? Math.round((stages.deep / asleep) * 100) : 0;
   const remPct = asleep > 0 ? Math.round((stages.rem / asleep) * 100) : 0;
+
+  // No wearable data → an honest connect prompt, not a fabricated 0 score.
+  if (!hasSleep) {
+    return (
+      <Screen>
+        <AppHeader />
+        <AppText variant="h1" style={{ marginTop: spacing.sm }}>Sleep</AppText>
+        <Card>
+          <AppText variant="caption" color={colors.textMuted} style={{ lineHeight: 18 }}>
+            Connect Apple Health or a device to see last night’s sleep — stages, a score, debt, and your ideal bedtime.
+          </AppText>
+        </Card>
+      </Screen>
+    );
+  }
 
   const rows: [string, number][] = [
     ['Deep', stages.deep],
@@ -101,17 +117,16 @@ export default function Sleep() {
           Tonight’s window 🌙
         </AppText>
         <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', marginTop: 3, lineHeight: 18 }}>
-          Lights out by {idealBed} for {hoursMinutes(needMin)} asleep — {debtMin > 0 ? `clears the ${hoursMinutes(debtMin)} debt and pushes HRV back up.` : 'you’re on track; keep the rhythm steady.'}
+          Lights out by {idealBed} to get {hoursMinutes(needMin)} before a ~7:00 wake — {debtMin > 0 ? `clears the ${hoursMinutes(debtMin)} debt and pushes HRV back up.` : 'you’re on track; keep the rhythm steady.'}
         </AppText>
       </View>
 
       {detailed && (
         <Card style={{ gap: spacing.sm }}>
+          <DRow label="Deep share" value={`${deepPct}% ${deepPct >= 13 ? '· adequate ✓' : '· low'}`} colors={colors} />
+          <DRow label="REM share" value={`${remPct}% ${remPct >= 20 ? '· adequate ✓' : '· low'}`} colors={colors} />
           <DRow label={`Sleep need (age ${body.age})`} value={hoursMinutes(needMin)} colors={colors} />
-          <DRow label="Deep share" value={`${deepPct}% ${deepPct >= 13 ? '✓' : 'low'}`} colors={colors} />
-          <DRow label="REM share" value={`${remPct}% ${remPct >= 20 ? '✓' : 'low'}`} colors={colors} />
-          <DRow label="Efficiency" value={`${efficiency}%`} colors={colors} />
-          <DRow label="Ideal lights-out" value={idealBed} colors={colors} last />
+          <DRow label="Ideal lights-out" value={`${idealBed} · ~7:00 wake`} colors={colors} last />
         </Card>
       )}
 
