@@ -833,19 +833,25 @@ function RacketSwing({ phase, size, fg, bg, equip }: { phase: SharedValue<number
   );
 }
 
-// --- Jump rope: the rope (one circle's bottom-edge arc) ORBITS around the jumper once per
-// cycle; the figure does a small hop, timed so it's at the top of the bob when the rope
-// passes under the feet (rope at the bottom = phase 0/1) and grounded when it's overhead.
+// --- Jump rope: the rope is an overflow-CLIPPED full ring (a reliable cross-platform arc,
+// unlike per-side border colours) that ORBITS the jumper once per cycle — sweeping under the
+// feet → up the side → over the head. The figure hops, timed so it's at the top of the bob
+// when the rope is under the feet. The −0.25 phase offset lands the reduce-motion still
+// (STATIC_PHASE=0.25) on the clearest pose: rope under the feet, jumper up.
 function JumpRope({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
-  const rope = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360}deg` }] }; });
-  const hop = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: -7 * s * (0.5 + 0.5 * Math.cos(phase.value * 2 * Math.PI)) }] }; });
+  const rope = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${(phase.value - 0.25) * 360}deg` }] }; });
+  const hop = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateY: -9 * s * (0.5 + 0.5 * Math.cos((phase.value - 0.25) * 2 * Math.PI)) }] }; });
   return (
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.07, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
-      {/* rope: a circle showing only its bottom-edge arc, rotated about its centre so the
-          arc sweeps under the feet → up the side → over the head → down the other side */}
-      <Animated.View style={[{ position: 'absolute', left: 10 * s, top: 14 * s, width: 84 * s, height: 84 * s, borderWidth: 3 * s, borderColor: 'transparent', borderBottomColor: equip, borderRadius: 99 }, rope]} />
+      {/* rope: bottom portion of a full ring (overflow-clipped), the whole wrapper rotated
+          about its centre so the arc orbits under the feet → over the head and back */}
+      <Animated.View style={[{ position: 'absolute', left: 10 * s, top: 14 * s, width: 84 * s, height: 84 * s }, rope]}>
+        <View style={{ position: 'absolute', left: 0, top: 38 * s, width: 84 * s, height: 46 * s, overflow: 'hidden' }}>
+          <View style={{ position: 'absolute', left: 0, top: -38 * s, width: 84 * s, height: 84 * s, borderWidth: 4 * s, borderColor: equip, borderRadius: 99 }} />
+        </View>
+      </Animated.View>
       {/* the jumper hops within the rope's loop */}
       <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, hop]}>
         <View style={{ position: 'absolute', left: 44 * s, top: 22 * s, width: 16 * s, height: 16 * s, borderRadius: 99, backgroundColor: fg }} />

@@ -184,7 +184,11 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .jr{position:relative;width:116px;height:116px}
 .jr b{position:absolute;border-radius:99px;background:var(--grn)}
 .jr .ground{left:8px;right:8px;bottom:8px;height:3px;background:var(--navbg)}
-.jr .rope{position:absolute;left:10px;top:14px;width:84px;height:84px;border:3px solid transparent;border-bottom-color:var(--mut);border-radius:99px} /* orbiting rope = a CIRCLE's bottom arc (so rotation stays round) */
+/* rope = an overflow-CLIPPED full ring (reliable on RN, unlike per-side border colors).
+   The wrap rotates about its centre so the visible arc orbits the jumper. */
+.jr .ropewrap{position:absolute;left:10px;top:14px;width:84px;height:84px}
+.jr .ropeclip{position:absolute;left:0;top:38px;width:84px;height:46px;overflow:hidden}
+.jr .ropering{position:absolute;left:0;top:-38px;width:84px;height:84px;border:4px solid var(--mut);border-radius:99px;box-sizing:border-box}
 .jr .grip{position:absolute;width:8px;height:4px;background:var(--mut);border-radius:99px}
 .jr .gripL{left:33px;top:56px;transform:rotate(40deg)}
 .jr .gripR{left:59px;top:56px;transform:rotate(-40deg)}
@@ -259,7 +263,7 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
   <b class="ground"></b>
   <b class="legB"></b><b class="legF"></b><b class="torso"></b>
   <b class="armB"></b><b class="armF"></b><b class="head"></b>
-  <div class="rope"></div><div class="grip gripL"></div><div class="grip gripR"></div>
+  <div class="ropewrap"><div class="ropeclip"><div class="ropering"></div></div></div><div class="grip gripL"></div><div class="grip gripR"></div>
  </div></div>
  <div class="name">🤸 Jump rope</div>
 </div>
