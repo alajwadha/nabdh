@@ -1,0 +1,81 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+:root{--bg:#F7F1E8;--card:#FFFBF4;--bord:#EDE5D3;--navbg:#EFE8DA;--grn:#2E7D5B;--deep:#256A4C;--mut:#80796C;--sec:#6B6457;--ink:#1F1C17;--blue:#D6EBF6}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+body{background:#cfc7b6;display:flex;justify-content:center;gap:26px;padding:26px}
+.phone{width:380px;background:var(--bg);border-radius:30px;padding:20px;min-height:720px}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.x{width:38px;height:38px;border-radius:14px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink)}
+.h2{font-size:22px;font-weight:800;color:var(--ink)}
+.cap{font-size:12px;font-weight:700;color:var(--mut)}
+.dots{display:flex;gap:6px;margin-bottom:16px}
+.dot{flex:1;height:5px;border-radius:99px}
+.card{background:var(--card);border:2px solid var(--bord);border-radius:26px;padding:16px}
+.exrow{display:flex;align-items:center;gap:12px}
+.fig{width:88px;height:88px;border-radius:18px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:40px}
+.exname{font-size:22px;font-weight:800;color:var(--ink)}
+.exmeta{font-size:12px;font-weight:700;color:var(--mut)}
+.tgt{font-size:12px;font-weight:700;color:var(--grn);margin-top:4px}
+.set{display:flex;align-items:center;gap:8px;margin-top:6px}
+.sn{width:22px;height:22px;border-radius:7px;background:var(--grn);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.sv{font-size:15px;font-weight:500;color:var(--sec)}
+.steps{display:flex;gap:12px;margin-top:14px}
+.col{flex:1}
+.slbl{font-size:12px;letter-spacing:1.2px;font-weight:700;color:var(--mut)}
+.srow{display:flex;align-items:center;gap:8px;margin-top:6px}
+.sbtn{width:42px;height:42px;border-radius:13px;background:var(--navbg);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--sec)}
+.sval{flex:1;text-align:center}
+.big{font-size:28px;font-weight:800;color:var(--ink)}
+.unit{font-size:12px;font-weight:700;color:var(--mut)}
+.btn{margin-top:14px;background:var(--grn);color:#fff;border-radius:99px;padding:15px;text-align:center;font-size:17px;font-weight:700}
+.btn.dark{background:#211E1A;color:#FFF8EC}
+.hint{font-size:12px;font-weight:700;color:var(--mut);text-align:center;margin-top:10px}
+.rest{background:var(--navbg);border-radius:20px;padding:18px;margin-top:14px}
+.restrow{display:flex;align-items:baseline;justify-content:space-between}
+.restbig{font-size:32px;font-weight:800;color:var(--grn)}
+.bar{height:6px;border-radius:99px;background:var(--bord);margin:10px 0;overflow:hidden}
+.fill{height:6px;border-radius:99px;background:var(--grn)}
+.rbtns{display:flex;gap:8px}
+.rb{flex:1;text-align:center;border-radius:99px;padding:12px;font-size:14px;font-weight:700}
+.rb.line{border:2px solid var(--bord);color:var(--ink)}
+.rb.dark{background:#211E1A;color:#FFF8EC}
+.foot{margin-top:14px}
+</style></head><body>
+
+<!-- A: logging a set -->
+<div class="phone">
+  <div class="hd"><div class="x">✕</div><div><div class="h2">Push day</div><div class="cap">Exercise 2 of 5 · 3 sets logged</div></div></div>
+  <div class="dots"><div class="dot" style="background:var(--grn)"></div><div class="dot" style="background:var(--mut)"></div><div class="dot" style="background:var(--bord)"></div><div class="dot" style="background:var(--bord)"></div><div class="dot" style="background:var(--bord)"></div></div>
+  <div class="card">
+    <div class="exrow"><div class="fig">💪</div><div><div class="exname">Shoulder press</div><div class="exmeta">Shoulders · machine</div><div class="tgt">Target 30 kg × 8</div></div></div>
+    <div class="set"><div class="sn">1</div><div class="sv">30 kg × 8</div></div>
+    <div class="set"><div class="sn">2</div><div class="sv">30 kg × 8</div></div>
+    <div class="steps">
+      <div class="col"><div class="slbl">WEIGHT</div><div class="srow"><div class="sbtn">−</div><div class="sval"><div class="big">30</div><div class="unit">kg</div></div><div class="sbtn">+</div></div></div>
+      <div class="col"><div class="slbl">REPS</div><div class="srow"><div class="sbtn">−</div><div class="sval"><div class="big">8</div><div class="unit">reps</div></div><div class="sbtn">+</div></div></div>
+    </div>
+    <div class="btn">Log set 3</div>
+    <div class="hint">⏱ Suggested rest: 60–90 s · hypertrophy</div>
+  </div>
+  <div class="foot"><div class="btn dark">Next exercise ›</div></div>
+</div>
+
+<!-- B: resting between sets -->
+<div class="phone">
+  <div class="hd"><div class="x">✕</div><div><div class="h2">Push day</div><div class="cap">Exercise 2 of 5 · 4 sets logged</div></div></div>
+  <div class="dots"><div class="dot" style="background:var(--grn)"></div><div class="dot" style="background:var(--grn)"></div><div class="dot" style="background:var(--bord)"></div><div class="dot" style="background:var(--bord)"></div><div class="dot" style="background:var(--bord)"></div></div>
+  <div class="card">
+    <div class="exrow"><div class="fig">💪</div><div><div class="exname">Shoulder press</div><div class="exmeta">Shoulders · machine</div><div class="tgt">Target 30 kg × 8</div></div></div>
+    <div class="set"><div class="sn">1</div><div class="sv">30 kg × 8</div></div>
+    <div class="set"><div class="sn">2</div><div class="sv">30 kg × 8</div></div>
+    <div class="set"><div class="sn">3</div><div class="sv">30 kg × 8</div></div>
+    <div class="rest">
+      <div class="restrow"><div class="slbl">REST</div><div class="restbig">1:12</div></div>
+      <div class="bar"><div class="fill" style="width:80%"></div></div>
+      <div class="rbtns"><div class="rb line">+30s</div><div class="rb dark">Skip rest</div></div>
+    </div>
+  </div>
+  <div class="foot"><div class="btn dark">Next exercise ›</div></div>
+</div>
+
+</body></html>

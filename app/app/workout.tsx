@@ -147,6 +147,16 @@ export default function Workout() {
         </Pressable>
       </View>
 
+      {/* guided-session entry: pick a program and log it set-by-set */}
+      <Pressable onPress={() => router.navigate('/programs')} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
+        <AppText style={{ fontSize: 22 }}>▶️</AppText>
+        <View style={{ flex: 1 }}>
+          <AppText variant="title" color="#fff">Start a guided session</AppText>
+          <AppText variant="caption" color="rgba(255,255,255,0.85)">Full body · Push · Pull · Legs — logged with a rest timer</AppText>
+        </View>
+        <AppText variant="title" color="#fff">›</AppText>
+      </Pressable>
+
       {/* readiness-adjusted recommendation — the differentiator */}
       <View style={{ backgroundColor: adviceBg.bg, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
