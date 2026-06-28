@@ -187,12 +187,14 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
 .sw .water2{position:absolute;left:14px;right:20px;top:64px;height:2px;background:var(--mut);opacity:.5;border-radius:99px}
 .sw .torso{left:42px;top:51px;width:28px;height:11px;transform-origin:left center;transform:rotate(-2deg)}
 .sw .head{left:70px;top:47px;width:15px;height:15px}
-.sw .legA{left:42px;top:53px;width:24px;height:8px;transform-origin:left center;transform:rotate(174deg)}
-.sw .legB{left:42px;top:53px;width:24px;height:8px;transform-origin:left center;transform:rotate(184deg)}
-.sw .armA{left:68px;top:52px;width:22px;height:8px;transform-origin:left center;transform:rotate(120deg)} /* pull, under water */
-.sw .armB{left:68px;top:52px;width:22px;height:8px;transform-origin:left center;transform:rotate(300deg)} /* recover, over water */
-.sw .handA{left:20px;top:-3px;width:7px;height:7px} /* child of armA */
-.sw .handB{left:20px;top:-3px;width:7px;height:7px} /* child of armB */
+.sw .legA{left:42px;top:53px;width:24px;height:8px;transform-origin:left center;transform:rotate(170deg)}
+.sw .legB{left:42px;top:53px;width:24px;height:8px;transform-origin:left center;transform:rotate(188deg)}
+/* each arm is bent at the elbow (and pivots are offset) so the two read as TWO arms, not one spinning baton */
+.sw .uarmA{left:66px;top:53px;width:12px;height:8px;transform-origin:left center;transform:rotate(120deg)} /* pull, under water */
+.sw .foreA{left:12px;top:0;width:12px;height:7px;transform-origin:left center;transform:rotate(45deg)}
+.sw .uarmB{left:69px;top:50px;width:12px;height:8px;transform-origin:left center;transform:rotate(300deg)} /* recover, high elbow over water */
+.sw .foreB{left:12px;top:0;width:12px;height:7px;transform-origin:left center;transform:rotate(45deg)}
+.sw .hand{left:10px;top:-2px;width:7px;height:7px} /* child of forearm */
 /* jump rope: figure mid-hop, the rope orbiting (a circle's bottom arc) under the feet here */
 .jr{position:relative;width:116px;height:116px}
 .jr b{position:absolute;border-radius:99px;background:var(--grn)}
@@ -285,7 +287,8 @@ body{background:#E5DECF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;dis
  <div class="stage"><div class="sw">
   <b class="water"></b><b class="water2"></b>
   <b class="legA"></b><b class="legB"></b><b class="torso"></b><b class="head"></b>
-  <b class="armA"><b class="handA"></b></b><b class="armB"><b class="handB"></b></b>
+  <b class="uarmA"><b class="foreA"><b class="hand"></b></b></b>
+  <b class="uarmB"><b class="foreB"><b class="hand"></b></b></b>
  </div></div>
  <div class="name">🏊 Swimming</div>
 </div>

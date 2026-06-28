@@ -876,11 +876,14 @@ function JumpRope({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
 // makes the reduce-motion still (phase 0.25) a clear mid-stroke (one arm down, one up).
 function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
   const s = size / 116;
-  const armA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 30}deg` }] }; });
-  const armB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 210}deg` }] }; });
-  // flutter kick: legs scissor a few beats per stroke, small amplitude
-  const legA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${174 + 6 * Math.sin(phase.value * 2 * Math.PI * 3)}deg` }] }; });
-  const legB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${184 - 6 * Math.sin(phase.value * 2 * Math.PI * 3)}deg` }] }; });
+  // Each arm is BENT at the elbow (2 Bones) and the two shoulder pivots are offset, so the
+  // pull arm and the recovery arm read as two distinct limbs — not one spinning baton.
+  const uarmA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 30}deg` }] }; });
+  const uarmB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 210}deg` }] }; });
+  const elbow = { transform: [{ rotate: '45deg' }] }; // constant elbow bend
+  // flutter kick: legs scissor a few beats per stroke (splayed bases so two legs are visible)
+  const legA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${170 + 9 * Math.sin(phase.value * 2 * Math.PI * 3)}deg` }] }; });
+  const legB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${188 - 9 * Math.sin(phase.value * 2 * Math.PI * 3)}deg` }] }; });
   const hand = { position: 'absolute' as const, left: -3 * s, top: -3 * s, width: 7 * s, height: 7 * s, borderRadius: 99, backgroundColor: fg };
   return (
     <View style={{ width: size, height: size }}>
@@ -893,9 +896,13 @@ function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size
       {/* horizontal body + head at the front, at the surface */}
       <View style={{ position: 'absolute', left: 42 * s, top: 51 * s, width: 28 * s, height: 11 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-2deg' }] }} />
       <View style={{ position: 'absolute', left: 70 * s, top: 47 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
-      {/* windmilling arms (one pulls under, one recovers over) */}
-      <Bone x={68 * s} y={56 * s} len={22 * s} w={8 * s} color={fg} rot={armA}><View style={hand} /></Bone>
-      <Bone x={68 * s} y={56 * s} len={22 * s} w={8 * s} color={fg} rot={armB}><View style={hand} /></Bone>
+      {/* pull arm (under water) and recovery arm (high elbow over water), each bent at the elbow */}
+      <Bone x={66 * s} y={57 * s} len={12 * s} w={8 * s} color={fg} rot={uarmA}>
+        <Bone x={0} y={0} len={12 * s} w={7 * s} color={fg} rot={elbow}><View style={hand} /></Bone>
+      </Bone>
+      <Bone x={69 * s} y={54 * s} len={12 * s} w={8 * s} color={fg} rot={uarmB}>
+        <Bone x={0} y={0} len={12 * s} w={7 * s} color={fg} rot={elbow}><View style={hand} /></Bone>
+      </Bone>
     </View>
   );
 }
