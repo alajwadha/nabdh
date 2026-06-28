@@ -86,12 +86,18 @@ export function AppText({
   const weight = weightFromStyle(style) ?? String(base.fontWeight ?? '500');
   const arabic = containsArabic(children);
   const fontFamily = (arabic ? ARABIC_FAMILY : LATIN_FAMILY)[weight] ?? (arabic ? 'Tajawal-Regular' : 'Jakarta-Medium');
+  // Arabic script sits taller and shouldn't carry Latin's tight tracking — give it a touch
+  // more line-height and neutral letter-spacing so it breathes. Latin is untouched.
+  const arabicAdjust: TextStyle | null = arabic
+    ? { lineHeight: base.lineHeight ? Math.round(base.lineHeight * 1.18) : undefined, letterSpacing: 0 }
+    : null;
   return (
     <Text
       {...rest}
       style={[
         base,
         { color: color ?? colors.ink, fontFamily, writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr' },
+        arabicAdjust,
         style,
       ]}
     >

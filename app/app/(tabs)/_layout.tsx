@@ -68,9 +68,13 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         </Glass>
         <Pressable
           onPress={() => setMenu(true)}
-          style={{ width: 56, height: 56, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' }}
+          style={{ borderRadius: 22, shadowColor: colors.accent, shadowOpacity: 0.35, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 6 }}
         >
-          <Icon name="plus" size={26} color="#fff" stroke={2.4} />
+          <View style={{ width: 56, height: 56, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.22)' }}>
+            {/* soft top sheen to match the glass language without losing CTA prominence */}
+            <View pointerEvents="none" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 26, backgroundColor: 'rgba(255,255,255,0.14)' }} />
+            <Icon name="plus" size={26} color="#fff" stroke={2.4} />
+          </View>
         </Pressable>
       </View>
 

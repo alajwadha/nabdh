@@ -38,7 +38,7 @@ export function Glass({ children, style, radius = radii.xl, intensity, scrim = '
   // (Only affects the BLUR path; the solid fallback is always near-opaque.)
   const fillAlpha = scrim === 'strong' ? (dark ? 0.55 : 0.6) : dark ? 0.32 : 0.4;
   const fill = dark ? `rgba(28,24,18,${fillAlpha})` : `rgba(255,251,244,${fillAlpha})`;
-  const edge = dark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.6)';
+  const edge = dark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.6)';
   const inten = intensity ?? (dark ? 42 : 32);
   // Carry any explicit per-corner radii from `style` onto the blur clip so it matches the
   // outer shape (e.g. a sheet with rounded top, square bottom).
@@ -57,7 +57,7 @@ export function Glass({ children, style, radius = radii.xl, intensity, scrim = '
         <BlurView intensity={inten} tint={tint} experimentalBlurMethod="dimezisBlurView" style={inner}>
           {/* tint wash for legibility + a faint top specular highlight */}
           <View style={[StyleSheet.absoluteFill, { backgroundColor: fill }]} pointerEvents="none" />
-          <View style={[StyleSheet.absoluteFill, { borderTopWidth: 1.5, borderTopColor: dark ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.5)', borderRadius: radius }]} pointerEvents="none" />
+          <View style={[StyleSheet.absoluteFill, { borderTopWidth: 1.5, borderTopColor: dark ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.55)', borderRadius: radius }]} pointerEvents="none" />
           {children}
         </BlurView>
       </View>
