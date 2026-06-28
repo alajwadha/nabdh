@@ -4,6 +4,7 @@ import Animated, {
   Easing,
   cancelAnimation,
   useAnimatedStyle,
+  useDerivedValue,
   useReducedMotion,
   useSharedValue,
   withRepeat,
@@ -452,15 +453,23 @@ function Cycling({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; s
   const cx = 58 * s, cy = 72 * s, r = 11 * s; // crank centre + radius
   const hx = 44 * s, hy = 48 * s, L1 = 22 * s, L2 = 22 * s; // hip on the saddle, leg lengths
   const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
-  // each leg's foot orbits the crank; IK solves thigh + shin to keep the foot on the pedal
-  const thighA = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).thigh}deg` }] }; });
-  const shinA = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).shinRel}deg` }] }; });
-  const thighB = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).thigh}deg` }] }; });
-  const shinB = useAnimatedStyle(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return { transform: [{ rotate: `${legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1).shinRel}deg` }] }; });
+  // each leg's foot orbits the crank; solve the 2-bar IK ONCE per leg, consume in thigh+shin
+  const ikA = useDerivedValue(() => { 'worklet'; const t = phase.value * 2 * Math.PI; return legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1); });
+  const ikB = useDerivedValue(() => { 'worklet'; const t = phase.value * 2 * Math.PI + Math.PI; return legIK(hx, hy, cx + r * Math.cos(t), cy + r * Math.sin(t), L1, L2, -1); });
+  const thighA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.thigh}deg` }] }; });
+  const shinA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.shinRel}deg` }] }; });
+  const thighB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.thigh}deg` }] }; });
+  const shinB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikB.value.shinRel}deg` }] }; });
   const foot = { position: 'absolute' as const, left: 18 * s, top: -2 * s, width: 11 * s, height: 6 * s, borderRadius: 3 * s, backgroundColor: fg };
   const wheel = (left: number) => ({ position: 'absolute' as const, left, top: 71 * s, width: 30 * s, height: 30 * s, borderRadius: 99, borderWidth: 4 * s, borderColor: equip });
   return (
     <View style={{ width: size, height: size }}>
+      {/* far leg first + dimmed, so it reads as behind the bike */}
+      <View style={{ position: 'absolute', left: 0, top: 0, width: size, height: size, opacity: 0.55 }}>
+        <Bone x={hx} y={hy} len={22 * s} w={8 * s} color={fg} rot={thighB}>
+          <Bone x={0} y={0} len={22 * s} w={8 * s} color={fg} rot={shinB}><View style={foot} /></Bone>
+        </Bone>
+      </View>
       {/* bike: wheels, frame tubes, crank (mid-tone so it reads as apparatus) */}
       <View style={wheel(11 * s)} />
       <View style={wheel(75 * s)} />
@@ -470,10 +479,6 @@ function Cycling({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; s
       <Bone x={80 * s} y={46 * s} len={41 * s} w={4 * s} color={equip} rot={stat(76)} />
       <Bone x={44 * s} y={48 * s} len={36 * s} w={4 * s} color={equip} rot={stat(-3)} />
       <View style={{ position: 'absolute', left: 55 * s, top: 69 * s, width: 7 * s, height: 7 * s, borderRadius: 99, backgroundColor: equip }} />
-      {/* far leg (behind the frame) */}
-      <Bone x={hx} y={hy} len={22 * s} w={8 * s} color={fg} rot={thighB}>
-        <Bone x={0} y={0} len={22 * s} w={8 * s} color={fg} rot={shinB}><View style={foot} /></Bone>
-      </Bone>
       {/* rider: torso leaning to the bars, head, arm */}
       <Bone x={44 * s} y={48 * s} len={22 * s} w={9 * s} color={fg} rot={stat(-34)} />
       <View style={{ position: 'absolute', left: 56 * s, top: 22 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
