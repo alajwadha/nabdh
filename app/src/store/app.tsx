@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TileColor } from '../design-system';
-import { bmr, calorieBudget, macroTargets, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
+import { bmr, calorieBudget, hydrationGlasses, macroTargets, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
 
 export type MetricKey =
   | 'rhr'
@@ -80,6 +80,7 @@ type AppState = {
   toggleTask: (key: string) => void;
 
   water: number;
+  waterGoal: number;
   addWater: () => void;
 
   meals: Meal[];
@@ -103,6 +104,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [water, setWater] = useState(3);
   const [meals, setMeals] = useState<Meal[]>(DEFAULT_MEALS);
   const [body, setBodyState] = useState<Body>(DEFAULT_BODY);
+  const waterGoal = hydrationGlasses(body.weightKg);
 
   useEffect(() => {
     AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body']).then((pairs) => {
@@ -151,7 +153,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const toggleTask = (key: string) =>
     setPlan((p) => p.map((t) => (t.key === key ? { ...t, done: !t.done } : t)));
 
-  const addWater = () => setWater((w) => Math.min(8, w + 1));
+  const addWater = () => setWater((w) => Math.min(waterGoal, w + 1));
 
   const addMeal = (m: Meal) => setMeals((arr) => [...arr, m]);
 
@@ -179,6 +181,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     plan,
     toggleTask,
     water,
+    waterGoal,
     addWater,
     meals,
     addMeal,

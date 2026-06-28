@@ -12,7 +12,7 @@ const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 
 export default function Food() {
   const { colors, tiles } = useTheme();
-  const { water, addWater, meals, kcal, macros, macroGoals, budget } = useAppState();
+  const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget } = useAppState();
   const left = Math.max(0, budget - kcal);
 
   const macroRows: [string, number, keyof typeof MACRO_COLORS][] = [
@@ -62,11 +62,11 @@ export default function Food() {
 
       <Card>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4 }}>
-          WATER · GOAL 8 GLASSES
+          WATER · GOAL {waterGoal} GLASSES (~{((waterGoal * 250) / 1000).toFixed(1)} L)
         </AppText>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-          <View style={{ flexDirection: 'row', gap: 6, flex: 1 }}>
-            {Array.from({ length: 8 }).map((_, i) => (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, flex: 1 }}>
+            {Array.from({ length: waterGoal }).map((_, i) => (
               <View
                 key={i}
                 style={{ width: 20, height: 27, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderBottomLeftRadius: 9, borderBottomRightRadius: 9, borderWidth: 2, backgroundColor: i < water ? '#9CCFE8' : colors.navBg, borderColor: i < water ? '#6FB4D8' : colors.border }}

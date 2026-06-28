@@ -94,6 +94,11 @@ export function relativeStrength(e1rm: number, bodyweightKg: number): number {
   return bodyweightKg > 0 ? Math.round((e1rm / bodyweightKg) * 100) / 100 : 0;
 }
 
+/** Daily water goal in 250 ml glasses (~35 ml/kg), clamped to a sane 6–14. */
+export function hydrationGlasses(weightKg: number): number {
+  return Math.max(6, Math.min(14, Math.round((weightKg * 35) / 250)));
+}
+
 export function bmi(weightKg: number, heightCm: number): { value: number; band: string } {
   const v = heightCm > 0 ? weightKg / (heightCm / 100) ** 2 : 0;
   const band = v < 18.5 ? 'Underweight' : v < 25 ? 'Healthy' : v < 30 ? 'Overweight' : 'Obese';
