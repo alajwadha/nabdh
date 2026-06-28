@@ -8,6 +8,7 @@ import { useTheme } from '../src/design-system/theme';
 import { useHealth } from '../src/store/health';
 import { useWorkouts } from '../src/store/workouts';
 import { useAppState } from '../src/store/app';
+import { MoveViz } from '../src/components/MoveViz';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
 import {
   EXERCISES,
@@ -291,6 +292,10 @@ export default function Workout() {
           </ScrollView>
 
           <Card>
+            {/* moving glyph of the selected sport (runner stride, etc.) */}
+            <View style={{ alignItems: 'center', backgroundColor: colors.navBg, borderRadius: radii.lg, paddingVertical: 6, marginBottom: spacing.md }}>
+              <MoveViz kind={sport.key} size={108} />
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <AppText variant="title">{sport.emoji} {sport.name}</AppText>
               <Stepper label="min" value={minutes} onMinus={() => setMinutes((m) => Math.max(5, m - 5))} onPlus={() => setMinutes((m) => m + 5)} colors={colors} />
