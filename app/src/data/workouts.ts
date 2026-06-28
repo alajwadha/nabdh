@@ -129,6 +129,18 @@ export function platesPerSide(totalKg: number, barKg = 20): number[] {
   return out;
 }
 
+/** Warm-up ramp up to a top working weight: bar → 50% → 70% → 85%, rounded to 2.5 kg. */
+export function warmupRamp(topKg: number, barKg = 20): { weight: number; reps: number }[] {
+  if (topKg <= barKg) return [];
+  const round = (w: number) => Math.max(barKg, Math.round(w / 2.5) * 2.5);
+  return [
+    { weight: barKg, reps: 8 },
+    { weight: round(topKg * 0.5), reps: 5 },
+    { weight: round(topKg * 0.7), reps: 3 },
+    { weight: round(topKg * 0.85), reps: 1 },
+  ].filter((w, i, a) => i === 0 || w.weight > a[i - 1].weight); // strictly increasing
+}
+
 // --- Catalogs ---------------------------------------------------------------
 export const EXERCISES: Exercise[] = [
   { key: 'legpress', name: 'Leg press', nameAr: 'دفع الأرجل', muscle: 'legs', equipment: 'machine', emoji: '🦵' },
