@@ -117,6 +117,7 @@ export default function Profile() {
         <Row icon="wind" label="Breathe" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/breathe")} />
         <Row icon="users" label="Friends & challenges" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate("/social")} />
         <Row icon="dumbbell" label="Workout programs" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/programs')} />
+        <Row icon="map-pin" label="Track outdoors (GPS)" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/track')} />
         <Row icon="moon-star" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
         <Row icon="church" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
         <Row icon={mode === 'dark' ? 'sun-medium' : 'moon'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last />
