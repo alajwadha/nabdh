@@ -29,6 +29,8 @@ export function ConsentGate({
         <Button label={t('consent.allow')} onPress={() => onDecide(true)} />
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={t('consent.decline')}
+          hitSlop={8}
           onPress={() => onDecide(false)}
           style={{ alignItems: 'center', paddingVertical: spacing.sm }}
         >

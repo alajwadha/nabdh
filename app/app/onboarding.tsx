@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { GOAL_TYPES, type ConsentType, type GoalType } from '@nabdh/shared';
 import { Screen, Card, AppText, Button } from '../src/design-system/components';
+import { Icon } from '../src/components/Icon';
 import { colors, radii, spacing } from '../src/design-system';
 import { useAuth } from '../src/auth/AuthProvider';
 import { ConsentGate } from '../src/features/consent/ConsentGate';
@@ -25,6 +26,14 @@ export default function Onboarding() {
 
   const decide = (type: ConsentType, granted: boolean) =>
     setConsents((prev) => ({ ...prev, [type]: granted }));
+
+  // Re-open a decided consent so the choice can be changed before finishing.
+  const reopen = (type: ConsentType) =>
+    setConsents((prev) => {
+      const next = { ...prev };
+      delete next[type];
+      return next;
+    });
 
   const pdplGranted = consents.pdpl_processing === true;
 
@@ -55,6 +64,9 @@ export default function Onboarding() {
             <Pressable
               key={g}
               accessibilityRole="button"
+              accessibilityLabel={t(`goal.${g}`)}
+              accessibilityState={{ selected: active }}
+              hitSlop={6}
               onPress={() => toggleGoal(g)}
               style={{
                 paddingVertical: spacing.sm,
@@ -79,9 +91,26 @@ export default function Onboarding() {
           <ConsentGate key={type} type={type} onDecide={(g) => decide(type, g)} />
         ) : (
           <Card key={type}>
-            <AppText variant="caption" color={consents[type] ? colors.accent : colors.textMuted}>
-              {t(CONSENT_I18N[type].titleKey)} {consents[type] ? 'âœ“' : 'Ã-'}
-            </AppText>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+              <View
+                accessible
+                accessibilityLabel={`${t(CONSENT_I18N[type].titleKey)}, ${consents[type] ? 'granted' : 'declined'}`}
+                style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: consents[type] ? colors.accentDim : colors.border, alignItems: 'center', justifyContent: 'center' }}
+              >
+                <Icon name={consents[type] ? 'check' : 'x'} size={15} color={consents[type] ? colors.accent : colors.textMuted} />
+              </View>
+              <AppText variant="caption" color={consents[type] ? colors.accent : colors.textMuted} style={{ flex: 1 }}>
+                {t(CONSENT_I18N[type].titleKey)}
+              </AppText>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Change ${t(CONSENT_I18N[type].titleKey)}`}
+                hitSlop={8}
+                onPress={() => reopen(type)}
+              >
+                <AppText variant="caption" color={colors.textSecondary}>Change</AppText>
+              </Pressable>
+            </View>
           </Card>
         ),
       )}
