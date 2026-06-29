@@ -31,6 +31,12 @@
         }
       ],
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Nabdh uses the camera to scan food barcodes so it can look up nutrition facts. Photos are not stored or uploaded."
+        }
+      ],
+      [
         "@kingstinct/react-native-healthkit",
         {
           "NSHealthShareUsageDescription": "Nabdh reads your steps, heart rate, sleep, and energy from Apple Health to show your dashboard and personalize coaching. Your health data stays on your device unless you explicitly consent to AI coaching.",

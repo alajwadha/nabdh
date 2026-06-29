@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText, Button, Card, Screen, Sheet } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
@@ -8,6 +8,7 @@ import { Icon } from '../src/components/Icon';
 import { useAppState } from '../src/store/app';
 import { searchDishes, type Dish } from '../src/data/dishes';
 import { barcodeAvailable, ensureCameraPermission, getCameraView } from '../src/services/barcode';
+import { lookupBarcode, type FoodProduct } from '../src/services/openfoodfacts';
 
 function nowLabel(): string {
   const d = new Date();
@@ -27,6 +28,9 @@ export default function FoodSearch() {
   const [added, setAdded] = useState<string | null>(null);
   const [scan, setScan] = useState(false);
   const [scanMsg, setScanMsg] = useState<string | null>(null);
+  const [scanning, setScanning] = useState(false);
+  const [scanned, setScanned] = useState<FoodProduct | null>(null);
+  const lastCode = useRef('');
   const [photo, setPhoto] = useState(false);
   const results = useMemo(() => searchDishes(q), [q]);
 
@@ -39,6 +43,8 @@ export default function FoodSearch() {
 
   const openScanner = async () => {
     setScanMsg(null);
+    setScanned(null);
+    lastCode.current = '';
     if (!barcodeAvailable()) {
       setScan(true);
       return;
@@ -52,9 +58,24 @@ export default function FoodSearch() {
     setScan(true);
   };
 
-  const onScanned = (code: string) => {
-    // We don't ship a packaged-food database, be honest, never invent macros.
-    setScanMsg(`No match for ${code}. Search the dish above or add it manually.`);
+  const onScanned = async (code: string) => {
+    // onBarcodeScanned fires every frame; ignore repeats of the same code and re-entry.
+    if (!code || code === lastCode.current || scanning) return;
+    lastCode.current = code;
+    setScanning(true);
+    setScanMsg(null);
+    setScanned(null);
+    const product = await lookupBarcode(code);
+    setScanning(false);
+    if (product) setScanned(product);
+    else setScanMsg(`No match for ${code}. Search the dish above or add it manually.`);
+  };
+
+  const addProduct = (p: FoodProduct) => {
+    addMeal({ id: `off-${Date.now()}`, name: p.brand ? `${p.name} (${p.brand})` : p.name, meta: `${nowLabel()} · ${p.serving}`, kcal: p.kcal, color: 'blue', protein: p.protein, carbs: p.carbs, fat: p.fat });
+    setAdded(p.name);
+    setScan(false);
+    setScanned(null);
   };
 
   const CameraView = getCameraView();
@@ -155,6 +176,30 @@ export default function FoodSearch() {
           <AppText variant="caption" color={colors.textMuted} style={{ lineHeight: 18 }}>
             Barcode scanning needs the full app build with the camera, so it won’t open in this preview. You can still search dishes above.
           </AppText>
+        )}
+        {scanning && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: spacing.md }}>
+            <ActivityIndicator color={colors.accent} />
+            <AppText variant="caption" color={colors.textSecondary}>Looking up the barcode…</AppText>
+          </View>
+        )}
+        {scanned && (
+          <View style={{ marginTop: spacing.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.lg, padding: spacing.md, gap: spacing.sm }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+              <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: tiles.blue.bg, alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name="scan-barcode" size={19} color={tiles.blue.ink} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <AppText variant="title" style={{ fontSize: 15 }}>{scanned.name}</AppText>
+                <AppText variant="caption" color={colors.textMuted}>{scanned.brand ? `${scanned.brand} · ` : ''}{scanned.serving} · P{scanned.protein} C{scanned.carbs} F{scanned.fat}</AppText>
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                <AppText variant="metric" style={{ fontSize: 17, lineHeight: 20 }}>{scanned.kcal}</AppText>
+                <AppText variant="caption" color={colors.textMuted}>kcal</AppText>
+              </View>
+            </View>
+            <Button label={`Add ${scanned.name.length > 22 ? 'to log' : scanned.name}`} onPress={() => addProduct(scanned)} />
+          </View>
         )}
         {scanMsg && (
           <AppText variant="caption" color={colors.textSecondary} style={{ marginTop: spacing.md, lineHeight: 18 }}>{scanMsg}</AppText>
