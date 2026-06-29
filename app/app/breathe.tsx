@@ -123,7 +123,7 @@ export default function Breathe() {
   return (
     <Screen scroll={!active}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => (active ? stop() : router.back())} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel={active ? 'Stop' : 'Back'} hitSlop={8} onPress={() => (active ? stop() : router.back())} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name={active ? 'x' : 'chevron-left'} size={active ? 20 : 22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Breathe</AppText>

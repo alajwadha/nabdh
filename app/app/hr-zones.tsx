@@ -115,7 +115,7 @@ export default function HrZones() {
   return (
     <Screen scroll={!live}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => (live ? stop() : router.back())} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel={live ? 'Stop' : 'Back'} hitSlop={8} onPress={() => (live ? stop() : router.back())} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name={live ? 'x' : 'chevron-left'} size={live ? 20 : 22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Heart-rate zones</AppText>
@@ -210,11 +210,11 @@ export default function HrZones() {
           Defaults to 220 - your age ({maxHrFromAge(body.age)} bpm). Set it manually if you know your tested max.
         </AppText>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.md, marginBottom: spacing.lg }}>
-          <Pressable onPress={() => setDraftMax((m) => Math.max(120, m - 1))} hitSlop={6} style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable onPress={() => setDraftMax((m) => Math.max(120, m - 1))} hitSlop={6} accessibilityRole="button" accessibilityLabel="Decrease max heart rate" style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="minus" size={18} color={colors.textSecondary} />
           </Pressable>
           <AppText variant="metric" style={{ fontSize: 36, lineHeight: 40, minWidth: 90, textAlign: 'center' }}>{draftMax}</AppText>
-          <Pressable onPress={() => setDraftMax((m) => Math.min(220, m + 1))} hitSlop={6} style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable onPress={() => setDraftMax((m) => Math.min(220, m + 1))} hitSlop={6} accessibilityRole="button" accessibilityLabel="Increase max heart rate" style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="plus" size={18} color={colors.textSecondary} />
           </Pressable>
         </View>

@@ -39,7 +39,7 @@ export default function Shortcuts() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Shortcuts</AppText>
@@ -58,7 +58,7 @@ export default function Shortcuts() {
             <AppText variant="title">Home-screen actions</AppText>
             <AppText variant="caption" color={colors.textMuted}>Long-press the Nabdh icon for these</AppText>
           </View>
-          <Pressable onPress={toggle} disabled={!available} hitSlop={8} style={{ opacity: available ? 1 : 0.4 }}>
+          <Pressable onPress={toggle} disabled={!available} hitSlop={8} accessibilityRole="switch" accessibilityLabel="Home-screen actions" accessibilityState={{ checked: enabled && available, disabled: !available }} style={{ opacity: available ? 1 : 0.4 }}>
             <Toggle on={enabled && available} />
           </Pressable>
         </View>

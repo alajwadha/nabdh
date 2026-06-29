@@ -186,6 +186,7 @@ export function Button({
   return (
     <AnimatedPressable
       accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       onPressIn={() => {
         scale.value = withSpring(0.96, motion.spring);
@@ -253,6 +254,8 @@ export function Chip({
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={onPress ? label : undefined}
       style={{
         backgroundColor: bg ?? colors.navBg,
         borderRadius: radii.pill,
@@ -315,7 +318,7 @@ export function Sheet({
 
 /** Animated switch: the thumb springs across and the track colour transitions. One shared
  * component (was duplicated inline in 3 screens). Pure display, wrap in a Pressable to toggle. */
-export function Toggle({ on }: { on: boolean }) {
+export function Toggle({ on, accessibilityLabel }: { on: boolean; accessibilityLabel?: string }) {
   const { colors } = useTheme();
   const p = useSharedValue(on ? 1 : 0);
   useEffect(() => {
@@ -324,7 +327,12 @@ export function Toggle({ on }: { on: boolean }) {
   const track = useAnimatedStyle(() => ({ backgroundColor: interpolateColor(p.value, [0, 1], [colors.border, colors.accent]) }));
   const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: 3 + p.value * 19 }] }));
   return (
-    <Animated.View style={[{ width: 46, height: 27, borderRadius: 99, justifyContent: 'center' }, track]}>
+    <Animated.View
+      accessibilityRole="switch"
+      accessibilityState={{ checked: on }}
+      accessibilityLabel={accessibilityLabel}
+      style={[{ width: 46, height: 27, borderRadius: 99, justifyContent: 'center' }, track]}
+    >
       <Animated.View style={[{ width: 21, height: 21, borderRadius: 99, backgroundColor: '#fff', shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 2.5, shadowOffset: { width: 0, height: 1 }, elevation: 2 }, thumb]} />
     </Animated.View>
   );
@@ -361,7 +369,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange, d
       {options.map((o) => {
         const sel = o.value === value;
         return (
-          <Pressable key={o.value} onPress={() => onChange(o.value)} style={{ flex: 1, flexDirection: 'row', gap: 6, paddingVertical: 9, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable key={o.value} onPress={() => onChange(o.value)} accessibilityRole="button" accessibilityLabel={o.label} accessibilityState={{ selected: sel }} style={{ flex: 1, flexDirection: 'row', gap: 6, paddingVertical: 9, alignItems: 'center', justifyContent: 'center' }}>
             {o.icon && <Icon name={o.icon} size={15} color={fg(sel)} />}
             <AppText variant="caption" color={fg(sel)} style={{ fontSize: 12.5 }}>{o.label}</AppText>
           </Pressable>
@@ -380,6 +388,7 @@ export function PressCard({ onPress, onLongPress, children, style }: { onPress?:
     <AnimatedPressable
       onPress={onPress}
       onLongPress={onLongPress}
+      accessibilityRole={onPress ? 'button' : undefined}
       onPressIn={() => { scale.value = withSpring(0.98, motion.spring); }}
       onPressOut={() => { scale.value = withSpring(1, motion.spring); }}
       style={[

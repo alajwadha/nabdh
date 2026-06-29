@@ -27,7 +27,7 @@ function bump(time: string, deltaMin: number) {
 function TimeStepper({ time, onChange, dim }: { time: string; onChange: (t: string) => void; dim: boolean }) {
   const { colors } = useTheme();
   const Btn = ({ label, d }: { label: string; d: number }) => (
-    <Pressable onPress={() => onChange(bump(time, d))} hitSlop={8} style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+    <Pressable onPress={() => onChange(bump(time, d))} hitSlop={8} accessibilityRole="button" accessibilityLabel={label === '+' ? 'Later by 30 minutes' : 'Earlier by 30 minutes'} style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
       <Icon name={label === '+' ? 'plus' : 'minus'} size={15} color={colors.textSecondary} />
     </Pressable>
   );
@@ -71,7 +71,7 @@ export default function Reminders() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Reminders</AppText>
@@ -109,7 +109,7 @@ export default function Reminders() {
                 <AppText variant="title">{copy.label}</AppText>
                 {r.enabled && <TimeStepper time={r.time} dim={false} onChange={(t) => setReminder(key, { time: t })} />}
               </View>
-              <Pressable onPress={() => setReminder(key, { enabled: !r.enabled })}>
+              <Pressable onPress={() => setReminder(key, { enabled: !r.enabled })} accessibilityRole="switch" accessibilityLabel={copy.label} accessibilityState={{ checked: r.enabled }} hitSlop={8}>
                 <Toggle on={r.enabled} />
               </Pressable>
             </View>
@@ -128,7 +128,7 @@ export default function Reminders() {
               {hydration.enabled ? `Every ${hydration.everyHours}h · ${fmt(`${hydration.startHour}:00`)}-${fmt(`${hydration.endHour}:00`)}` : 'Repeating reminders across the day'}
             </AppText>
           </View>
-          <Pressable onPress={() => setHydration({ enabled: !hydration.enabled })}>
+          <Pressable onPress={() => setHydration({ enabled: !hydration.enabled })} accessibilityRole="switch" accessibilityLabel="Drink water" accessibilityState={{ checked: hydration.enabled }} hitSlop={8}>
             <Toggle on={hydration.enabled} />
           </Pressable>
         </View>

@@ -21,7 +21,7 @@ const TAB_LABELS: Record<string, string> = {
 function QuickMenuRow({ icon, bg, title, subtitle, onPress }: { icon: IconName; bg: string; title: string; subtitle: string; onPress: () => void }) {
   const { colors } = useTheme();
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={title} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}>
       <View style={{ width: 44, height: 44, borderRadius: 15, backgroundColor: bg, alignItems: 'center', justifyContent: 'center' }}>
         <Icon name={icon} size={20} color={colors.ink} />
       </View>
@@ -56,6 +56,9 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
                 <Pressable
                   key={route.key}
                   onPress={() => navigation.navigate(route.name)}
+                  accessibilityRole="tab"
+                  accessibilityLabel={t(TAB_LABELS[route.name])}
+                  accessibilityState={{ selected: focused }}
                   style={{ flex: 1, alignItems: 'center', paddingVertical: 12, borderRadius: 999, backgroundColor: focused ? colors.navOn : 'transparent' }}
                 >
                   <AppText variant="caption" color={focused ? colors.navOnText : colors.textSecondary} style={{ fontSize: 12.5 }}>
@@ -68,6 +71,8 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         </Glass>
         <Pressable
           onPress={() => setMenu(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Quick actions"
           style={{ borderRadius: 22, shadowColor: colors.accent, shadowOpacity: 0.35, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 6 }}
         >
           <View style={{ width: 56, height: 56, borderRadius: 22, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.22)' }}>

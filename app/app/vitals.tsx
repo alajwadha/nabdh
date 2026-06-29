@@ -11,7 +11,7 @@ import { useHealthLogs, dayKey, type Med } from '../src/store/health-logs';
 function Stepper({ value, unit, step, onStep, accent }: { value: number; unit: string; step: number; onStep: (d: number) => void; accent: string }) {
   const { colors } = useTheme();
   const Btn = ({ t, d }: { t: string; d: number }) => (
-    <Pressable onPress={() => onStep(d)} hitSlop={6} style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+    <Pressable onPress={() => onStep(d)} hitSlop={6} accessibilityRole="button" accessibilityLabel={t === '+' ? 'Increase' : 'Decrease'} style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
       <Icon name={t === '+' ? 'plus' : 'minus'} size={16} color={colors.textSecondary} />
     </Pressable>
   );
@@ -73,7 +73,7 @@ export default function Vitals() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Vitals & meds</AppText>
@@ -101,7 +101,7 @@ export default function Vitals() {
       <Card style={{ gap: spacing.sm }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>MEDICATIONS & SUPPLEMENTS</AppText>
-          <Pressable onPress={() => setAddOpen(true)} hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <Pressable onPress={() => setAddOpen(true)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Add medication" style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Icon name="plus" size={15} color={colors.accentText} />
             <AppText variant="caption" color={colors.accentText}>Add</AppText>
           </Pressable>
@@ -122,7 +122,7 @@ export default function Vitals() {
                   {streak > 0 && <Icon name="flame" size={11} color={colors.textMuted} />}
                 </View>
               </View>
-              <Pressable onPress={() => toggleMedToday(m.id)} onLongPress={() => removeMed(m.id)} style={{ width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: taken ? colors.accent : colors.border, backgroundColor: taken ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
+              <Pressable onPress={() => toggleMedToday(m.id)} onLongPress={() => removeMed(m.id)} accessibilityRole="checkbox" accessibilityLabel={`${m.name} taken today`} accessibilityHint="Double tap to toggle, long press to remove" accessibilityState={{ checked: taken }} hitSlop={6} style={{ width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: taken ? colors.accent : colors.border, backgroundColor: taken ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
                 {taken && <Icon name="check" size={18} color={colors.accentInk} />}
               </Pressable>
             </View>
@@ -159,7 +159,7 @@ export default function Vitals() {
         <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: spacing.md }}>Pick a common one to start tracking it daily.</AppText>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg }}>
           {COMMON.map((name, i) => (
-            <Pressable key={name} onPress={() => setNewMed(i)} style={{ paddingVertical: 9, paddingHorizontal: 14, borderRadius: 99, backgroundColor: newMed === i ? colors.accent : colors.navBg }}>
+            <Pressable key={name} onPress={() => setNewMed(i)} accessibilityRole="button" accessibilityLabel={name} accessibilityState={{ selected: newMed === i }} style={{ paddingVertical: 9, paddingHorizontal: 14, borderRadius: 99, backgroundColor: newMed === i ? colors.accent : colors.navBg }}>
               <AppText variant="caption" color={newMed === i ? colors.accentInk : colors.ink}>{name}</AppText>
             </Pressable>
           ))}

@@ -25,10 +25,16 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
   );
 }
 
-function Row({ icon, label, right, onPress, last }: { icon: IconName; label: string; right?: React.ReactNode; onPress?: () => void; last?: boolean }) {
+function Row({ icon, label, right, onPress, last, switchOn }: { icon: IconName; label: string; right?: React.ReactNode; onPress?: () => void; last?: boolean; switchOn?: boolean }) {
   const { colors } = useTheme();
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 14, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole={switchOn === undefined ? (onPress ? 'button' : undefined) : 'switch'}
+      accessibilityLabel={onPress ? label : undefined}
+      accessibilityState={switchOn === undefined ? undefined : { checked: switchOn }}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 14, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}
+    >
       <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
         <Icon name={icon} size={18} color={colors.textSecondary} />
       </View>
@@ -90,7 +96,7 @@ export default function Profile() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Profile</AppText>
@@ -124,9 +130,9 @@ export default function Profile() {
         <Row icon="sunrise" label="Your day (prayer plan)" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/day-plan')} />
         <Row icon="heart-pulse" label="Heart-rate zones" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/hr-zones')} />
         <Row icon="zap" label="Shortcuts & voice" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/shortcuts')} />
-        <Row icon="moon-star" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} />
-        <Row icon="church" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} />
-        <Row icon={mode === 'dark' ? 'sun-medium' : 'moon'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last />
+        <Row icon="moon-star" label="Ramadan mode" right={<Toggle on={ramadan} />} onPress={() => setRamadan(!ramadan)} switchOn={ramadan} />
+        <Row icon="church" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} switchOn={showPrayers} />
+        <Row icon={mode === 'dark' ? 'sun-medium' : 'moon'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last switchOn={mode === 'dark'} />
       </Group>
 
       <Group title="CONNECTED DEVICES">
@@ -206,7 +212,7 @@ export default function Profile() {
               </AppText>
             </View>
             {PERMS[connect].rows.map(([icon, label]) => (
-              <View key={label} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 11, borderBottomWidth: 2, borderBottomColor: colors.border }}>
+              <View key={label} accessible accessibilityLabel={`${label}, enabled`} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 11, borderBottomWidth: 2, borderBottomColor: colors.border }}>
                 <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name={icon} size={17} color={colors.textSecondary} />
                 </View>

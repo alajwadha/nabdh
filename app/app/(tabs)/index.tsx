@@ -163,6 +163,9 @@ export default function Today() {
         </AppText>
         <Pressable
           onPress={() => setShowPrayers(!showPrayers)}
+          accessibilityRole="switch"
+          accessibilityLabel={t('home.prayerStrip')}
+          accessibilityState={{ checked: showPrayers }}
           style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}
         >
           <View style={{ width: 38, height: 38, borderRadius: 13, backgroundColor: tilePalette.mint.bg, alignItems: 'center', justifyContent: 'center' }}>
@@ -180,6 +183,9 @@ export default function Today() {
           <Pressable
             key={k}
             onPress={() => toggleTile(k)}
+            accessibilityRole="switch"
+            accessibilityLabel={METRICS[k].label}
+            accessibilityState={{ checked: tiles.includes(k) }}
             style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: colors.border }}
           >
             <View style={{ width: 38, height: 38, borderRadius: 13, backgroundColor: tilePalette[METRICS[k].color].bg, alignItems: 'center', justifyContent: 'center' }}>

@@ -83,7 +83,7 @@ export default function FoodSearch() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Add food</AppText>
@@ -103,7 +103,7 @@ export default function FoodSearch() {
           style={{ flex: 1, color: colors.ink, fontSize: 15, fontFamily: 'Jakarta-Medium' }}
         />
         {q.length > 0 && (
-          <Pressable onPress={() => setQ('')} hitSlop={8}>
+          <Pressable onPress={() => setQ('')} hitSlop={8} accessibilityRole="button" accessibilityLabel="Clear search">
             <Icon name="x" size={16} color={colors.textMuted} />
           </Pressable>
         )}
@@ -139,7 +139,7 @@ export default function FoodSearch() {
         results.map((d) => {
           const t = tintFor(d.color);
           return (
-            <Pressable key={d.id} onPress={() => add(d)} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.lg, padding: spacing.md }}>
+            <Pressable key={d.id} onPress={() => add(d)} accessibilityRole="button" accessibilityLabel={`Add ${d.name}, ${d.kcal} kcal`} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, borderRadius: radii.lg, padding: spacing.md }}>
               <View style={{ width: 44, height: 44, borderRadius: 13, backgroundColor: t.bg, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name="utensils" size={19} color={t.ink} />
               </View>

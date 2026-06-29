@@ -99,6 +99,8 @@ export function AddTile({ onPress }: { onPress: () => void }) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel="Add metric"
       style={{
         borderRadius: radii.xl,
         borderWidth: 2,
@@ -136,7 +138,7 @@ export function PrayerStrip({
         {PRAYERS.map((p) => {
           const on = p.key === highlight;
           return (
-            <View key={p.key} style={{ flex: 1, alignItems: 'center', borderRadius: radii.sm, paddingVertical: 7, backgroundColor: on ? colors.accent : 'transparent' }}>
+            <View key={p.key} accessible accessibilityLabel={`${p.label} ${shortLabel(p.time)}`} style={{ flex: 1, alignItems: 'center', borderRadius: radii.sm, paddingVertical: 7, backgroundColor: on ? colors.accent : 'transparent' }}>
               <AppText variant="caption" color={on ? '#fff' : colors.textSecondary} style={{ fontSize: 9, letterSpacing: 0.6 }}>
                 {p.label.toUpperCase()}
               </AppText>
@@ -169,6 +171,9 @@ export function PlanList({
         <Pressable
           key={t.key}
           onPress={() => onToggle(t.key)}
+          accessibilityRole="checkbox"
+          accessibilityLabel={labelFor(t.labelKey)}
+          accessibilityState={{ checked: t.done }}
           style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 12, borderBottomWidth: i === items.length - 1 ? 0 : 2, borderBottomColor: colors.border }}
         >
           <View style={{ width: 23, height: 23, borderRadius: 9, borderWidth: 2.5, borderColor: t.done ? colors.accent : colors.border, backgroundColor: t.done ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>

@@ -178,7 +178,7 @@ export default function Food() {
           WATER · {shownWater} / {waterGoal} GLASSES · ~{((waterGoal * 250) / 1000).toFixed(1)} L
         </AppText>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, flex: 1 }}>
+          <View accessible accessibilityLabel={`Water: ${shownWater} of ${waterGoal} glasses`} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, flex: 1 }}>
             {Array.from({ length: waterGoal }).map((_, i) => (
               <View
                 key={i}
@@ -186,7 +186,7 @@ export default function Food() {
               />
             ))}
           </View>
-          <Pressable onPress={addWater} style={{ backgroundColor: colors.navOn, borderRadius: 99, paddingVertical: 11, paddingHorizontal: 16 }}>
+          <Pressable onPress={addWater} accessibilityRole="button" accessibilityLabel="Add a glass of water" style={{ backgroundColor: colors.navOn, borderRadius: 99, paddingVertical: 11, paddingHorizontal: 16 }}>
             <AppText variant="caption" color={colors.navOnText}>
               ＋ Glass
             </AppText>

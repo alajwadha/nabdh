@@ -196,6 +196,9 @@ export default function Track() {
     <Screen scroll={!active}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={status === 'tracking' ? 'Pause' : 'Back'}
+          hitSlop={8}
           onPress={() => (status === 'tracking' ? pause() : router.back())}
           style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}
         >

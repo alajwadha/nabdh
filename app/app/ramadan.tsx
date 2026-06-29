@@ -72,7 +72,7 @@ export default function Ramadan() {
   const suhoorDishes = ['foul', 'tameez', 'tamr'].map(dishById).filter(Boolean) as Dish[];
 
   const DishRow = ({ d }: { d: Dish }) => (
-    <Pressable onPress={() => add(d)} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 9 }}>
+    <Pressable onPress={() => add(d)} accessibilityRole="button" accessibilityLabel={`Add ${d.name}, ${d.kcal} kcal`} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 9 }}>
       <View style={{ width: 34, height: 34, borderRadius: 11, backgroundColor: tiles[d.color].bg, alignItems: 'center', justifyContent: 'center' }}>
         <Icon name="utensils" size={16} color={tiles[d.color].ink} />
       </View>
@@ -99,7 +99,7 @@ export default function Ramadan() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="chevron-left" size={22} color={colors.ink} />
         </Pressable>
         <AppText variant="h1">Ramadan</AppText>

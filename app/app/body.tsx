@@ -65,7 +65,7 @@ export default function Body() {
   return (
     <Screen>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-        <Pressable onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={8} onPress={() => router.back()} style={{ width: 38, height: 38, borderRadius: radii.md, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
           <AppText style={{ fontSize: 18 }}>‹</AppText>
         </Pressable>
         <AppText variant="h1" style={{ flex: 1 }}>Body</AppText>
@@ -349,13 +349,13 @@ function Stepper({ label, value, unit, onMinus, onPlus, colors, last, placeholde
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
       <AppText variant="title" style={{ fontSize: 14 }}>{label}</AppText>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <Pressable onPress={onMinus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="minus" size={15} color={colors.textSecondary} /></Pressable>
+        <Pressable onPress={onMinus} accessibilityRole="button" accessibilityLabel={`Decrease ${label}`} hitSlop={8} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="minus" size={15} color={colors.textSecondary} /></Pressable>
         <View style={{ minWidth: 64, alignItems: 'center' }}>
           {showPlaceholder
             ? <AppText variant="caption" color={colors.textMuted}>{placeholder}</AppText>
             : <AppText variant="title">{value} <AppText variant="caption" color={colors.textMuted}>{unit}</AppText></AppText>}
         </View>
-        <Pressable onPress={onPlus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="plus" size={15} color={colors.textSecondary} /></Pressable>
+        <Pressable onPress={onPlus} accessibilityRole="button" accessibilityLabel={`Increase ${label}`} hitSlop={8} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="plus" size={15} color={colors.textSecondary} /></Pressable>
       </View>
     </View>
   );
