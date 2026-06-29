@@ -9,6 +9,46 @@ export type Forecast = { place: string; now: WeatherNow; nowHour: number; hours:
 
 export const RIYADH = { lat: 24.7136, lon: 46.6753, name: 'Riyadh' };
 
+export type ResolvedLocation = { lat: number; lon: number; place: string; source: 'device' | 'default' };
+type GeoResult = { city?: string | null; subregion?: string | null; region?: string | null; name?: string | null } | null | undefined;
+
+/** Pick the best human place label from an expo-location reverse-geocode result. Pure. */
+export function placeLabel(geo: GeoResult): string {
+  if (!geo) return '';
+  return (geo.city || geo.subregion || geo.region || geo.name || '').trim();
+}
+
+/** Resolve where to fetch weather for: the device's location (reverse-geocoded) when
+ * available, otherwise the Riyadh demo default. expo-location is lazy-required and every
+ * failure path falls back, so this never throws. */
+export async function resolveLocation(): Promise<ResolvedLocation> {
+  const fallback: ResolvedLocation = { lat: RIYADH.lat, lon: RIYADH.lon, place: RIYADH.name, source: 'default' };
+  let Location: any = null;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    Location = require('expo-location');
+  } catch {
+    Location = null;
+  }
+  if (!Location) return fallback;
+  try {
+    const perm = await Location.requestForegroundPermissionsAsync();
+    if (!(perm?.granted || perm?.status === 'granted')) return fallback;
+    const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy?.Balanced ?? 3 });
+    const { latitude, longitude } = pos.coords;
+    let place = '';
+    try {
+      const geos = await Location.reverseGeocodeAsync({ latitude, longitude });
+      place = placeLabel(geos?.[0]);
+    } catch {
+      /* keep coords, just no name */
+    }
+    return { lat: latitude, lon: longitude, place: place || 'your location', source: 'device' };
+  } catch {
+    return fallback;
+  }
+}
+
 export async function getForecast(
   lat: number = RIYADH.lat,
   lon: number = RIYADH.lon,

@@ -6,7 +6,7 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { Icon } from '../src/components/Icon';
 import { useAppState } from '../src/store/app';
-import { getForecast, type Forecast } from '../src/services/weather';
+import { getForecast, resolveLocation, type Forecast } from '../src/services/weather';
 import { bestWindow, extraGlasses, heatLevel, hourLabel } from '../src/data/heat';
 import { prayerTime } from '../src/data/prayer';
 import { sweatLossLiters } from '../src/data/workouts';
@@ -18,10 +18,13 @@ export default function Heat() {
 
   const [status, setStatus] = useState<'loading' | 'ok' | 'offline'>('loading');
   const [forecast, setForecast] = useState<Forecast | null>(null);
+  const [located, setLocated] = useState(false);
 
   const load = async () => {
     setStatus('loading');
-    const f = await getForecast();
+    const loc = await resolveLocation();
+    setLocated(loc.source === 'device');
+    const f = await getForecast(loc.lat, loc.lon, loc.place);
     setForecast(f);
     setStatus(f ? 'ok' : 'offline');
   };
@@ -68,7 +71,7 @@ export default function Heat() {
           <Card style={{ alignItems: 'center', gap: 2, paddingVertical: spacing.xl }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Icon name="sun-medium" size={18} color={level.color} />
-              <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>{forecast.place.toUpperCase()} · FEELS LIKE</AppText>
+              <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>{forecast.place === 'your location' ? 'FEELS LIKE' : `${forecast.place.toUpperCase()} · FEELS LIKE`}</AppText>
             </View>
             <AppText variant="metric" style={{ fontSize: 60, lineHeight: 64 }} color={colors.ink}>{forecast.now.feelsC}°</AppText>
             <AppText variant="caption" color={colors.textMuted}>Air {forecast.now.tempC}° · {forecast.now.humidity}% humidity</AppText>
@@ -118,7 +121,7 @@ export default function Heat() {
           )}
 
           <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-            Live weather for {forecast.place} (demo location). Hydration is an estimate from your body weight and effort.
+            Live weather for {forecast.place}{located ? '' : ' (demo location)'}. Hydration is an estimate from your body weight and effort.
           </AppText>
         </>
       )}
