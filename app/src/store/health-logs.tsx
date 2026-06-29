@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { scheduleMedReminders } from '../services/notifications';
 
 // Self-logged vitals + medications, the trackers competitor apps have that Nabdh lacked.
 // All local + persisted; charts read these arrays directly.
@@ -7,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export type WeightEntry = { at: string; kg: number };
 export type BpEntry = { at: string; sys: number; dia: number };
 export type GlucoseEntry = { at: string; mgdl: number };
-export type Med = { id: string; name: string; dose?: string; schedule: string; takenDates: string[] };
+export type Med = { id: string; name: string; dose?: string; schedule: string; takenDates: string[]; reminderOn?: boolean; reminderTime?: string };
 
 const KEY = 'nabdh.healthlogs';
 // NOTE: UTC day key. Fine for the Gulf (UTC+3 never rolls early); a future pass should
@@ -41,6 +42,7 @@ type HealthLogsState = Logs & {
   addMed: (name: string, dose?: string, schedule?: string) => void;
   removeMed: (id: string) => void;
   toggleMedToday: (id: string) => void;
+  setMedReminder: (id: string, patch: { reminderOn?: boolean; reminderTime?: string }) => void;
   medStreak: (m: Med) => number;
   replaceLogs: (partial: Partial<Logs>) => void;
 };
@@ -86,6 +88,20 @@ export function HealthLogsProvider({ children }: { children: ReactNode }) {
       ),
     });
   };
+  const setMedReminder = (id: string, patch: { reminderOn?: boolean; reminderTime?: string }) =>
+    save({ ...logs, meds: logs.meds.map((m) => (m.id === id ? { ...m, ...patch } : m)) });
+
+  // Reconcile per-med local notifications whenever the med set changes (no-op without the
+  // native module or permission). Skip the first render so we don't fire on mount.
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    scheduleMedReminders(logs.meds);
+  }, [logs.meds]);
+
   // consecutive days (ending today or yesterday) the med was taken
   const medStreak = (m: Med) => {
     const set = new Set(m.takenDates);
@@ -103,7 +119,7 @@ export function HealthLogsProvider({ children }: { children: ReactNode }) {
   const replaceLogs = (partial: Partial<Logs>) => save({ ...logs, ...partial });
 
   return (
-    <Ctx.Provider value={{ ...logs, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, medStreak, replaceLogs }}>
+    <Ctx.Provider value={{ ...logs, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, setMedReminder, medStreak, replaceLogs }}>
       {children}
     </Ctx.Provider>
   );

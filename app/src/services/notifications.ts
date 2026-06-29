@@ -53,9 +53,35 @@ export async function ensureNotificationPermission(): Promise<boolean> {
   }
 }
 
-function parseTime(t: string): { hour: number; minute: number } {
-  const [h, m] = t.split(':').map((n) => parseInt(n, 10));
-  return { hour: Number.isFinite(h) ? h : 9, minute: Number.isFinite(m) ? m : 0 };
+export function parseTime(t: string): { hour: number; minute: number } {
+  const [h, m] = (t ?? '').split(':').map((n) => parseInt(n, 10));
+  const hour = Number.isFinite(h) ? Math.min(23, Math.max(0, h)) : 9;
+  const minute = Number.isFinite(m) ? Math.min(59, Math.max(0, m)) : 0;
+  return { hour, minute };
+}
+
+// Stable identifier prefixes so each group can be reconciled without clobbering the
+// others (a med reminder must survive a reminders/hydration re-sync, and vice versa).
+const ID_REMINDER = (key: string) => `rem-${key}`;
+const ID_HYDRATION = (h: number) => `hyd-${h}`;
+export const ID_MED = (id: string) => `med-${id}`;
+
+/** Cancel only the scheduled notifications whose identifier starts with `prefix`.
+ * Best-effort, never throws; falls back to a no-op if the listing API is missing. */
+async function cancelByPrefix(prefix: string): Promise<void> {
+  if (!N) return;
+  try {
+    if (typeof N.getAllScheduledNotificationsAsync !== 'function') return;
+    const all = await N.getAllScheduledNotificationsAsync();
+    for (const n of all ?? []) {
+      const id = n?.identifier;
+      if (typeof id === 'string' && id.startsWith(prefix)) {
+        await N.cancelScheduledNotificationAsync(id);
+      }
+    }
+  } catch {
+    /* no-op */
+  }
 }
 
 /**
@@ -65,12 +91,16 @@ function parseTime(t: string): { hour: number; minute: number } {
 export async function syncReminders(reminders: Reminder[], hydration: Hydration): Promise<void> {
   if (!N) return;
   try {
-    await N.cancelAllScheduledNotificationsAsync();
+    // Reconcile only the reminder/hydration groups by identifier, so med reminders
+    // (scheduled separately) are not cancelled out from under us.
+    await cancelByPrefix('rem-');
+    await cancelByPrefix('hyd-');
     for (const r of reminders) {
       if (!r.enabled) continue;
       const { hour, minute } = parseTime(r.time);
       const copy = REMINDER_COPY[r.key];
       await N.scheduleNotificationAsync({
+        identifier: ID_REMINDER(r.key),
         content: { title: copy.title, body: copy.body },
         // SDK 53+ requires the trigger `type` discriminator; a daily calendar trigger
         // repeats at this wall-clock hour:minute. (Without `type` it fires immediately.)
@@ -81,6 +111,7 @@ export async function syncReminders(reminders: Reminder[], hydration: Hydration)
       const step = Math.max(1, hydration.everyHours);
       for (let h = hydration.startHour; h <= hydration.endHour; h += step) {
         await N.scheduleNotificationAsync({
+          identifier: ID_HYDRATION(h),
           content: { title: 'Hydrate 💧', body: 'Time for a glass of water, keep your hydration on target.' },
           // CALENDAR (vs DAILY) so each per-hour slot repeats daily at its own hour.
           trigger: { type: N.SchedulableTriggerInputTypes.CALENDAR, hour: h, minute: 0, repeats: true },
@@ -89,6 +120,42 @@ export async function syncReminders(reminders: Reminder[], hydration: Hydration)
     }
   } catch {
     /* notifications are best-effort; never throw into the UI */
+  }
+}
+
+export type MedReminderInput = { id: string; name: string; dose?: string; reminderOn?: boolean; reminderTime?: string };
+
+/** Pure: the notification request for a med, or null if the med has no active reminder.
+ * Kept pure (no native module) so it can be unit-tested. */
+export function buildMedReminder(med: MedReminderInput): { identifier: string; title: string; body: string; hour: number; minute: number } | null {
+  if (!med.reminderOn || !med.reminderTime) return null;
+  const { hour, minute } = parseTime(med.reminderTime);
+  return {
+    identifier: ID_MED(med.id),
+    title: 'Medication reminder',
+    body: med.dose ? `Time to take ${med.name} (${med.dose}).` : `Time to take ${med.name}.`,
+    hour,
+    minute,
+  };
+}
+
+/** Reconcile per-med daily reminders. Cancels every med-prefixed notification then
+ * reschedules the enabled ones. Mirrors syncReminders; safe to call on every meds change. */
+export async function scheduleMedReminders(meds: MedReminderInput[]): Promise<void> {
+  if (!N) return;
+  try {
+    await cancelByPrefix('med-');
+    for (const med of meds) {
+      const r = buildMedReminder(med);
+      if (!r) continue;
+      await N.scheduleNotificationAsync({
+        identifier: r.identifier,
+        content: { title: r.title, body: r.body },
+        trigger: { type: N.SchedulableTriggerInputTypes.DAILY, hour: r.hour, minute: r.minute },
+      });
+    }
+  } catch {
+    /* best-effort; never throw into the UI */
   }
 }
 

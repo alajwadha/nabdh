@@ -9,6 +9,7 @@ import { LineChart, CHART_W } from '../src/components/Charts';
 import { useHealthLogs, dayKey, type Med } from '../src/store/health-logs';
 import { useAppState } from '../src/store/app';
 import { displayWeightPrecise, kgToLb, lbToKg } from '../src/services/units';
+import { parseTime, ensureNotificationPermission, notificationsAvailable } from '../src/services/notifications';
 
 function Stepper({ value, unit, step, onStep, accent }: { value: number; unit: string; step: number; onStep: (d: number) => void; accent: string }) {
   const { colors } = useTheme();
@@ -53,8 +54,19 @@ function VitalCard({ icon, tint, title, latest, sub, children }: { icon: IconNam
 export default function Vitals() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
-  const { weight, bp, glucose, meds, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, medStreak } = useHealthLogs();
+  const { weight, bp, glucose, meds, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, setMedReminder, medStreak } = useHealthLogs();
   const { units } = useAppState();
+
+  // Shift a stored HH:MM reminder by a number of minutes, wrapping at midnight.
+  const bumpTime = (t: string, mins: number): string => {
+    const { hour, minute } = parseTime(t);
+    const total = (hour * 60 + minute + mins + 1440) % 1440;
+    return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+  };
+  const toggleMedReminder = async (id: string, on: boolean, time?: string) => {
+    setMedReminder(id, { reminderOn: on, reminderTime: time || '09:00' });
+    if (on) await ensureNotificationPermission();
+  };
 
   const lastW = weight[weight.length - 1]?.kg ?? 80;
   const lastBp = bp[bp.length - 1];
@@ -113,25 +125,59 @@ export default function Vitals() {
         {meds.map((m, i) => {
           const taken = m.takenDates.includes(today);
           const streak = medStreak(m);
+          const remOn = !!m.reminderOn;
+          const remTime = m.reminderTime || '09:00';
           return (
-            <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 10, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: colors.border }}>
-              <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: tiles.gold.bg, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="pill" size={18} color={tiles.gold.ink} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <AppText variant="title">{m.name}{m.dose ? <AppText variant="caption" color={colors.textMuted}>  {m.dose}</AppText> : null}</AppText>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <AppText variant="caption" color={colors.textMuted}>{m.schedule}{streak > 0 ? `  ·  ${streak}-day streak` : ''}</AppText>
-                  {streak > 0 && <Icon name="flame" size={11} color={colors.textMuted} />}
+            <View key={m.id} style={{ gap: 8, paddingVertical: 10, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: colors.border }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: tiles.gold.bg, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="pill" size={18} color={tiles.gold.ink} />
                 </View>
+                <View style={{ flex: 1 }}>
+                  <AppText variant="title">{m.name}{m.dose ? <AppText variant="caption" color={colors.textMuted}>  {m.dose}</AppText> : null}</AppText>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <AppText variant="caption" color={colors.textMuted}>{m.schedule}{streak > 0 ? `  ·  ${streak}-day streak` : ''}</AppText>
+                    {streak > 0 && <Icon name="flame" size={11} color={colors.textMuted} />}
+                  </View>
+                </View>
+                <Pressable onPress={() => toggleMedToday(m.id)} onLongPress={() => removeMed(m.id)} accessibilityRole="checkbox" accessibilityLabel={`${m.name} taken today`} accessibilityHint="Double tap to toggle, long press to remove" accessibilityState={{ checked: taken }} hitSlop={6} style={{ width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: taken ? colors.accent : colors.border, backgroundColor: taken ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
+                  {taken && <Icon name="check" size={18} color={colors.accentInk} />}
+                </Pressable>
               </View>
-              <Pressable onPress={() => toggleMedToday(m.id)} onLongPress={() => removeMed(m.id)} accessibilityRole="checkbox" accessibilityLabel={`${m.name} taken today`} accessibilityHint="Double tap to toggle, long press to remove" accessibilityState={{ checked: taken }} hitSlop={6} style={{ width: 34, height: 34, borderRadius: 17, borderWidth: 2, borderColor: taken ? colors.accent : colors.border, backgroundColor: taken ? colors.accent : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
-                {taken && <Icon name="check" size={18} color={colors.accentInk} />}
-              </Pressable>
+
+              {/* per-med daily reminder */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingLeft: 48 }}>
+                <Pressable
+                  onPress={() => toggleMedReminder(m.id, !remOn, remTime)}
+                  accessibilityRole="switch"
+                  accessibilityLabel={`Daily reminder for ${m.name}`}
+                  accessibilityState={{ checked: remOn }}
+                  hitSlop={6}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 4, paddingHorizontal: 9, borderRadius: 99, backgroundColor: remOn ? tiles.gold.bg : colors.navBg }}
+                >
+                  <Icon name={remOn ? 'bell-ring' : 'bell'} size={13} color={remOn ? tiles.gold.ink : colors.textMuted} />
+                  <AppText variant="caption" color={remOn ? tiles.gold.ink : colors.textMuted} style={{ fontSize: 12 }}>{remOn ? 'Reminder on' : 'Remind me'}</AppText>
+                </Pressable>
+                {remOn && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Pressable onPress={() => setMedReminder(m.id, { reminderTime: bumpTime(remTime, -30) })} accessibilityRole="button" accessibilityLabel={`Reminder for ${m.name} earlier`} hitSlop={8} style={{ width: 26, height: 26, borderRadius: 8, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon name="minus" size={13} color={colors.textSecondary} />
+                    </Pressable>
+                    <AppText variant="caption" style={{ minWidth: 42, textAlign: 'center', fontVariant: ['tabular-nums'] }}>{remTime}</AppText>
+                    <Pressable onPress={() => setMedReminder(m.id, { reminderTime: bumpTime(remTime, 30) })} accessibilityRole="button" accessibilityLabel={`Reminder for ${m.name} later`} hitSlop={8} style={{ width: 26, height: 26, borderRadius: 8, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon name="plus" size={13} color={colors.textSecondary} />
+                    </Pressable>
+                  </View>
+                )}
+              </View>
             </View>
           );
         })}
-        {meds.length > 0 && <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 2 }}>Tap to mark taken today · long-press to remove</AppText>}
+        {meds.length > 0 && (
+          <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 2 }}>
+            Tap the circle to mark taken today · long-press to remove.{!notificationsAvailable() ? ' Reminders need the full app build to fire.' : ''}
+          </AppText>
+        )}
       </Card>
 
       {/* log sheets */}
