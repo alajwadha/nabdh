@@ -14,7 +14,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Canvas, LinearGradient, Rect, vec } from '@shopify/react-native-skia';
+import { Blur, Canvas, Oval } from '@shopify/react-native-skia';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { motion, radii, shadow, spacing, typography, type TextVariant } from './index';
 import { useTheme } from './theme';
@@ -133,9 +133,9 @@ export function Card({ style, ...rest }: ViewProps) {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export type ButtonVariant = 'solid' | 'line' | 'dark';
 
-/** Glossy specular sheen — a soft top-down highlight clipped to the shape, for the
- * "glare" on filled buttons (and reusable on other glossy surfaces). */
-export function Sheen({ radius, strength = 0.3 }: { radius: number; strength?: number }) {
+/** A small soft reflection — a single blurred highlight hugging the top of the shape, like
+ * light glinting off a glossy surface (not a full sheen). Reusable on glossy surfaces. */
+export function Sheen({ radius, strength = 0.35 }: { radius: number; strength?: number }) {
   const [size, setSize] = useState({ w: 0, h: 0 });
   return (
     <View
@@ -145,14 +145,17 @@ export function Sheen({ radius, strength = 0.3 }: { radius: number; strength?: n
     >
       {size.w > 0 && (
         <Canvas style={{ width: size.w, height: size.h }}>
-          <Rect x={0} y={0} width={size.w} height={size.h}>
-            <LinearGradient
-              start={vec(0, 0)}
-              end={vec(0, size.h)}
-              colors={[`rgba(255,255,255,${strength})`, `rgba(255,255,255,${strength * 0.26})`, 'rgba(255,255,255,0)']}
-              positions={[0, 0.45, 0.82]}
-            />
-          </Rect>
+          {/* a soft oval sitting mostly above the top edge so only its lower arc shows as a
+              contained reflection near the top — brightest in the middle, fading to the ends */}
+          <Oval
+            x={size.w * 0.16}
+            y={-size.h * 0.62}
+            width={size.w * 0.68}
+            height={size.h * 0.92}
+            color={`rgba(255,255,255,${strength})`}
+          >
+            <Blur blur={Math.max(3, size.h * 0.13)} />
+          </Oval>
         </Canvas>
       )}
     </View>
