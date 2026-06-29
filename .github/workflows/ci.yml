@@ -21,3 +21,5 @@ jobs:
         run: npm install --prefix app
       - name: Typecheck (app + backend)
         run: npm run typecheck
+      - name: Unit tests (app)
+        run: npm test --prefix app

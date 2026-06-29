@@ -98,8 +98,12 @@ export function normalize(pts: GeoPoint[], w: number, h: number, pad = 14): Pt2[
   const scale = Math.min(iw / spanX, ih / spanY);
   const offX = pad + (iw - spanX * scale) / 2;
   const offY = pad + (ih - spanY * scale) / 2;
+  // A degenerate axis (single point, or a perfectly straight track) has no real span, so
+  // centre it in the box rather than pinning it to an edge.
+  const degenX = (lonMax - lonMin) * cos < 1e-7;
+  const degenY = latMax - latMin < 1e-7;
   return pts.map((p) => ({
-    x: offX + (p.lon - lonMin) * cos * scale,
-    y: offY + (latMax - p.lat) * scale, // invert so north is up
+    x: degenX ? w / 2 : offX + (p.lon - lonMin) * cos * scale,
+    y: degenY ? h / 2 : offY + (latMax - p.lat) * scale, // invert so north is up
   }));
 }
