@@ -9,13 +9,14 @@ import { useAppState } from '../src/store/app';
 import { useHealth } from '../src/store/health';
 import { DEMO_SUMMARY } from '../src/integrations/demo';
 import { ACTIVITY_LEVELS, bmi, bmr, hrZones, maxHr, tdee, vo2Band, vo2maxEstimate, whtr, goalProjection, navyBodyFat, bodyFatBand } from '../src/data/health-metrics';
+import { displayWeight, displayHeight, displayLength, weightStepKg, heightStepCm, kgToLb } from '../src/services/units';
 
 const ZONE_COLORS = ['blue', 'mint', 'gold', 'peach', 'pink'] as const;
 
 export default function Body() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
-  const { body, setBody, budget } = useAppState();
+  const { body, setBody, budget, units } = useAppState();
   const { summary } = useHealth();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [detailed, setDetailed] = useState(false);
@@ -170,7 +171,7 @@ export default function Body() {
             <AppText variant="h2" color={bfColor.ink}>{bf}% · {bfBand}</AppText>
           </View>
           <AppText variant="caption" color={bfColor.ink} style={{ marginTop: 6, opacity: 0.9, lineHeight: 17 }}>
-            ≈ {leanKg} kg lean, {Math.round(body.weightKg - (leanKg ?? 0))} kg fat. A tape estimate (±3-4%) that can read high for muscular builds, track the trend, not the decimal.
+            ≈ {displayWeight(leanKg ?? 0, units).value} {displayWeight(leanKg ?? 0, units).unit} lean, {displayWeight(body.weightKg - (leanKg ?? 0), units).value} {displayWeight(body.weightKg - (leanKg ?? 0), units).unit} fat. A tape estimate (±3-4%) that can read high for muscular builds, track the trend, not the decimal.
           </AppText>
           {detailed && (
             <AppText variant="caption" color={bfColor.ink} style={{ marginTop: 4, opacity: 0.8, lineHeight: 16 }}>
@@ -237,10 +238,11 @@ export default function Body() {
             <Stepper
               label="Target weight"
               value={target}
-              unit="kg"
+              displayValue={displayWeight(target, units).value}
+              unit={displayWeight(target, units).unit}
               placeholder="Set"
-              onMinus={() => setBody({ targetWeightKg: target > 0 ? Math.max(35, target - 1) : 0 })}
-              onPlus={() => setBody({ targetWeightKg: target > 0 ? target + 1 : (body.goal === 'cut' ? Math.max(35, Math.round(body.weightKg) - 5) : Math.round(body.weightKg) + 5) })}
+              onMinus={() => setBody({ targetWeightKg: target > 0 ? Math.max(35, target - weightStepKg(units)) : 0 })}
+              onPlus={() => setBody({ targetWeightKg: target > 0 ? target + weightStepKg(units) : (body.goal === 'cut' ? Math.max(35, Math.round(body.weightKg) - 5) : Math.round(body.weightKg) + 5) })}
               colors={colors}
               last
             />
@@ -260,10 +262,10 @@ export default function Body() {
               <>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 10 }}>
                   <AppText variant="h2" color={tiles.lav.ink}>≈ {weeksText} weeks</AppText>
-                  <AppText variant="caption" color={tiles.lav.ink} style={{ fontWeight: '700' }}>{Math.abs(proj.kgToGo)} kg to go</AppText>
+                  <AppText variant="caption" color={tiles.lav.ink} style={{ fontWeight: '700' }}>{displayWeight(Math.abs(proj.kgToGo), units).value} {displayWeight(Math.abs(proj.kgToGo), units).unit} to go</AppText>
                 </View>
                 <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 6, fontWeight: '600', lineHeight: 17 }}>
-                  ~{target} kg {etaLabel}, at ~{Math.abs(proj.weeklyRateKg)} kg/week.
+                  ~{displayWeight(target, units).value} {displayWeight(target, units).unit} {etaLabel}, at ~{units === 'imperial' ? `${kgToLb(Math.abs(proj.weeklyRateKg)).toFixed(1)} lb` : `${Math.abs(proj.weeklyRateKg)} kg`}/week.
                 </AppText>
                 <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 4, opacity: 0.8, lineHeight: 16 }}>
                   At this rate, real change isn’t linear{longHorizon ? ', and it slows as you lighten' : ''}, so trust your 2-3 week trend over the date.{detailed ? ` Based on a ${Math.abs(energyDelta)} kcal/day ${energyDelta < 0 ? 'deficit' : 'surplus'} (~7,700 kcal ≈ 1 kg).` : ''}
@@ -315,14 +317,14 @@ export default function Body() {
               </View>
             </View>
             <Stepper label="Age" value={body.age} unit="yrs" onMinus={() => setBody({ age: Math.max(12, body.age - 1) })} onPlus={() => setBody({ age: body.age + 1 })} colors={colors} />
-            <Stepper label="Height" value={body.heightCm} unit="cm" onMinus={() => setBody({ heightCm: Math.max(120, body.heightCm - 1) })} onPlus={() => setBody({ heightCm: body.heightCm + 1 })} colors={colors} />
-            <Stepper label="Weight" value={body.weightKg} unit="kg" onMinus={() => setBody({ weightKg: Math.max(35, body.weightKg - 1) })} onPlus={() => setBody({ weightKg: body.weightKg + 1 })} colors={colors} />
+            <Stepper label="Height" value={body.heightCm} displayValue={displayHeight(body.heightCm, units).value} unit={displayHeight(body.heightCm, units).unit} onMinus={() => setBody({ heightCm: Math.max(120, body.heightCm - heightStepCm(units)) })} onPlus={() => setBody({ heightCm: body.heightCm + heightStepCm(units) })} colors={colors} />
+            <Stepper label="Weight" value={body.weightKg} displayValue={displayWeight(body.weightKg, units).value} unit={displayWeight(body.weightKg, units).unit} onMinus={() => setBody({ weightKg: Math.max(35, body.weightKg - weightStepKg(units)) })} onPlus={() => setBody({ weightKg: body.weightKg + weightStepKg(units) })} colors={colors} />
             {/* waist drives the waist-to-height ratio; starts unset (placeholder) so we never assume a measurement */}
-            <Stepper label="Waist" value={body.waistCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? Math.max(50, body.waistCm! - 1) : 0 })} onPlus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? body.waistCm! + 1 : Math.round(body.heightCm * 0.5) })} colors={colors} />
+            <Stepper label="Waist" value={body.waistCm ?? 0} displayValue={displayLength(body.waistCm ?? 0, units).value} unit={displayLength(body.waistCm ?? 0, units).unit} placeholder="Add" onMinus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? Math.max(50, body.waistCm! - heightStepCm(units)) : 0 })} onPlus={() => setBody({ waistCm: (body.waistCm ?? 0) > 0 ? body.waistCm! + heightStepCm(units) : Math.round(body.heightCm * 0.5) })} colors={colors} />
             {/* neck (+ hip for women) drive the Navy body-fat estimate */}
-            <Stepper label="Neck" value={body.neckCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ neckCm: (body.neckCm ?? 0) > 0 ? Math.max(25, body.neckCm! - 1) : 0 })} onPlus={() => setBody({ neckCm: (body.neckCm ?? 0) > 0 ? body.neckCm! + 1 : (body.sex === 'female' ? 32 : 38) })} colors={colors} last={body.sex !== 'female'} />
+            <Stepper label="Neck" value={body.neckCm ?? 0} displayValue={displayLength(body.neckCm ?? 0, units).value} unit={displayLength(body.neckCm ?? 0, units).unit} placeholder="Add" onMinus={() => setBody({ neckCm: (body.neckCm ?? 0) > 0 ? Math.max(25, body.neckCm! - heightStepCm(units)) : 0 })} onPlus={() => setBody({ neckCm: (body.neckCm ?? 0) > 0 ? body.neckCm! + heightStepCm(units) : (body.sex === 'female' ? 32 : 38) })} colors={colors} last={body.sex !== 'female'} />
             {body.sex === 'female' && (
-              <Stepper label="Hip" value={body.hipCm ?? 0} unit="cm" placeholder="Add" onMinus={() => setBody({ hipCm: (body.hipCm ?? 0) > 0 ? Math.max(60, body.hipCm! - 1) : 0 })} onPlus={() => setBody({ hipCm: (body.hipCm ?? 0) > 0 ? body.hipCm! + 1 : Math.round(body.heightCm * 0.55) })} colors={colors} last />
+              <Stepper label="Hip" value={body.hipCm ?? 0} displayValue={displayLength(body.hipCm ?? 0, units).value} unit={displayLength(body.hipCm ?? 0, units).unit} placeholder="Add" onMinus={() => setBody({ hipCm: (body.hipCm ?? 0) > 0 ? Math.max(60, body.hipCm! - heightStepCm(units)) : 0 })} onPlus={() => setBody({ hipCm: (body.hipCm ?? 0) > 0 ? body.hipCm! + heightStepCm(units) : Math.round(body.heightCm * 0.55) })} colors={colors} last />
             )}
           </Card>
         </>
@@ -343,7 +345,7 @@ function Vital({ label, value, unit, color }: { label: string; value?: number; u
   );
 }
 
-function Stepper({ label, value, unit, onMinus, onPlus, colors, last, placeholder }: { label: string; value: number; unit: string; onMinus: () => void; onPlus: () => void; colors: ReturnType<typeof useTheme>['colors']; last?: boolean; placeholder?: string }) {
+function Stepper({ label, value, unit, onMinus, onPlus, colors, last, placeholder, displayValue }: { label: string; value: number; unit: string; onMinus: () => void; onPlus: () => void; colors: ReturnType<typeof useTheme>['colors']; last?: boolean; placeholder?: string; displayValue?: string }) {
   const showPlaceholder = placeholder != null && value <= 0;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
@@ -353,7 +355,7 @@ function Stepper({ label, value, unit, onMinus, onPlus, colors, last, placeholde
         <View style={{ minWidth: 64, alignItems: 'center' }}>
           {showPlaceholder
             ? <AppText variant="caption" color={colors.textMuted}>{placeholder}</AppText>
-            : <AppText variant="title">{value} <AppText variant="caption" color={colors.textMuted}>{unit}</AppText></AppText>}
+            : <AppText variant="title">{displayValue ?? value}{unit ? ' ' : ''}<AppText variant="caption" color={colors.textMuted}>{unit}</AppText></AppText>}
         </View>
         <Pressable onPress={onPlus} accessibilityRole="button" accessibilityLabel={`Increase ${label}`} hitSlop={8} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="plus" size={15} color={colors.textSecondary} /></Pressable>
       </View>

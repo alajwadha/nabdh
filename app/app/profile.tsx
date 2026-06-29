@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, Button, Screen, Sheet, Toggle } from '../src/design-system/components';
+import { AppText, Button, Screen, SegmentedControl, Sheet, Toggle } from '../src/design-system/components';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAuth } from '../src/auth/AuthProvider';
@@ -54,7 +54,7 @@ const PERMS: Record<'apple' | 'fitbit', { name: string; rows: [IconName, string]
 export default function Profile() {
   const { colors, tiles, mode, toggle } = useTheme();
   const { signOut } = useAuth();
-  const { ramadan, setRamadan, showPrayers, setShowPrayers, body } = useAppState();
+  const { ramadan, setRamadan, showPrayers, setShowPrayers, units, setUnits, body } = useAppState();
   const identity = useIdentity();
   const { setSummary } = useHealth();
   const router = useRouter();
@@ -134,6 +134,20 @@ export default function Profile() {
         <Row icon="church" label="Prayer-time strip" right={<Toggle on={showPrayers} />} onPress={() => setShowPrayers(!showPrayers)} switchOn={showPrayers} />
         <Row icon={mode === 'dark' ? 'sun-medium' : 'moon'} label="Dark mode" right={<Toggle on={mode === 'dark'} />} onPress={toggle} last switchOn={mode === 'dark'} />
       </Group>
+
+      <View style={{ gap: spacing.sm }}>
+        <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginLeft: 4 }}>
+          MEASUREMENT UNITS
+        </AppText>
+        <SegmentedControl
+          value={units}
+          onChange={setUnits}
+          options={[
+            { value: 'metric', label: 'Metric (kg, km)' },
+            { value: 'imperial', label: 'Imperial (lb, mi)' },
+          ]}
+        />
+      </View>
 
       <Group title="CONNECTED DEVICES">
         <Row icon="watch" label="Apple Health" right={<Status text="Synced" colors={colors} />} onPress={() => setConnect('apple')} />

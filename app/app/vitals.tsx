@@ -7,6 +7,8 @@ import { useTheme } from '../src/design-system/theme';
 import { Icon, type IconName } from '../src/components/Icon';
 import { LineChart, CHART_W } from '../src/components/Charts';
 import { useHealthLogs, dayKey, type Med } from '../src/store/health-logs';
+import { useAppState } from '../src/store/app';
+import { displayWeightPrecise, kgToLb, lbToKg } from '../src/services/units';
 
 function Stepper({ value, unit, step, onStep, accent }: { value: number; unit: string; step: number; onStep: (d: number) => void; accent: string }) {
   const { colors } = useTheme();
@@ -52,6 +54,7 @@ export default function Vitals() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
   const { weight, bp, glucose, meds, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, medStreak } = useHealthLogs();
+  const { units } = useAppState();
 
   const lastW = weight[weight.length - 1]?.kg ?? 80;
   const lastBp = bp[bp.length - 1];
@@ -80,7 +83,7 @@ export default function Vitals() {
       </View>
 
       {/* WEIGHT, line chart */}
-      <VitalCard icon="scale" tint={tiles.mint.bg} title="Weight" latest={`${lastW} kg`} sub={`${wDelta <= 0 ? '↓' : '↑'} ${Math.abs(wDelta)} kg since start`}>
+      <VitalCard icon="scale" tint={tiles.mint.bg} title="Weight" latest={`${displayWeightPrecise(lastW, units).value} ${displayWeightPrecise(lastW, units).unit}`} sub={`${wDelta <= 0 ? '↓' : '↑'} ${displayWeightPrecise(Math.abs(wDelta), units).value} ${displayWeightPrecise(Math.abs(wDelta), units).unit} since start`}>
         <LineChart data={weight.map((w) => w.kg)} color={colors.accent} width={CHART_W} height={120} />
         <Button label="Log weight" variant="line" onPress={() => { setWDraft(Math.round(lastW * 10) / 10); setOpenLog('weight'); }} />
       </VitalCard>
@@ -135,7 +138,19 @@ export default function Vitals() {
       <Sheet visible={openLog === 'weight'} onClose={() => setOpenLog(null)}>
         <AppText variant="h2" style={{ marginBottom: spacing.lg }}>Log weight</AppText>
         <View style={{ alignItems: 'center', marginBottom: spacing.lg }}>
-          <Stepper value={wDraft} unit="kg" step={0.1} accent={colors.accent} onStep={(d) => setWDraft((w) => Math.max(20, +(w + d).toFixed(1)))} />
+          <Stepper
+            value={units === 'imperial' ? Math.round(kgToLb(wDraft) * 10) / 10 : wDraft}
+            unit={units === 'imperial' ? 'lb' : 'kg'}
+            step={0.1}
+            accent={colors.accent}
+            onStep={(d) =>
+              setWDraft((w) => {
+                const disp = (units === 'imperial' ? kgToLb(w) : w) + d;
+                const kg = units === 'imperial' ? lbToKg(disp) : disp;
+                return Math.max(20, +kg.toFixed(2));
+              })
+            }
+          />
         </View>
         <Button label="Save" onPress={() => { logWeight(wDraft); setOpenLog(null); }} />
       </Sheet>

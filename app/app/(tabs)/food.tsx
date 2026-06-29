@@ -12,13 +12,14 @@ import { useHealth } from '../../src/store/health';
 import { DEMO_IDENTITY, DEMO_SUMMARY } from '../../src/integrations/demo';
 import { weekdayName } from '../../src/data/derive';
 import { proteinPerKgTarget, fiberTarget, macroEnergySplit } from '../../src/data/health-metrics';
+import { displayVolume } from '../../src/services/units';
 
 const MACRO_COLORS = { protein: '#2E7D5B', carbs: '#E0A24E', fat: '#8E81D6' };
 
 export default function Food() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
-  const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget, body } = useAppState();
+  const { water, waterGoal, addWater, meals, kcal, macros, macroGoals, budget, body, units } = useAppState();
   const { summary } = useHealth();
   const s = summary ?? (__DEV__ ? DEMO_SUMMARY : null);
   const [detailed, setDetailed] = useState(false);
@@ -175,7 +176,7 @@ export default function Food() {
 
       <Card>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4 }}>
-          WATER · {shownWater} / {waterGoal} GLASSES · ~{((waterGoal * 250) / 1000).toFixed(1)} L
+          WATER · {shownWater} / {waterGoal} GLASSES · ~{displayVolume((waterGoal * 250) / 1000, units).value} {displayVolume((waterGoal * 250) / 1000, units).unit}
         </AppText>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
           <View accessible accessibilityLabel={`Water: ${shownWater} of ${waterGoal} glasses`} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, flex: 1 }}>

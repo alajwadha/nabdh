@@ -7,6 +7,7 @@ import { useTheme } from '../src/design-system/theme';
 import { Icon } from '../src/components/Icon';
 import { useAppState } from '../src/store/app';
 import { getForecast, resolveLocation, type Forecast } from '../src/services/weather';
+import { displayTemp } from '../src/services/units';
 import { bestWindow, extraGlasses, heatLevel, hourLabel } from '../src/data/heat';
 import { prayerTime } from '../src/data/prayer';
 import { sweatLossLiters } from '../src/data/workouts';
@@ -14,7 +15,7 @@ import { sweatLossLiters } from '../src/data/workouts';
 export default function Heat() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
-  const { body } = useAppState();
+  const { body, units } = useAppState();
 
   const [status, setStatus] = useState<'loading' | 'ok' | 'offline'>('loading');
   const [forecast, setForecast] = useState<Forecast | null>(null);
@@ -73,8 +74,8 @@ export default function Heat() {
               <Icon name="sun-medium" size={18} color={level.color} />
               <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>{forecast.place === 'your location' ? 'FEELS LIKE' : `${forecast.place.toUpperCase()} · FEELS LIKE`}</AppText>
             </View>
-            <AppText variant="metric" style={{ fontSize: 60, lineHeight: 64 }} color={colors.ink}>{forecast.now.feelsC}°</AppText>
-            <AppText variant="caption" color={colors.textMuted}>Air {forecast.now.tempC}° · {forecast.now.humidity}% humidity</AppText>
+            <AppText variant="metric" style={{ fontSize: 60, lineHeight: 64 }} color={colors.ink}>{displayTemp(forecast.now.feelsC, units)}</AppText>
+            <AppText variant="caption" color={colors.textMuted}>Air {displayTemp(forecast.now.tempC, units)} · {forecast.now.humidity}% humidity</AppText>
           </Card>
 
           {/* heat-risk level */}
@@ -98,7 +99,7 @@ export default function Heat() {
               <AppText variant="caption" color={tiles.mint.ink} style={{ letterSpacing: 1.2, opacity: 0.8 }}>BEST WINDOW TO TRAIN OUTSIDE</AppText>
               {win ? (
                 <>
-                  <AppText variant="title" color={tiles.mint.ink}>{hourLabel(win.startHour)} - {hourLabel(win.endHour)} · feels {win.feelsC}°</AppText>
+                  <AppText variant="title" color={tiles.mint.ink}>{hourLabel(win.startHour)} - {hourLabel(win.endHour)} · feels {displayTemp(win.feelsC, units)}</AppText>
                   {win.afterAsr && <AppText variant="caption" color={tiles.mint.ink} style={{ opacity: 0.9 }}>After Asr, as it cools off.</AppText>}
                 </>
               ) : (

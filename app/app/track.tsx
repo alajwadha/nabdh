@@ -11,7 +11,6 @@ import { useAppState } from '../src/store/app';
 import { SPORTS, metCalories } from '../src/data/workouts';
 import {
   fmtClock,
-  fmtPace,
   haversine,
   normalize,
   paceSecPerKm,
@@ -22,6 +21,7 @@ import {
   type GeoPoint,
 } from '../src/services/geo';
 import { ensurePermission, locationAvailable, watchPosition, type Subscription } from '../src/services/location';
+import { displayDistance, displaySpeed, displayPace, distanceUnit, speedUnit } from '../src/services/units';
 
 type Status = 'idle' | 'tracking' | 'paused' | 'done';
 const GPS_SPORTS = SPORTS.filter((s) => s.gps); // running, walking, cycling
@@ -79,7 +79,7 @@ export default function Track() {
   const { colors, tiles } = useTheme();
   const router = useRouter();
   const { addSession } = useWorkouts();
-  const { body } = useAppState();
+  const { body, units } = useAppState();
 
   const [sportKey, setSportKey] = useState('running');
   const sport = GPS_SPORTS.find((s) => s.key === sportKey) ?? GPS_SPORTS[0];
@@ -238,23 +238,23 @@ export default function Track() {
 
       {/* primary metric, distance */}
       <View style={{ alignItems: 'center', marginTop: spacing.sm }}>
-        <AppText variant="metric" style={{ fontSize: 64, lineHeight: 66 }} color={colors.accent}>{km.toFixed(2)}</AppText>
-        <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>KILOMETRES</AppText>
+        <AppText variant="metric" style={{ fontSize: 64, lineHeight: 66 }} color={colors.accent}>{displayDistance(km, units).value}</AppText>
+        <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>{distanceUnit(units)}</AppText>
       </View>
 
       {/* secondary metrics */}
       <Card style={{ flexDirection: 'row', padding: 0, paddingVertical: spacing.lg, gap: 0 }}>
         <Metric value={fmtClock(elapsed)} label="TIME" />
         {isRide ? (
-          <Metric value={kmh ? kmh.toFixed(1) : '-'} label="KM/H" />
+          <Metric value={kmh ? displaySpeed(kmh, units) : '-'} label={speedUnit(units)} />
         ) : (
-          <Metric value={status === 'tracking' ? fmtPace(curPace || avgPace) : fmtPace(avgPace)} label="PACE /KM" />
+          <Metric value={displayPace(status === 'tracking' ? (curPace || avgPace) : avgPace, units).value} label={`PACE ${displayPace(avgPace, units).unit}`} />
         )}
         <Metric value={String(kcal)} label="KCAL" />
       </Card>
       {status !== 'idle' && (
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: spacing.xl }}>
-          <AppText variant="caption" color={colors.textMuted}>Avg pace {fmtPace(avgPace)}/km</AppText>
+          <AppText variant="caption" color={colors.textMuted}>Avg pace {displayPace(avgPace, units).value}{displayPace(avgPace, units).unit}</AppText>
           <AppText variant="caption" color={colors.textMuted}>Elev +{gain} m</AppText>
         </View>
       )}
@@ -276,7 +276,7 @@ export default function Track() {
       {status === 'done' && (
         <View style={{ gap: spacing.sm }}>
           <View style={{ backgroundColor: tiles.mint.bg, borderRadius: radii.lg, padding: spacing.lg }}>
-            <AppText variant="title" color={tiles.mint.ink}>{km.toFixed(2)} km · {fmtClock(elapsed)} · {kcal} kcal</AppText>
+            <AppText variant="title" color={tiles.mint.ink}>{displayDistance(km, units).value} {displayDistance(km, units).unit} · {fmtClock(elapsed)} · {kcal} kcal</AppText>
             <AppText variant="caption" color={tiles.mint.ink} style={{ marginTop: 2 }}>Saved to your history.</AppText>
           </View>
           <Button label="Done" onPress={() => router.back()} />

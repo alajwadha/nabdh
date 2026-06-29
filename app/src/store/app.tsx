@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { TileColor } from '../design-system';
 import { bmr, calorieBudget, hydrationGlasses, macroTargets, resolveActivityFactor, tdee, type Goal } from '../data/health-metrics';
+import type { UnitSystem } from '../services/units';
 import {
   DEFAULT_HYDRATION,
   DEFAULT_REMINDERS,
@@ -92,6 +93,9 @@ type AppState = {
   ramadan: boolean;
   setRamadan: (v: boolean) => void;
 
+  units: UnitSystem;
+  setUnits: (v: UnitSystem) => void;
+
   plan: PlanTask[];
   toggleTask: (key: string) => void;
 
@@ -122,6 +126,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [tiles, setTilesState] = useState<MetricKey[]>(DEFAULT_TILES);
   const [showPrayers, setShowPrayersState] = useState(false);
   const [ramadan, setRamadanState] = useState(false);
+  const [units, setUnitsState] = useState<UnitSystem>('metric');
   const [plan, setPlan] = useState<PlanTask[]>(DEFAULT_PLAN);
   const [water, setWater] = useState(3);
   const [meals, setMeals] = useState<Meal[]>(DEFAULT_MEALS);
@@ -132,7 +137,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const waterGoal = hydrationGlasses(body.weightKg, resolveActivityFactor(body.activity), true);
 
   useEffect(() => {
-    AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body', 'nabdh.reminders', 'nabdh.hydration']).then((pairs) => {
+    AsyncStorage.multiGet(['nabdh.tiles', 'nabdh.prayers', 'nabdh.body', 'nabdh.reminders', 'nabdh.hydration', 'nabdh.units']).then((pairs) => {
       for (const [k, v] of pairs) {
         if (k === 'nabdh.reminders' && v) {
           try {
@@ -159,6 +164,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           }
         }
         if (k === 'nabdh.prayers' && v) setShowPrayersState(v === '1');
+        if (k === 'nabdh.units' && (v === 'metric' || v === 'imperial')) setUnitsState(v);
         if (k === 'nabdh.body' && v) {
           try {
             setBodyState({ ...DEFAULT_BODY, ...(JSON.parse(v) as Partial<Body>) });
@@ -219,6 +225,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     AsyncStorage.setItem('nabdh.prayers', v ? '1' : '0').catch(() => {});
   };
 
+  const setUnits = (v: UnitSystem) => {
+    setUnitsState(v);
+    AsyncStorage.setItem('nabdh.units', v).catch(() => {});
+  };
+
   const toggleTask = (key: string) =>
     setPlan((p) => p.map((t) => (t.key === key ? { ...t, done: !t.done } : t)));
 
@@ -247,6 +258,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setShowPrayers,
     ramadan,
     setRamadan: setRamadanState,
+    units,
+    setUnits,
     plan,
     toggleTask,
     water,
