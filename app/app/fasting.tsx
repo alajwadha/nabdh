@@ -9,6 +9,8 @@ import { Icon } from '../src/components/Icon';
 import { useAppState } from '../src/store/app';
 import { useFasting } from '../src/store/fasting';
 import { PLANS, RAMADAN_PLAN, fastingState, fmtCountdown, planByKey } from '../src/data/fasting';
+import { prayerSource } from '../src/data/prayer';
+import { usePrayerTimes } from '../src/data/usePrayer';
 import { cancelScheduled, scheduleAt } from '../src/services/notifications';
 
 const RING = 248;
@@ -45,6 +47,7 @@ function clock12(ms: number): string {
 
 export default function Fasting() {
   const { colors, tiles } = useTheme();
+  usePrayerTimes();
   const router = useRouter();
   const { ramadan } = useAppState();
   const { planKey, startedAt, setPlan, start, stop } = useFasting();
@@ -147,7 +150,7 @@ export default function Fasting() {
               <View style={{ flex: 1 }}>
                 <AppText variant="title" color={tiles.lav.ink}>Follow Ramadan</AppText>
                 <AppText variant="caption" color={tiles.lav.ink} style={{ opacity: 0.9 }}>{RAMADAN_PLAN.note}</AppText>
-                <AppText variant="caption" color={tiles.lav.ink} style={{ opacity: 0.7, marginTop: 2 }}>Demo times · Riyadh</AppText>
+                <AppText variant="caption" color={tiles.lav.ink} style={{ opacity: 0.7, marginTop: 2 }}>{prayerSource() === 'location' ? 'Times for your location' : 'Demo times · Riyadh'}</AppText>
               </View>
               <Icon name="chevron-right" size={18} color={tiles.lav.ink} />
             </Pressable>

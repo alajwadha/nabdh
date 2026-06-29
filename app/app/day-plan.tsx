@@ -5,6 +5,8 @@ import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { Icon } from '../src/components/Icon';
 import { dayPlan, nowMins, type PlanItem } from '../src/data/dayplan';
+import { prayerSource } from '../src/data/prayer';
+import { usePrayerTimes } from '../src/data/usePrayer';
 
 function Rail({ item, past, isLast, now }: { item: PlanItem; past: boolean; isLast: boolean; now: boolean }) {
   const { colors, tiles } = useTheme();
@@ -49,7 +51,9 @@ function Rail({ item, past, isLast, now }: { item: PlanItem; past: boolean; isLa
 export default function DayPlan() {
   const { colors } = useTheme();
   const router = useRouter();
+  usePrayerTimes(); // re-render when location-based prayer times arrive
   const items = dayPlan();
+  const located = prayerSource() === 'location';
   const now = nowMins();
   // index of the next upcoming item, to flag "now"
   const nextIdx = items.findIndex((it) => it.mins >= now);
@@ -73,7 +77,7 @@ export default function DayPlan() {
       </Card>
 
       <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Prayer times are demo values for Riyadh. Blocks are suggestions you can shift around your day.
+        {located ? 'Prayer times are calculated for your location.' : 'Prayer times are demo values for Riyadh.'} Blocks are suggestions you can shift around your day.
       </AppText>
     </Screen>
   );

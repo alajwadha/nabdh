@@ -5,6 +5,7 @@ import { AppText } from '../design-system/components';
 import { radii, spacing, type TileColor } from '../design-system';
 import { useTheme } from '../design-system/theme';
 import { PRAYERS, shortLabel } from '../data/prayer';
+import { usePrayerTimes } from '../data/usePrayer';
 import { Glass } from '../design-system/glass';
 import { EnergyCurve } from './Charts';
 
@@ -126,6 +127,7 @@ export function PrayerStrip({
   highlight: 'asr' | 'maghrib';
 }) {
   const { colors } = useTheme();
+  usePrayerTimes(); // re-render when location-based prayer times arrive
   // Single source of truth, same prayer times the planner and fasting timer read.
   // A frosted-glass strip (chrome, not dense data) so it reads as a floating layer.
   return (

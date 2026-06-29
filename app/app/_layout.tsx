@@ -17,6 +17,7 @@ import { MindfulProvider } from '../src/store/mindful';
 import { SocialProvider } from '../src/store/social';
 import { FastingProvider } from '../src/store/fasting';
 import { initialHref, subscribe } from '../src/services/quickActions';
+import { loadCachedPrayerTimes, refreshPrayerTimes } from '../src/data/prayer';
 import '../src/i18n';
 
 const AUTH_ROUTES = ['sign-in', 'phone'];
@@ -48,6 +49,14 @@ function RootNavigator() {
     if (href) router.navigate(href as never);
     return subscribe((h) => router.navigate(h as never));
   }, [router]);
+
+  // Prayer times: show cached (location-based) values instantly, then refresh from the
+  // device's current location. Falls back to the demo Riyadh times if location is denied.
+  useEffect(() => {
+    loadCachedPrayerTimes().finally(() => {
+      refreshPrayerTimes();
+    });
+  }, []);
 
   if (loading) {
     return (

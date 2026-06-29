@@ -7,7 +7,8 @@ import { useTheme } from '../src/design-system/theme';
 import { Icon, type IconName } from '../src/components/Icon';
 import { useAppState } from '../src/store/app';
 import { ramadanState, fmtCountdown } from '../src/data/fasting';
-import { clockLabel, prayerTime } from '../src/data/prayer';
+import { clockLabel, prayerSource, prayerTime } from '../src/data/prayer';
+import { usePrayerTimes } from '../src/data/usePrayer';
 import { dishById, type Dish } from '../src/data/dishes';
 
 function nowLabel(): string {
@@ -48,6 +49,7 @@ function WindowCard() {
 
 export default function Ramadan() {
   const { colors, tiles } = useTheme();
+  usePrayerTimes();
   const router = useRouter();
   const { ramadan, setRamadan, waterGoal, addMeal } = useAppState();
 
@@ -166,7 +168,7 @@ export default function Ramadan() {
       <Button label="Open the fasting timer" variant="line" onPress={() => router.navigate('/fasting')} />
 
       <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Prayer times are demo values for Riyadh. Guidance is general, adjust to how you feel.
+        {prayerSource() === 'location' ? 'Prayer times are calculated for your location.' : 'Prayer times are demo values for Riyadh.'} Guidance is general, adjust to how you feel.
       </AppText>
     </Screen>
   );

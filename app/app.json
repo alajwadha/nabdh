@@ -25,6 +25,12 @@
       "expo-secure-store",
       "expo-apple-authentication",
       [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Nabdh uses your location to calculate accurate prayer times for where you are and to map your outdoor workouts. Your location stays on your device."
+        }
+      ],
+      [
         "@kingstinct/react-native-healthkit",
         {
           "NSHealthShareUsageDescription": "Nabdh reads your steps, heart rate, sleep, and energy from Apple Health to show your dashboard and personalize coaching. Your health data stays on your device unless you explicitly consent to AI coaching.",
