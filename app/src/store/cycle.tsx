@@ -21,6 +21,7 @@ type CycleState = {
   logPeriodStart: (date?: string) => void;
   setPeriodEnd: (start: string, end: string) => void;
   removePeriod: (start: string) => void;
+  replacePeriods: (periods: Period[]) => void;
 };
 
 const Ctx = createContext<CycleState | undefined>(undefined);
@@ -54,7 +55,7 @@ export function CycleProvider({ children }: { children: ReactNode }) {
   const setPeriodEnd = (start: string, end: string) => save(periods.map((p) => (p.start === start ? { ...p, end } : p)));
   const removePeriod = (start: string) => save(periods.filter((p) => p.start !== start));
 
-  return <Ctx.Provider value={{ periods, logPeriodStart, setPeriodEnd, removePeriod }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ periods, logPeriodStart, setPeriodEnd, removePeriod, replacePeriods: save }}>{children}</Ctx.Provider>;
 }
 
 export function useCycle(): CycleState {

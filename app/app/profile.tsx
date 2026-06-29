@@ -180,6 +180,7 @@ export default function Profile() {
           </AppText>
         </View>
         <Row icon="download" label="Export my data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/export')} />
+        <Row icon="rotate-cw" label="Import data" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} onPress={() => router.navigate('/import')} />
         <Row icon="trash-2" label="Delete everything" right={<AppText variant="caption" color={colors.textMuted}>›</AppText>} last />
       </Group>
 

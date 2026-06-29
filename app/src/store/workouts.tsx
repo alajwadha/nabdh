@@ -52,6 +52,7 @@ function seed(): WorkoutSession[] {
 type WorkoutState = {
   sessions: WorkoutSession[];
   addSession: (s: Omit<WorkoutSession, 'id' | 'at'>) => void;
+  replaceSessions: (sessions: WorkoutSession[]) => void;
   clear: () => void;
   lastFor: (exKey: string) => WorkoutSession | undefined;
   bestE1rmFor: (exKey: string) => number;
@@ -99,9 +100,16 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     data.filter((s) => s.kind === 'gym' && s.exKey === exKey).sort((a, b) => a.at.localeCompare(b.at));
   const bestOf = (exKey: string) => gymFor(exKey).reduce((best, s) => Math.max(best, s.e1rm ?? 0), 0);
 
+  const replaceSessions = (next: WorkoutSession[]) => {
+    const capped = next.slice(-500);
+    setSessions(capped);
+    AsyncStorage.setItem(KEY, JSON.stringify(capped)).catch(() => {});
+  };
+
   const value: WorkoutState = {
     sessions: data,
     addSession,
+    replaceSessions,
     clear: () => {
       setSessions([]);
       AsyncStorage.removeItem(KEY).catch(() => {});

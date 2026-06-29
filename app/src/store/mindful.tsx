@@ -13,6 +13,7 @@ type MindfulState = {
   totalMinutes: number;
   streak: number;
   addSession: (minutes: number, pattern: string) => void;
+  replaceSessions: (sessions: MindfulSession[]) => void;
 };
 
 const Ctx = createContext<MindfulState | undefined>(undefined);
@@ -51,7 +52,13 @@ export function MindfulProvider({ children }: { children: ReactNode }) {
     d.setDate(d.getDate() - 1);
   }
 
-  return <Ctx.Provider value={{ sessions, totalMinutes, streak, addSession }}>{children}</Ctx.Provider>;
+  const replaceSessions = (next: MindfulSession[]) => {
+    const capped = next.slice(-500);
+    setSessions(capped);
+    AsyncStorage.setItem(KEY, JSON.stringify(capped)).catch(() => {});
+  };
+
+  return <Ctx.Provider value={{ sessions, totalMinutes, streak, addSession, replaceSessions }}>{children}</Ctx.Provider>;
 }
 
 export function useMindful(): MindfulState {

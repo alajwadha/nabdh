@@ -42,6 +42,7 @@ type HealthLogsState = Logs & {
   removeMed: (id: string) => void;
   toggleMedToday: (id: string) => void;
   medStreak: (m: Med) => number;
+  replaceLogs: (partial: Partial<Logs>) => void;
 };
 
 const Ctx = createContext<HealthLogsState | undefined>(undefined);
@@ -98,8 +99,11 @@ export function HealthLogsProvider({ children }: { children: ReactNode }) {
     return streak;
   };
 
+  // Replace only the provided slices (used by data import); untouched slices stay as-is.
+  const replaceLogs = (partial: Partial<Logs>) => save({ ...logs, ...partial });
+
   return (
-    <Ctx.Provider value={{ ...logs, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, medStreak }}>
+    <Ctx.Provider value={{ ...logs, logWeight, logBp, logGlucose, addMed, removeMed, toggleMedToday, medStreak, replaceLogs }}>
       {children}
     </Ctx.Provider>
   );
