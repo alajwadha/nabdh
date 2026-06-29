@@ -186,7 +186,7 @@ export default function Workout() {
             {EXERCISES.map((e) => {
               const on = e.key === exKey;
               return (
-                <Pressable key={e.key} onPress={() => { setExKey(e.key); setSavedMsg(null); }} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
+                <Pressable key={e.key} onPress={() => { setExKey(e.key); setSavedMsg(null); }} accessibilityRole="button" accessibilityLabel={e.name} accessibilityState={{ selected: on }} style={{ paddingVertical: 9, paddingHorizontal: 13, borderRadius: 99, backgroundColor: on ? colors.accent : colors.card, borderWidth: 2, borderColor: on ? colors.accent : colors.border }}>
                   <AppText variant="caption" color={on ? '#fff' : colors.ink}>{e.emoji} {e.name}</AppText>
                 </Pressable>
               );
@@ -215,8 +215,9 @@ export default function Workout() {
                 )}
               </View>
             ))}
-            <Pressable onPress={() => setSets((a) => [...a, { ...(a[a.length - 1] ?? { weight: 40, reps: 8 }) }])} style={{ paddingVertical: 10 }}>
-              <AppText variant="caption" color={colors.accentText}>＋ Add set</AppText>
+            <Pressable onPress={() => setSets((a) => [...a, { ...(a[a.length - 1] ?? { weight: 40, reps: 8 }) }])} accessibilityRole="button" accessibilityLabel="Add set" hitSlop={6} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 10 }}>
+              <Icon name="plus" size={13} color={colors.accentText} />
+              <AppText variant="caption" color={colors.accentText}>Add set</AppText>
             </Pressable>
             {detailed && ex.equipment === 'barbell' && (
               <View style={{ paddingBottom: 8, gap: 6 }}>

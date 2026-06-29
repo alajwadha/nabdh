@@ -76,6 +76,8 @@ export default function Shortcuts() {
           <Pressable
             key={a.id}
             onPress={() => router.navigate(a.href as never)}
+            accessibilityRole="button"
+            accessibilityLabel={a.title}
             style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 11, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: colors.border }}
           >
             <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>

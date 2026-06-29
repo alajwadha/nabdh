@@ -109,7 +109,7 @@ export default function Ramadan() {
       <WindowCard />
 
       {!ramadan && (
-        <Pressable onPress={() => setRamadan(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.navBg, borderRadius: radii.lg, padding: spacing.md }}>
+        <Pressable onPress={() => setRamadan(true)} accessibilityRole="button" accessibilityLabel="Enable Ramadan mode" style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.navBg, borderRadius: radii.lg, padding: spacing.md }}>
           <Icon name="moon-star" size={16} color={colors.textSecondary} />
           <AppText variant="caption" color={colors.textSecondary} style={{ flex: 1 }}>Ramadan mode is off. Turn it on to surface this across the app.</AppText>
           <AppText variant="caption" color={colors.accentText}>Enable</AppText>

@@ -40,7 +40,7 @@ export default function Coach() {
     {
       id: 1,
       from: 'c',
-      text: `صباح الخير ${identity.firstName} ☀️\nمعدل تقلب ضربات القلب اليوم ${s?.hrvSdnn ?? '-'} ms, يوم تعافٍ، لا يوم إجهاد.`,
+      text: `صباح الخير ${identity.firstName}\nمعدل تقلب ضربات القلب اليوم ${s?.hrvSdnn ?? '-'} ms, يوم تعافٍ، لا يوم إجهاد.`,
     },
   ]);
   const [input, setInput] = useState('');
@@ -233,6 +233,9 @@ export default function Coach() {
             />
             <Pressable
               onPress={() => send(input)}
+              accessibilityRole="button"
+              accessibilityLabel="Send message"
+              accessibilityState={{ disabled: loading }}
               style={{
                 width: 46,
                 height: 46,
@@ -242,7 +245,7 @@ export default function Coach() {
                 justifyContent: 'center',
               }}
             >
-              <AppText color="#fff" style={{ fontSize: 17 }}>➤</AppText>
+              <Icon name="play" size={18} color="#fff" />
             </Pressable>
           </View>
         </View>

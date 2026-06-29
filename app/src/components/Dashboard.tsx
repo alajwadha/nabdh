@@ -61,12 +61,16 @@ export function MetricTile({
   return (
     <Pressable
       onPress={editing ? undefined : onPress}
+      accessibilityRole={editing ? undefined : 'button'}
+      accessibilityLabel={editing ? undefined : label}
       style={{ backgroundColor: c.bg, borderRadius: radii.xl, padding: spacing.lg, flexGrow: 1, flexBasis: '46%', minWidth: '46%' }}
     >
       {editing && (
         <Pressable
           onPress={onRemove}
           hitSlop={10}
+          accessibilityRole="button"
+          accessibilityLabel={`Remove ${label}`}
           style={{ position: 'absolute', top: -7, right: -7, width: 26, height: 26, borderRadius: 13, backgroundColor: colors.danger, alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
         >
           <AppText color="#fff" style={{ fontSize: 15, fontWeight: '800', lineHeight: 17 }}>

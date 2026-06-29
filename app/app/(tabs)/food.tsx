@@ -187,10 +187,9 @@ export default function Food() {
               />
             ))}
           </View>
-          <Pressable onPress={addWater} accessibilityRole="button" accessibilityLabel="Add a glass of water" style={{ backgroundColor: colors.navOn, borderRadius: 99, paddingVertical: 11, paddingHorizontal: 16 }}>
-            <AppText variant="caption" color={colors.navOnText}>
-              ＋ Glass
-            </AppText>
+          <Pressable onPress={addWater} accessibilityRole="button" accessibilityLabel="Add a glass of water" style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.navOn, borderRadius: 99, paddingVertical: 11, paddingHorizontal: 16 }}>
+            <Icon name="plus" size={13} color={colors.navOnText} />
+            <AppText variant="caption" color={colors.navOnText}>Glass</AppText>
           </Pressable>
         </View>
       </Card>

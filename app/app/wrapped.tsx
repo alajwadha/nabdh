@@ -21,7 +21,7 @@ type Page = { bg: string; kicker: string; big: string; line: string; share?: boo
 
 function buildPages(name: string, weekRange: string, streak: number): Page[] {
   return [
-    { bg: '#2E7D5B', kicker: weekRange, big: `Your week,\n${name}`, line: 'Seven days, a few wins, one lesson. Here’s how your body did.' },
+    { bg: '#2E7D5B', kicker: weekRange, big: `Your week,\n${name}`, line: 'A sample recap to show the shape of it. Once you have logged a full week, these pages fill with your own numbers.' },
     { bg: '#4A3F9E', kicker: 'SLEEP', big: '7h 02m', line: 'average a night, your best night hit 82. Bedtime drifted ±38 min; tightening that is next week’s quest.' },
     { bg: '#27607F', kicker: 'RECOVERY', big: '68', line: 'average readiness, with 3 green days. The dip came mid-week after late karak, your data doesn’t lie.' },
     { bg: '#C2562C', kicker: 'MOVEMENT', big: '61,204', line: 'steps this week, 5 of them after Asr, your favourite window. That’s 28 km on foot.' },
@@ -64,9 +64,9 @@ export default function Wrapped() {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 22, paddingTop: 10 }}>
           <AppText style={{ fontWeight: '800', fontSize: 15, color: '#fff' }}>
-            Nabdh<AppText color="#7FE0B4" style={{ fontSize: 15, fontWeight: '800' }}>.</AppText> · your week
+            Nabdh<AppText color="#7FE0B4" style={{ fontSize: 15, fontWeight: '800' }}>.</AppText> · your week (sample)
           </AppText>
-          <Pressable onPress={() => router.back()} hitSlop={12}>
+          <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Close" hitSlop={12}>
             <Icon name="x" size={20} color="#fff" />
           </Pressable>
         </View>

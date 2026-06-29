@@ -150,7 +150,7 @@ export default function Social() {
                     <Icon name="users" size={13} color={colors.textMuted} />
                     <AppText variant="caption" color={colors.textMuted}>{c.participants} in · {c.daysLeft}d left</AppText>
                   </View>
-                  <Pressable onPress={() => toggleJoin(c.id)} hitSlop={8}>
+                  <Pressable onPress={() => toggleJoin(c.id)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`Leave ${c.title}`}>
                     <AppText variant="caption" color={colors.textMuted}>Leave</AppText>
                   </Pressable>
                 </View>

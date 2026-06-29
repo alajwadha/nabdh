@@ -37,7 +37,7 @@ export default function Trends() {
         <AppText variant="h1">Trends</AppText>
       </View>
 
-      <Pressable onPress={() => router.navigate('/vitals')} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
+      <Pressable onPress={() => router.navigate('/vitals')} accessibilityRole="button" accessibilityLabel="Vitals and medications" style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.accentDeep, borderRadius: radii.xl, padding: spacing.lg }}>
         <Icon name="heart-pulse" size={22} color="#fff" />
         <View style={{ flex: 1 }}>
           <AppText variant="title" color="#fff">Vitals & medications</AppText>
@@ -61,6 +61,10 @@ export default function Trends() {
           {SUMMARY[range]}
         </AppText>
       </View>
+
+      <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
+        These trends are a sample. Connect a device or log a few weeks and they will reflect your own data.
+      </AppText>
 
       {TRENDS.map((tr) => (
         <Card key={tr.nm}>

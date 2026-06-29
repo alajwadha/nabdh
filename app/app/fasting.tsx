@@ -143,7 +143,7 @@ export default function Fasting() {
           </AppText>
 
           {ramadan && (
-            <Pressable onPress={() => begin('ramadan')} style={{ backgroundColor: tiles.lav.bg, borderRadius: radii.xl, padding: spacing.lg, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+            <Pressable onPress={() => begin('ramadan')} accessibilityRole="button" accessibilityLabel="Follow Ramadan fasting" style={{ backgroundColor: tiles.lav.bg, borderRadius: radii.xl, padding: spacing.lg, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
               <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name="moon-star" size={22} color={tiles.lav.ink} />
               </View>
@@ -160,7 +160,7 @@ export default function Fasting() {
           {PLANS.map((p) => {
             const sel = p.key === planKey;
             return (
-              <Pressable key={p.key} onPress={() => setPlan(p.key)} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.card, borderWidth: sel ? 2 : 1, borderColor: sel ? colors.accent : colors.border, borderRadius: radii.lg, padding: spacing.md }}>
+              <Pressable key={p.key} onPress={() => setPlan(p.key)} accessibilityRole="button" accessibilityLabel={`${p.name} fasting window`} accessibilityState={{ selected: sel }} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, backgroundColor: colors.card, borderWidth: sel ? 2 : 1, borderColor: sel ? colors.accent : colors.border, borderRadius: radii.lg, padding: spacing.md }}>
                 <View style={{ width: 52, alignItems: 'center' }}>
                   <AppText variant="metric" style={{ fontSize: 17, lineHeight: 20 }} color={sel ? colors.accentText : colors.ink}>{p.name}</AppText>
                 </View>
