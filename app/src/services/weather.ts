@@ -1,5 +1,5 @@
 // Live weather from Open-Meteo (free, no API key). Network is best-effort: any failure
-// returns null and the UI shows an honest offline state — we never invent a temperature.
+// returns null and the UI shows an honest offline state, we never invent a temperature.
 
 export type WeatherNow = { tempC: number; feelsC: number; humidity: number; code: number };
 export type WeatherHour = { iso: string; hour: number; tempC: number; feelsC: number };

@@ -31,7 +31,7 @@ export default function Heat() {
 
   const asrHour = Number(prayerTime('asr').slice(0, 2));
   const level = forecast ? heatLevel(forecast.now.feelsC) : null;
-  // Use the forecast's own current-hour (its timezone), not the device clock — otherwise a
+  // Use the forecast's own current-hour (its timezone), not the device clock, otherwise a
   // non-Riyadh device would pick the wrong outdoor window.
   const win = forecast ? bestWindow(forecast.hours, forecast.nowHour, asrHour) : null;
   const glasses = extraGlasses(sweatLossLiters(9.8, 45, body.weightKg, true) - sweatLossLiters(9.8, 45, body.weightKg, false));
@@ -95,11 +95,11 @@ export default function Heat() {
               <AppText variant="caption" color={tiles.mint.ink} style={{ letterSpacing: 1.2, opacity: 0.8 }}>BEST WINDOW TO TRAIN OUTSIDE</AppText>
               {win ? (
                 <>
-                  <AppText variant="title" color={tiles.mint.ink}>{hourLabel(win.startHour)} – {hourLabel(win.endHour)} · feels {win.feelsC}°</AppText>
+                  <AppText variant="title" color={tiles.mint.ink}>{hourLabel(win.startHour)} - {hourLabel(win.endHour)} · feels {win.feelsC}°</AppText>
                   {win.afterAsr && <AppText variant="caption" color={tiles.mint.ink} style={{ opacity: 0.9 }}>After Asr, as it cools off.</AppText>}
                 </>
               ) : (
-                <AppText variant="title" color={tiles.mint.ink}>Tomorrow morning — today’s daylight is done.</AppText>
+                <AppText variant="title" color={tiles.mint.ink}>Tomorrow morning, today’s daylight is done.</AppText>
               )}
             </View>
           </Card>

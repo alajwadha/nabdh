@@ -101,14 +101,14 @@ export default function Cycle() {
           {/* predictions */}
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
             <Stat icon="calendar" label="NEXT PERIOD" value={`${info.daysUntilNext}`} sub={info.daysUntilNext === 1 ? 'day' : 'days'} colors={colors} />
-            <Stat icon="heart-pulse" label="FERTILE WINDOW" value={`${info.fertile[0]}–${info.fertile[1]}`} sub="cycle days" colors={colors} />
+            <Stat icon="heart-pulse" label="FERTILE WINDOW" value={`${info.fertile[0]}-${info.fertile[1]}`} sub="cycle days" colors={colors} />
           </View>
           <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center', lineHeight: 17 }}>
             Avg cycle {info.cycleLen} days · period {info.periodLen} days · next on {info.nextStart.slice(5)}{'\n'}Fertile window = the 5 days before ovulation (cycle day {info.ovulationDay}) plus the day itself.
           </AppText>
 
           <Button label="Log period started today" variant="line" onPress={() => logPeriodStart(dayKey())} />
-          <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>Estimates only — not contraception or medical advice.</AppText>
+          <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>Estimates only, not contraception or medical advice.</AppText>
         </>
       )}
     </Screen>

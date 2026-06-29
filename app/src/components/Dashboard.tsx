@@ -126,7 +126,7 @@ export function PrayerStrip({
   highlight: 'asr' | 'maghrib';
 }) {
   const { colors } = useTheme();
-  // Single source of truth — same prayer times the planner and fasting timer read.
+  // Single source of truth, same prayer times the planner and fasting timer read.
   // A frosted-glass strip (chrome, not dense data) so it reads as a floating layer.
   return (
     <Glass radius={radii.lg} intensity={28} scrim="strong">

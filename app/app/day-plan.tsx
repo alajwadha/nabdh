@@ -63,7 +63,7 @@ export default function DayPlan() {
         <AppText variant="h1">Your day</AppText>
       </View>
       <AppText variant="body" color={colors.textSecondary}>
-        Meals and training laid out around today’s prayers — with your main session parked in the cool post-Asr window.
+        Meals and training laid out around today’s prayers, with your main session parked in the cool post-Asr window.
       </AppText>
 
       <Card style={{ gap: spacing.lg }}>

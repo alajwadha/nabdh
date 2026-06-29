@@ -40,11 +40,11 @@ export default function Food() {
   // Measured energy out today = basal + active (active is incremental over basal,
   // so no double-counting). Only when both device fields exist. We deliberately do
   // NOT compute a net "deficit" here: intake accrues all day while burn is whole-day,
-  // so any midday net is structurally a large deficit — misleading. We show the
+  // so any midday net is structurally a large deficit, misleading. We show the
   // measured figures and let the deficit settle by bedtime.
   const burn = s && s.basalEnergyKcal != null && s.activeEnergyKcal != null ? s.basalEnergyKcal + s.activeEnergyKcal : null;
 
-  // Nutrition detail — all from real consumed macros + the body profile.
+  // Nutrition detail, all from real consumed macros + the body profile.
   const proteinPerKg = body.weightKg > 0 ? Math.round((macros.protein / body.weightKg) * 10) / 10 : 0;
   const proteinTarget = proteinPerKgTarget(body.goal);
   const fiberGoal = fiberTarget(budget);
@@ -121,7 +121,7 @@ export default function Food() {
             </View>
           </View>
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
-            Burned = basal {s!.basalEnergyKcal!.toLocaleString()} + active {s!.activeEnergyKcal!.toLocaleString()}, measured by your device today. The gap becomes your deficit or surplus once the day’s done — your plan targets {budget.toLocaleString()} kcal in.
+            Burned = basal {s!.basalEnergyKcal!.toLocaleString()} + active {s!.activeEnergyKcal!.toLocaleString()}, measured by your device today. The gap becomes your deficit or surplus once the day’s done. Your plan targets {budget.toLocaleString()} kcal in.
           </AppText>
         </Card>
       )}
@@ -130,7 +130,7 @@ export default function Food() {
         <Card>
           <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.4, marginBottom: 4 }}>NUTRITION DETAIL</AppText>
 
-          {/* protein per kg — the lens lifters actually track */}
+          {/* protein per kg, the lens lifters actually track */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 6 }}>
             <AppText variant="caption" color={colors.ink} style={{ fontWeight: '700' }}>Protein density</AppText>
             <AppText variant="caption" color={colors.accentText} style={{ fontWeight: '800' }}>
@@ -142,8 +142,8 @@ export default function Food() {
           </View>
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 5, lineHeight: 15 }}>
             {proteinPerKg >= proteinTarget
-              ? `At your ${proteinTarget} g/kg target for ${body.goal === 'cut' ? 'a cut' : body.goal === 'gain' ? 'a lean gain' : 'maintenance'} — muscle protected.`
-              : `${proteinPerKg} g/kg so far — on track for ${proteinTarget} as the day fills in.`}
+              ? `At your ${proteinTarget} g/kg target for ${body.goal === 'cut' ? 'a cut' : body.goal === 'gain' ? 'a lean gain' : 'maintenance'}, muscle protected.`
+              : `${proteinPerKg} g/kg so far, on track for ${proteinTarget} as the day fills in.`}
           </AppText>
 
           {/* energy split from real macros */}
@@ -162,7 +162,7 @@ export default function Food() {
             Energy split · {split.protein}% protein · {split.carbs}% carbs · {split.fat}% fat
           </AppText>
 
-          {/* fibre target (recommendation, not consumed — meal fibre isn't tracked yet) */}
+          {/* fibre target (recommendation, not consumed, meal fibre isn't tracked yet) */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTopWidth: 2, borderTopColor: colors.border }}>
             <AppText variant="caption" color={colors.ink} style={{ fontWeight: '700' }}>Fibre target</AppText>
             <AppText variant="caption" color={colors.textMuted}>~{fiberGoal} g/day</AppText>
@@ -221,13 +221,13 @@ export default function Food() {
 
       <View style={{ borderWidth: 2, borderStyle: 'dashed', borderColor: colors.border, borderRadius: radii.lg, padding: 14, alignItems: 'center' }}>
         <AppText variant="caption" color={colors.textMuted}>
-          Dinner — keep it under {left} kcal to stay on plan
+          Dinner, keep it under {left} kcal to stay on plan
         </AppText>
       </View>
 
       <CoachCard>
         {macros.protein >= macroGoals.protein
-          ? `Protein’s done (${macros.protein}/${macroGoals.protein}g). Something light tonight — shorbat adas fits.`
+          ? `Protein’s done (${macros.protein}/${macroGoals.protein}g). Something light tonight, shorbat adas fits.`
           : `${macroGoals.protein - macros.protein}g protein to go. Grilled chicken or laban closes the gap nicely.`}
       </CoachCard>
     </Screen>

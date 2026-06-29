@@ -22,7 +22,7 @@ export default function Shortcuts() {
     AsyncStorage.getItem(KEY).then((v) => {
       const on = v === '1';
       setEnabled(on);
-      // OS quick actions don't persist across cold launches — re-register if the
+      // OS quick actions don't persist across cold launches, re-register if the
       // user had them on, so the toggle state matches reality.
       if (on && available) enableShortcuts();
     });
@@ -45,7 +45,7 @@ export default function Shortcuts() {
         <AppText variant="h1">Shortcuts</AppText>
       </View>
       <AppText variant="body" color={colors.textSecondary}>
-        Jump straight into the things you do most — from your home screen or by voice.
+        Jump straight into the things you do most, from your home screen or by voice.
       </AppText>
 
       {/* enable home-screen quick actions */}
@@ -64,7 +64,7 @@ export default function Shortcuts() {
         </View>
         {!available && (
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: spacing.sm }}>
-            Home-screen actions need the full app build — they won’t register in this preview.
+            Home-screen actions need the full app build, so they won’t register in this preview.
           </AppText>
         )}
       </Card>
@@ -97,7 +97,7 @@ export default function Shortcuts() {
           <AppText variant="title">Voice · Siri & Assistant</AppText>
         </View>
         <AppText variant="caption" color={colors.textSecondary} style={{ lineHeight: 18 }}>
-          Add any of these links to the Siri Shortcuts app (iOS) or Google Assistant routines (Android) to open Nabdh by voice — e.g. “Hey Siri, log my water.”
+          Add any of these links to the Siri Shortcuts app (iOS) or Google Assistant routines (Android) to open Nabdh by voice, e.g. “Hey Siri, log my water.”
         </AppText>
         {ACTIONS.map((a) => (
           <View key={a.id} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 }}>
@@ -113,7 +113,7 @@ export default function Shortcuts() {
       <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start', backgroundColor: colors.navBg, borderRadius: radii.lg, padding: spacing.md }}>
         <Icon name="sliders-horizontal" size={16} color={colors.textSecondary} />
         <AppText variant="caption" color={colors.textSecondary} style={{ flex: 1, lineHeight: 18 }}>
-          Home-screen widgets (today’s rings & streaks at a glance) need a native widget extension — they’re on the roadmap, not in this build yet.
+          Home-screen widgets (today’s rings & streaks at a glance) need a native widget extension, they’re on the roadmap, not in this build yet.
         </AppText>
       </View>
 

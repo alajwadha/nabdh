@@ -103,7 +103,7 @@ export default function Workout() {
     if (mode === 'gym') addSession({ kind: 'gym', exKey, sets, volume: vol, e1rm: best, readiness: r });
     else addSession({ kind: 'sport', sportKey, minutes, kcal: cals, distanceKm: dist, readiness: r });
     // Stay on the screen so the user SEES the payoff: updated best, ticked-up trend.
-    setSavedMsg(mode === 'gym' ? (wasPr ? 'Saved — new e1RM PR' : 'Saved') : `Logged ${sport.name}`);
+    setSavedMsg(mode === 'gym' ? (wasPr ? 'Saved, new e1RM PR' : 'Saved') : `Logged ${sport.name}`);
   };
 
   const sportMet = sport.key === 'running' ? runningMet(pace) : sport.met;
@@ -111,7 +111,7 @@ export default function Workout() {
   const dist = sport.gps ? distanceKm(minutes, pace) : 0;
   const sweatL = sweatLossLiters(sportMet, minutes, weight, outdoorHeat);
   const rehydrate = rehydrationGlasses(sweatL);
-  // Only predict distances within ~0.4×–3× the logged distance (Riegel's reliable range).
+  // Only predict distances within ~0.4×-3× the logged distance (Riegel's reliable range).
   const raceTargets = [
     { km: 5, label: '5K' },
     { km: 10, label: '10K' },
@@ -153,12 +153,12 @@ export default function Workout() {
         <Icon name="play" size={22} color="#fff" />
         <View style={{ flex: 1 }}>
           <AppText variant="title" color="#fff">Start a guided session</AppText>
-          <AppText variant="caption" color="rgba(255,255,255,0.85)">Full body · Push · Pull · Legs — logged with a rest timer</AppText>
+          <AppText variant="caption" color="rgba(255,255,255,0.85)">Full body · Push · Pull · Legs, logged with a rest timer</AppText>
         </View>
         <AppText variant="title" color="#fff">›</AppText>
       </Pressable>
 
-      {/* readiness-adjusted recommendation — the differentiator */}
+      {/* readiness-adjusted recommendation, the differentiator */}
       <View style={{ backgroundColor: adviceBg.bg, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <AppText variant="caption" color={adviceBg.ink} style={{ letterSpacing: 1.2 }}>TODAY · READINESS {r}</AppText>
@@ -291,13 +291,13 @@ export default function Workout() {
                     </View>
                     <AppText variant="caption" color={colors.textMuted} style={{ flex: 1, lineHeight: 16 }}>
                       {nextTarget.action === 'increase'
-                        ? `Every ${nextTarget.workingWeight} kg set cleared ${nextTarget.repCeil} — add a plate, reset to ${nextTarget.repFloor}.`
+                        ? `Every ${nextTarget.workingWeight} kg set cleared ${nextTarget.repCeil}, add a plate, reset to ${nextTarget.repFloor}.`
                         : `Hold ${nextTarget.workingWeight} kg and chase ${nextTarget.reps} reps; clear ${nextTarget.repCeil} on every set to add weight.`}
                     </AppText>
                   </View>
                   {advice.factor !== 1 && advice.factor !== 0 && (
                     <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 10, marginTop: 6, opacity: 0.8 }}>
-                      This is your plan’s next step — scale it to today’s readiness above.
+                      This is your plan’s next step, scale it to today’s readiness above.
                     </AppText>
                   )}
                 </View>
@@ -360,7 +360,7 @@ export default function Workout() {
             </View>
           )}
 
-          {/* Sweat / rehydration — Gulf-heat aware */}
+          {/* Sweat / rehydration, Gulf-heat aware */}
           <View style={{ backgroundColor: tiles.blue.bg, borderRadius: radii.xl, padding: spacing.lg }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>HYDRATION</AppText>
@@ -376,10 +376,10 @@ export default function Workout() {
               </Pressable>
             </View>
             <AppText variant="title" color={tiles.blue.ink} style={{ marginTop: 6 }}>
-              ~{sweatL} L lost · sip ~{rehydrate} glasses over 2–3 hrs
+              ~{sweatL} L lost · sip ~{rehydrate} glasses over 2-3 hrs
             </AppText>
             <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 4, opacity: 0.85, lineHeight: 16 }}>
-              Estimated from your effort{outdoorHeat ? ' and the outdoor heat (~35% higher)' : ''} — replace ~1.5× the fluid lost, paced not chugged.{detailed ? ` Est. ${Math.round((sweatL / (minutes / 60)) * 100) / 100} L/hr from MET ${Math.round(sportMet * 10) / 10} at ${weight} kg — weigh in/out to dial it in.` : ''}
+              Estimated from your effort{outdoorHeat ? ' and the outdoor heat (~35% higher)' : ''}, replace ~1.5× the fluid lost, paced not chugged.{detailed ? ` Est. ${Math.round((sweatL / (minutes / 60)) * 100) / 100} L/hr from MET ${Math.round(sportMet * 10) / 10} at ${weight} kg, weigh in/out to dial it in.` : ''}
             </AppText>
           </View>
         </>
@@ -429,14 +429,14 @@ function Stepper({ label, value, onMinus, onPlus, colors }: { label: string; val
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       <Pressable onPress={onMinus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText style={{ fontSize: 16 }}>−</AppText>
+        <Icon name="minus" size={15} color={colors.textSecondary} />
       </Pressable>
       <View style={{ minWidth: 52, alignItems: 'center' }}>
         <AppText variant="title">{value}</AppText>
         <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 9 }}>{label}</AppText>
       </View>
       <Pressable onPress={onPlus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText style={{ fontSize: 16 }}>＋</AppText>
+        <Icon name="plus" size={15} color={colors.textSecondary} />
       </Pressable>
     </View>
   );

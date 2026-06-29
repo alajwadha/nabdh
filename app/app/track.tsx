@@ -152,7 +152,7 @@ export default function Track() {
   };
 
   const resume = async () => {
-    segRef.current += 1; // new segment — the gap won't be counted as distance
+    segRef.current += 1; // new segment, the gap won't be counted as distance
     setStatus('tracking');
     await beginSegment();
   };
@@ -216,7 +216,7 @@ export default function Track() {
       {perm === 'unavailable' && (
         <View style={{ backgroundColor: colors.navBg, borderRadius: radii.lg, padding: spacing.md, flexDirection: 'row', gap: 8, alignItems: 'center' }}>
           <Icon name="map-pin" size={16} color={colors.textSecondary} />
-          <AppText variant="caption" color={colors.textSecondary} style={{ flex: 1 }}>Live GPS needs a full device build — it won’t track in this preview.</AppText>
+          <AppText variant="caption" color={colors.textSecondary} style={{ flex: 1 }}>Live GPS needs a full device build, so it won’t track in this preview.</AppText>
         </View>
       )}
       {perm === 'denied' && (
@@ -233,7 +233,7 @@ export default function Track() {
         <RouteTrace pts={points} width={300} height={230} />
       </Card>
 
-      {/* primary metric — distance */}
+      {/* primary metric, distance */}
       <View style={{ alignItems: 'center', marginTop: spacing.sm }}>
         <AppText variant="metric" style={{ fontSize: 64, lineHeight: 66 }} color={colors.accent}>{km.toFixed(2)}</AppText>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>KILOMETRES</AppText>
@@ -243,7 +243,7 @@ export default function Track() {
       <Card style={{ flexDirection: 'row', padding: 0, paddingVertical: spacing.lg, gap: 0 }}>
         <Metric value={fmtClock(elapsed)} label="TIME" />
         {isRide ? (
-          <Metric value={kmh ? kmh.toFixed(1) : '—'} label="KM/H" />
+          <Metric value={kmh ? kmh.toFixed(1) : '-'} label="KM/H" />
         ) : (
           <Metric value={status === 'tracking' ? fmtPace(curPace || avgPace) : fmtPace(avgPace)} label="PACE /KM" />
         )}
@@ -259,7 +259,7 @@ export default function Track() {
       {/* controls */}
       {status === 'idle' && discarded && (
         <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-          That session was too short to save — nothing was recorded.
+          That session was too short to save, nothing was recorded.
         </AppText>
       )}
       {status === 'idle' && <Button label="Start" onPress={start} />}

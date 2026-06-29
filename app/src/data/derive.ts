@@ -32,7 +32,7 @@ export function sleepStages(asleepMin: number): SleepStages {
   return { deep, rem, light, awake, inBedMin: asleepMin + awake };
 }
 
-/** 0–100 sleep score from duration (vs 7.5h) nudged by deep+REM share. */
+/** 0-100 sleep score from duration (vs 7.5h) nudged by deep+REM share. */
 export function sleepScore(asleepMin: number): number {
   if (asleepMin <= 0) return 0;
   const duration = 60 + (asleepMin - 360) / 4.5; // 6h→60, 7.5h→80
@@ -61,8 +61,8 @@ export function sleepWindow(inBedMin: number, wakeHour = 7): { bed: string; wake
 /**
  * Bedtimes that complete whole ~90-minute sleep cycles before a fixed wake time, so
  * you wake between cycles (light sleep) rather than mid-deep-sleep. Includes ~15 min
- * to fall asleep. Cycle length is an average (real cycles run 70–120 min), so this is
- * guidance, not a guarantee — but aligning to it is why "more sleep" can feel worse.
+ * to fall asleep. Cycle length is an average (real cycles run 70-120 min), so this is
+ * guidance, not a guarantee, but aligning to it is why "more sleep" can feel worse.
  */
 export function cycleBedtimes(
   wakeHour = 7,
@@ -79,7 +79,7 @@ export function cycleBedtimes(
 
 /**
  * Evening wind-down cut-off times relative to a target bedtime. Caffeine has a
- * ~5–6 h half-life, so an afternoon karak/qahwa still has ~25% onboard at bedtime —
+ * ~5-6 h half-life, so an afternoon karak/qahwa still has ~25% onboard at bedtime -
  * the Sleep Foundation advises stopping ~8 h before sleep. Heavy meals ~3 h before
  * (reflux/blood-sugar), and dimming screens ~1 h before (melatonin). All derived
  * from the bedtime, not invented data.
@@ -87,7 +87,7 @@ export function cycleBedtimes(
 export function windDownTimes(inBedMin: number, wakeHour = 7): { caffeine: string; meal: string; screens: string } {
   const bed = wakeHour * 60 - inBedMin;
   return {
-    caffeine: clockFromMins(bed - 360), // 6 h before — the followable floor (8 h is ideal)
+    caffeine: clockFromMins(bed - 360), // 6 h before, the followable floor (8 h is ideal)
     meal: clockFromMins(bed - 180), // 3 h before
     screens: clockFromMins(bed - 60), // 1 h before
   };
@@ -101,21 +101,21 @@ export function weekdayName(d = new Date()): string {
   return WEEKDAYS[d.getDay()];
 }
 
-/** "JUN 8 – JUN 14" for the 7-day window ending today. */
+/** "JUN 8 - JUN 14" for the 7-day window ending today. */
 export function weekRangeLabel(d = new Date()): string {
   const end = d;
   const start = new Date(d);
   start.setDate(d.getDate() - 6);
   const fmt = (x: Date) => `${MONTHS[x.getMonth()].toUpperCase()} ${x.getDate()}`;
-  return `${fmt(start)} – ${fmt(end)}`;
+  return `${fmt(start)} - ${fmt(end)}`;
 }
 
 /** Age-personalized sleep need in minutes (National Sleep Foundation bands). */
 export function sleepNeedMin(age: number): number {
-  if (age <= 13) return 9 * 60; // school-age/early teen 9–11h
-  if (age <= 17) return 8.5 * 60; // teens 8–10h
-  if (age >= 65) return 7.5 * 60; // older adults 7–8h
-  return 8 * 60; // adults 7–9h → target 8h
+  if (age <= 13) return 9 * 60; // school-age/early teen 9-11h
+  if (age <= 17) return 8.5 * 60; // teens 8-10h
+  if (age >= 65) return 7.5 * 60; // older adults 7-8h
+  return 8 * 60; // adults 7-9h → target 8h
 }
 
 /** Active-energy ring progress against a goal. */

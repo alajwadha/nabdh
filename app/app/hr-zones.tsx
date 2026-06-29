@@ -75,7 +75,7 @@ export default function HrZones() {
     let hr = maxHr * 0.55;
     let target = maxHr * 0.7;
     timer.current = setInterval(() => {
-      // Simulated random walk that drifts between easy and hard — clearly a SAMPLE,
+      // Simulated random walk that drifts between easy and hard, clearly a SAMPLE,
       // not a real strap reading (labelled in the UI).
       if (Math.random() < 0.06) target = maxHr * (0.55 + Math.random() * 0.4);
       hr += (target - hr) * 0.08 + (Math.random() * 8 - 4);
@@ -127,7 +127,7 @@ export default function HrZones() {
           <Icon name="heart-pulse" size={20} color={curZone ? curZone.color : colors.textMuted} />
           <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>{live ? 'LIVE · SAMPLE' : 'CURRENT'}</AppText>
         </View>
-        <AppText variant="metric" style={{ fontSize: 68, lineHeight: 72 }} color={colors.ink}>{currentHr ?? '—'}</AppText>
+        <AppText variant="metric" style={{ fontSize: 68, lineHeight: 72 }} color={colors.ink}>{currentHr ?? '-'}</AppText>
         <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1 }}>BPM</AppText>
         {curZone ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 7 }}>
@@ -172,7 +172,7 @@ export default function HrZones() {
                   <AppText variant="title" style={{ fontSize: 14.5 }}>{z.name}</AppText>
                   {here && <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: z.color }} />}
                 </View>
-                <AppText variant="caption" color={colors.textMuted}>{lo}–{hi} bpm</AppText>
+                <AppText variant="caption" color={colors.textMuted}>{lo}-{hi} bpm</AppText>
                 {total > 0 && (
                   <View style={{ height: 4, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 5, overflow: 'hidden' }}>
                     <View style={{ width: `${Math.max(p > 0 ? 3 : 0, p)}%`, height: '100%', backgroundColor: z.color }} />
@@ -201,13 +201,13 @@ export default function HrZones() {
       )}
 
       <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        This is a simulated sample so you can see how zones work — pair a heart-rate strap or watch for live readings.
+        This is a simulated sample so you can see how zones work, pair a heart-rate strap or watch for live readings.
       </AppText>
 
       <Sheet visible={editOpen} onClose={() => setEditOpen(false)}>
         <AppText variant="h2" style={{ marginBottom: spacing.sm }}>Max heart rate</AppText>
         <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: spacing.lg }}>
-          Defaults to 220 − your age ({maxHrFromAge(body.age)} bpm). Set it manually if you know your tested max.
+          Defaults to 220 - your age ({maxHrFromAge(body.age)} bpm). Set it manually if you know your tested max.
         </AppText>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.md, marginBottom: spacing.lg }}>
           <Pressable onPress={() => setDraftMax((m) => Math.max(120, m - 1))} hitSlop={6} style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>

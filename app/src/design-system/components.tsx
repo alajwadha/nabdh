@@ -88,7 +88,7 @@ export function AppText({
   const weight = weightFromStyle(style) ?? String(base.fontWeight ?? '500');
   const arabic = containsArabic(children);
   const fontFamily = (arabic ? ARABIC_FAMILY : LATIN_FAMILY)[weight] ?? (arabic ? 'Tajawal-Regular' : 'Jakarta-Medium');
-  // Arabic script sits taller and shouldn't carry Latin's tight tracking — give it a touch
+  // Arabic script sits taller and shouldn't carry Latin's tight tracking, give it a touch
   // more line-height and neutral letter-spacing so it breathes. Latin is untouched.
   const arabicAdjust: TextStyle | null = arabic
     ? { lineHeight: base.lineHeight ? Math.round(base.lineHeight * 1.18) : undefined, letterSpacing: 0 }
@@ -122,7 +122,7 @@ export function Card({ style, ...rest }: ViewProps) {
           borderWidth: 1,
           borderColor: colors.border,
           gap: spacing.sm,
-          ...shadow.soft, // real elevation — was flat cream-on-cream before
+          ...shadow.soft, // real elevation, was flat cream-on-cream before
         },
         style,
       ]}
@@ -133,7 +133,7 @@ export function Card({ style, ...rest }: ViewProps) {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export type ButtonVariant = 'solid' | 'line' | 'dark';
 
-/** A small soft reflection — a single blurred highlight hugging the top of the shape, like
+/** A small soft reflection, a single blurred highlight hugging the top of the shape, like
  * light glinting off a glossy surface (not a full sheen). Reusable on glossy surfaces. */
 export function Sheen({ radius, strength = 0.35 }: { radius: number; strength?: number }) {
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -146,7 +146,7 @@ export function Sheen({ radius, strength = 0.35 }: { radius: number; strength?: 
       {size.w > 0 && (
         <Canvas style={{ width: size.w, height: size.h }}>
           {/* a soft oval sitting mostly above the top edge so only its lower arc shows as a
-              contained reflection near the top — brightest in the middle, fading to the ends */}
+              contained reflection near the top, brightest in the middle, fading to the ends */}
           <Oval
             x={size.w * 0.16}
             y={-size.h * 0.62}
@@ -314,7 +314,7 @@ export function Sheet({
 }
 
 /** Animated switch: the thumb springs across and the track colour transitions. One shared
- * component (was duplicated inline in 3 screens). Pure display — wrap in a Pressable to toggle. */
+ * component (was duplicated inline in 3 screens). Pure display, wrap in a Pressable to toggle. */
 export function Toggle({ on }: { on: boolean }) {
   const { colors } = useTheme();
   const p = useSharedValue(on ? 1 : 0);

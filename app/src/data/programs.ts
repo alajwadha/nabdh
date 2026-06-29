@@ -1,4 +1,4 @@
-// Starter workout programs — ordered exercise lists the in-workout session runner walks
+// Starter workout programs, ordered exercise lists the in-workout session runner walks
 // through. Keys reference EXERCISES in ./workouts (each has a MoveViz figure + calculations).
 import type { IconName } from '../components/Icon';
 
@@ -16,28 +16,28 @@ export const PROGRAMS: Program[] = [
     key: 'fullbody',
     name: 'Full body',
     icon: 'rotate-cw',
-    note: 'A balanced session hitting every major muscle — great 3×/week.',
+    note: 'A balanced session hitting every major muscle, great 3×/week.',
     exKeys: ['squat', 'bench', 'seatedrow', 'shoulderpress', 'dbcurl', 'plank'],
   },
   {
     key: 'push',
     name: 'Push day',
     icon: 'chevron-up',
-    note: 'Chest, shoulders, triceps — the press half of a Push/Pull/Legs split.',
+    note: 'Chest, shoulders, triceps, the press half of a Push/Pull/Legs split.',
     exKeys: ['bench', 'shoulderpress', 'chestpress', 'triext', 'pushup'],
   },
   {
     key: 'pull',
     name: 'Pull day',
     icon: 'chevron-down',
-    note: 'Back and biceps — the pull half of Push/Pull/Legs.',
+    note: 'Back and biceps, the pull half of Push/Pull/Legs.',
     exKeys: ['latpull', 'seatedrow', 'pullup', 'dbcurl'],
   },
   {
     key: 'legs',
     name: 'Leg day',
     icon: 'footprints',
-    note: 'Quads, hamstrings, glutes and calves — the legs half of PPL.',
+    note: 'Quads, hamstrings, glutes and calves, the legs half of PPL.',
     exKeys: ['squat', 'legpress', 'legext', 'legcurl', 'hipthrust', 'calfraise'],
   },
 ];

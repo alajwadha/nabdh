@@ -30,7 +30,7 @@ export type Sport = {
   met: number; // metabolic equivalent (moderate effort)
   emoji: string;
   gps?: boolean; // distance-based (running, cycling…)
-  indoor?: boolean; // typically played indoors/AC — don't assume Gulf outdoor heat
+  indoor?: boolean; // typically played indoors/AC, don't assume Gulf outdoor heat
 };
 
 // --- 1RM estimators ---------------------------------------------------------
@@ -40,7 +40,7 @@ export function epley(weight: number, reps: number): number {
 export function brzycki(weight: number, reps: number): number {
   return reps <= 1 ? weight : reps >= 37 ? weight : (weight * 36) / (37 - reps);
 }
-/** Estimated 1RM — average of Epley & Brzycki, rounded to 0.5 kg. */
+/** Estimated 1RM, average of Epley & Brzycki, rounded to 0.5 kg. */
 export function e1rm(weight: number, reps: number): number {
   if (weight <= 0 || reps <= 0) return 0;
   return Math.round(((epley(weight, reps) + brzycki(weight, reps)) / 2) * 2) / 2;
@@ -64,9 +64,9 @@ export function metCalories(met: number, minutes: number, weightKg = DEFAULT_WEI
 
 /**
  * Estimated sweat / fluid loss for a session (litres). Sweat rate scales with
- * metabolic heat (MET) and body mass, and climbs sharply in Gulf outdoor heat —
+ * metabolic heat (MET) and body mass, and climbs sharply in Gulf outdoor heat -
  * a flat number would badly under-serve a padel match at 42 °C. Grounded in ACSM
- * ranges (~0.5 L/hr easy → ~1.5–2 L/hr vigorous; heat pushes higher). An estimate,
+ * ranges (~0.5 L/hr easy → ~1.5-2 L/hr vigorous; heat pushes higher). An estimate,
  * not a substitute for weighing in/out.
  */
 export function sweatLossLiters(met: number, minutes: number, weightKg = DEFAULT_WEIGHT_KG, hot = false): number {
@@ -105,7 +105,7 @@ export function distanceKm(minutes: number, paceMinPerKm: number): number {
  * Daniels-style training paces (sec/km) from a recent run. We project the effort
  * to an equivalent 5 K time with the same Riegel model used for race prediction,
  * then scale 5 K pace by the standard zone multipliers (easy slower, intervals at
- * 5 K pace, reps faster). Approximate VDOT — a guide built from one real run, not
+ * 5 K pace, reps faster). Approximate VDOT, a guide built from one real run, not
  * a lab test. Returns null if the reference run is too short to be meaningful.
  */
 export type TrainingPace = { key: string; label: string; secPerKm: number; note: string };
@@ -118,7 +118,7 @@ export function trainingPaces(refDistanceKm: number, refMinutes: number): Traini
     { key: 'long', label: 'Long run', mult: 1.18, note: 'Endurance, run-feel relaxed' },
     { key: 'marathon', label: 'Marathon', mult: 1.10, note: 'Steady race-day effort' },
     { key: 'threshold', label: 'Threshold / tempo', mult: 1.05, note: 'Comfortably hard, ~1 hr pace' },
-    { key: 'interval', label: 'Interval (VO₂)', mult: 0.98, note: '3–5 min reps at ~5 K pace' },
+    { key: 'interval', label: 'Interval (VO₂)', mult: 0.98, note: '3-5 min reps at ~5 K pace' },
     { key: 'rep', label: 'Reps / speed', mult: 0.95, note: 'Short, fast, full recovery' },
   ];
   return zones.map((z) => ({ key: z.key, label: z.label, secPerKm: Math.round(p5 * z.mult), note: z.note }));
@@ -126,7 +126,7 @@ export function trainingPaces(refDistanceKm: number, refMinutes: number): Traini
 
 /** Format a sec/km pace as m:ss /km. */
 export function fmtPace(secPerKm: number): string {
-  if (secPerKm <= 0) return '—';
+  if (secPerKm <= 0) return '-';
   const m = Math.floor(secPerKm / 60);
   const s = Math.round(secPerKm % 60);
   return `${m}:${String(s).padStart(2, '0')}`;
@@ -140,7 +140,7 @@ export type LoadAdvice = {
   note: string;
 };
 /**
- * Recovery readiness 0–100 from sleep + resting HR + HRV. ONE shared definition
+ * Recovery readiness 0-100 from sleep + resting HR + HRV. ONE shared definition
  * so Today, the Workout screen, and the insight hero never disagree. Neutral 64
  * when there's no data to weight.
  */
@@ -160,17 +160,17 @@ export type ReadinessFactor = {
   label: string;
   weight: number; // share of the score (sleep 40, RHR 30, HRV 30)
   present: boolean;
-  pct: number | null; // sub-score 0–100 for this signal
-  points: number; // points this signal contributes to the final 0–100 score
+  pct: number | null; // sub-score 0-100 for this signal
+  points: number; // points this signal contributes to the final 0-100 score
   value: string; // human-readable measured value
   status: 'good' | 'warn' | 'bad' | 'none';
 };
 
 /**
- * Transparent decomposition of the readiness score — the SAME sleep/RHR/HRV inputs
+ * Transparent decomposition of the readiness score, the SAME sleep/RHR/HRV inputs
  * and weights computeReadiness uses, so the breakdown always reconciles with the
  * headline number (no fabricated contributors). Points are each signal's share of
- * the final 0–100 score; with all three present they sum to the score.
+ * the final 0-100 score; with all three present they sum to the score.
  */
 export function readinessBreakdown(s: HealthDaily | null): { score: number; factors: ReadinessFactor[] } {
   const clamp = (n: number) => Math.max(0, Math.min(1, n));
@@ -208,12 +208,12 @@ export function readinessBreakdown(s: HealthDaily | null): { score: number; fact
 
 export function adjustForReadiness(readiness: number): LoadAdvice {
   if (readiness < 50)
-    return { factor: 0, tone: 'rest', label: 'Recover today', note: 'Readiness is low — swap lifting for mobility or an easy walk. Lifting now costs more than it gives.' };
+    return { factor: 0, tone: 'rest', label: 'Recover today', note: 'Readiness is low, swap lifting for mobility or an easy walk. Lifting now costs more than it gives.' };
   if (readiness < 65)
     return { factor: 0.9, tone: 'easy', label: 'Go ~10% lighter', note: 'Trim load ~10% and cut a set. Keep the movement, protect the recovery.' };
   if (readiness < 80)
-    return { factor: 1.0, tone: 'steady', label: 'Train as planned', note: 'You\'re in a solid window — hit your normal working weights.' };
-  return { factor: 1.05, tone: 'push', label: 'Green light — push', note: 'Recovery is high. Add ~5% or a top set and chase a PR.' };
+    return { factor: 1.0, tone: 'steady', label: 'Train as planned', note: 'You\'re in a solid window, hit your normal working weights.' };
+  return { factor: 1.05, tone: 'push', label: 'Green light, push', note: 'Recovery is high. Add ~5% or a top set and chase a PR.' };
 }
 /** Suggest a working weight from a known 1RM at a target rep range. */
 export function workingWeight(oneRm: number, reps: number, factor = 1): number {
@@ -223,8 +223,8 @@ export function workingWeight(oneRm: number, reps: number, factor = 1): number {
 }
 
 /**
- * %1RM training-load table — maps common training intensities to a working weight
- * and the reps that intensity typically allows (Epley inverse: reps ≈ 30·(1/pct−1)).
+ * %1RM training-load table, maps common training intensities to a working weight
+ * and the reps that intensity typically allows (Epley inverse: reps ≈ 30·(1/pct-1)).
  * The staple programming reference in Strong/Boostcamp/Hevy. Weights round to 2.5 kg.
  */
 export function percentLoads(oneRm: number): { pct: number; kg: number; reps: number }[] {
@@ -237,7 +237,7 @@ export function percentLoads(oneRm: number): { pct: number; kg: number; reps: nu
   }));
 }
 
-/** Smallest sensible load jump — bigger on big lower-body & deadlift, small on isolation. */
+/** Smallest sensible load jump, bigger on big lower-body & deadlift, small on isolation. */
 export function progressionIncrement(muscle: Muscle, exKey?: string): number {
   if (exKey === 'deadlift') return 5;
   return muscle === 'legs' || muscle === 'glutes' ? 5 : 2.5;
@@ -256,11 +256,11 @@ export type NextTarget = {
 };
 /**
  * Double-progression vs your last session (Hevy/Strong/Boostcamp model). We anchor on
- * the WORKING set — the most-used weight (mode), or the median weight when every set
- * differs — not whatever single set was heaviest, so a top single/backoff doesn't drive
+ * the WORKING set, the most-used weight (mode), or the median weight when every set
+ * differs, not whatever single set was heaviest, so a top single/backoff doesn't drive
  * the suggestion. Add weight only once EVERY working set clears the top of the range
  * (the limiter = the weakest working set); otherwise hold and chase one more rep.
- * Not readiness-adjusted — the readiness card handles today's push/ease-off.
+ * Not readiness-adjusted, the readiness card handles today's push/ease-off.
  */
 export function suggestProgression(
   sets: SetEntry[],
@@ -293,9 +293,9 @@ export function suggestProgression(
 /** Rest-between-sets guidance from the working rep range (heavier/fewer → longer rest). */
 export function restRecommendation(reps: number): string {
   if (reps <= 0) return '';
-  if (reps <= 5) return '3–5 min · strength';
-  if (reps <= 12) return '60–90 s · hypertrophy';
-  return '30–60 s · endurance';
+  if (reps <= 5) return '3-5 min · strength';
+  if (reps <= 12) return '60-90 s · hypertrophy';
+  return '30-60 s · endurance';
 }
 
 /** Plates to load PER SIDE for a target barbell total (greedy, standard kg plates). */

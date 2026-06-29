@@ -73,7 +73,7 @@ export default function Fasting() {
   const phaseTint = fasting ? tiles.mint.bg : tiles.gold.bg;
 
   // (Re)schedule the boundary nudge whenever the phase flips while active, and cancel any
-  // stale one when the timer stops — so a session gets an alert at every transition, not
+  // stale one when the timer stops, so a session gets an alert at every transition, not
   // just the first.
   useEffect(() => {
     if (!active) {
@@ -88,7 +88,7 @@ export default function Fasting() {
       const id = await scheduleAt(
         new Date(st.endsAt),
         flipsToEat ? 'Fasting window complete' : 'Eating window over',
-        flipsToEat ? 'Nicely done — your eating window is open.' : 'Time to start your fast. You’ve got this.',
+        flipsToEat ? 'Nicely done, your eating window is open.' : 'Time to start your fast. You’ve got this.',
       );
       if (!cancelled) notifId.current = id;
     })();
@@ -136,7 +136,7 @@ export default function Fasting() {
       ) : (
         <>
           <AppText variant="body" color={colors.textSecondary}>
-            Pick an eating window and Nabdh tracks your fast with a live countdown and a nudge when it’s time to eat — or follow the Ramadan rhythm, set by Fajr and Maghrib.
+            Pick an eating window and Nabdh tracks your fast with a live countdown and a nudge when it’s time to eat, or follow the Ramadan rhythm, set by Fajr and Maghrib.
           </AppText>
 
           {ramadan && (

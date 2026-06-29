@@ -19,7 +19,7 @@ function nowLabel(): string {
   return `${h}:${String(m).padStart(2, '0')} ${ap}`;
 }
 
-// The live countdown owns the 1-second ticker so only this card re-renders each tick —
+// The live countdown owns the 1-second ticker so only this card re-renders each tick -
 // the dish lists below stay put.
 function WindowCard() {
   const { colors, tiles } = useTheme();
@@ -128,7 +128,7 @@ export default function Ramadan() {
           <AppText variant="title" style={{ flex: 1 }}>Iftar · {iftar}</AppText>
         </View>
         <AppText variant="caption" color={colors.textSecondary} style={{ lineHeight: 18 }}>
-          Break with 2–3 dates and water, pray Maghrib, then come back for a balanced plate — protein, vegetables and slow carbs. Ease in so you don’t overeat.
+          Break with 2-3 dates and water, pray Maghrib, then come back for a balanced plate, protein, vegetables and slow carbs. Ease in so you don’t overeat.
         </AppText>
         <View style={{ marginTop: 2 }}>{iftarDishes.map((d) => <DishRow key={d.id} d={d} />)}</View>
       </Card>
@@ -140,7 +140,7 @@ export default function Ramadan() {
           <AppText variant="title" style={{ flex: 1 }}>Suhoor · before {suhoorCut}</AppText>
         </View>
         <AppText variant="caption" color={colors.textSecondary} style={{ lineHeight: 18 }}>
-          Favour slow-release carbs and protein (foul, eggs, oats, laban) plus plenty of water — they carry you through the fast. Go easy on salt and sugar so you’re less thirsty.
+          Favour slow-release carbs and protein (foul, eggs, oats, laban) plus plenty of water, they carry you through the fast. Go easy on salt and sugar so you’re less thirsty.
         </AppText>
         <View style={{ marginTop: 2 }}>{suhoorDishes.map((d) => <DishRow key={d.id} d={d} />)}</View>
       </Card>
@@ -166,7 +166,7 @@ export default function Ramadan() {
       <Button label="Open the fasting timer" variant="line" onPress={() => router.navigate('/fasting')} />
 
       <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Prayer times are demo values for Riyadh. Guidance is general — adjust to how you feel.
+        Prayer times are demo values for Riyadh. Guidance is general, adjust to how you feel.
       </AppText>
     </Screen>
   );

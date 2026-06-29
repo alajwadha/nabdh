@@ -157,7 +157,7 @@ export default function Breathe() {
         <>
           {done && (
             <View style={{ backgroundColor: tiles.mint.bg, borderRadius: radii.lg, padding: spacing.lg }}>
-              <AppText variant="title" color={tiles.mint.ink}>Nice work — {loggedMins} min done</AppText>
+              <AppText variant="title" color={tiles.mint.ink}>Nice work, {loggedMins} min done</AppText>
               <AppText variant="caption" color={tiles.mint.ink} style={{ marginTop: 2 }}>{streak}-day streak · {totalMinutes} min total</AppText>
             </View>
           )}
@@ -186,7 +186,7 @@ export default function Breathe() {
           />
 
           <Button label="Start" onPress={start} />
-          {reduced && <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>Reduced motion is on — the circle stays still; follow the phase labels.</AppText>}
+          {reduced && <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>Reduced motion is on, the circle stays still; follow the phase labels.</AppText>}
         </>
       )}
     </Screen>

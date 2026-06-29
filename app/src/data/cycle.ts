@@ -1,5 +1,5 @@
-// Menstrual-cycle math — pure + testable. Phases follow the standard model: the luteal phase
-// is ~14 days, so ovulation ≈ cycleLength − 14; the fertile window is the 5 days before
+// Menstrual-cycle math, pure + testable. Phases follow the standard model: the luteal phase
+// is ~14 days, so ovulation ≈ cycleLength - 14; the fertile window is the 5 days before
 // ovulation plus the day itself. Tasteful + clinical, used by the cycle screen and readiness.
 
 export type Period = { start: string; end?: string }; // 'YYYY-MM-DD'
@@ -89,8 +89,8 @@ export function cycleInfo(periods: Period[], today = dayKey()): CycleInfo | null
 }
 
 export const PHASE_META: Record<Phase, { label: string; color: string; note: string; train: string }> = {
-  menstrual: { label: 'Menstrual', color: '#C2562C', note: 'Bleed phase — energy is often lower.', train: 'Keep it easy: light movement, walks, mobility. Listen to your body.' },
-  follicular: { label: 'Follicular', color: '#2E7D5B', note: 'Estrogen rising — energy and recovery climb.', train: 'Great window for hard sessions and strength PRs.' },
-  ovulation: { label: 'Ovulation', color: '#C9A227', note: 'Peak estrogen — strength often peaks too.', train: 'Prime time for a heavy lift or a fast effort.' },
-  luteal: { label: 'Luteal', color: '#4A3F9E', note: 'Progesterone up — fatigue and warmth rise.', train: 'Prioritize recovery; moderate volume, more rest, extra hydration.' },
+  menstrual: { label: 'Menstrual', color: '#C2562C', note: 'Bleed phase, energy is often lower.', train: 'Keep it easy: light movement, walks, mobility. Listen to your body.' },
+  follicular: { label: 'Follicular', color: '#2E7D5B', note: 'Estrogen rising, energy and recovery climb.', train: 'Great window for hard sessions and strength PRs.' },
+  ovulation: { label: 'Ovulation', color: '#C9A227', note: 'Peak estrogen, strength often peaks too.', train: 'Prime time for a heavy lift or a fast effort.' },
+  luteal: { label: 'Luteal', color: '#4A3F9E', note: 'Progesterone up, fatigue and warmth rise.', train: 'Prioritize recovery; moderate volume, more rest, extra hydration.' },
 };

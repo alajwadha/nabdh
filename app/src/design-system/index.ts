@@ -1,4 +1,4 @@
-// Nabdh design system — the "expressive" v3 language: warm cream light theme
+// Nabdh design system, the "expressive" v3 language: warm cream light theme
 // with a deep-green accent, soft playful tiles, generous space, soft motion.
 // Light and dark palettes mirror the v3 prototype. Components read the active
 // palette via useTheme(); `colors`/`tiles` below are the LIGHT defaults kept as
@@ -131,7 +131,7 @@ export const typography = {
   title: { fontSize: 17, lineHeight: 22, fontWeight: '700', letterSpacing: -0.1 },
   body: { fontSize: 15, lineHeight: 22, fontWeight: '500' },
   caption: { fontSize: 12, lineHeight: 17, fontWeight: '700' },
-  // Data hero: big tabular figures (timers, weights, kcal) — digits don't jitter as they change.
+  // Data hero: big tabular figures (timers, weights, kcal), digits don't jitter as they change.
   metric: { fontSize: 40, lineHeight: 44, fontWeight: '800', letterSpacing: -1.2, fontVariant: ['tabular-nums'] },
 } as const;
 

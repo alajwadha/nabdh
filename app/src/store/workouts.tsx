@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { bestE1rm, volume, type SetEntry } from '../data/workouts';
 
-// Persisted workout history — the thing that turns the live calculator into a
+// Persisted workout history, the thing that turns the live calculator into a
 // tracker. Sessions are stored locally (and can sync to the backend later).
 
 export type WorkoutSession = {
@@ -89,7 +89,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
         id: `${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
         at: new Date().toISOString(),
       };
-      const next = [...prev, session]; // appends to REAL sessions — seed never persists
+      const next = [...prev, session]; // appends to REAL sessions, seed never persists
       AsyncStorage.setItem(KEY, JSON.stringify(next.slice(-500))).catch(() => {});
       return next;
     });

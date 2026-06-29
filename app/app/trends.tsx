@@ -19,7 +19,7 @@ const TRENDS: Trend[] = [
 
 const SUMMARY: Record<'W' | 'M' | '6M', string> = {
   W: 'Sleep is recovering (+24 min/night) but resting HR crept up 4 bpm after three late dinners. One disciplined week pulls both back.',
-  M: 'Over the month the trend is healthy: sleep up, steps up. HRV is the one to watch — protect bedtime.',
+  M: 'Over the month the trend is healthy: sleep up, steps up. HRV is the one to watch, protect bedtime.',
   '6M': 'Six-month view: steady gains in fitness (VO₂ +2) and sleep consistency. Your strongest stretch was this spring.',
 };
 

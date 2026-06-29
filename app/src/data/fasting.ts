@@ -3,27 +3,27 @@
 // Two modes:
 //  - A clock-free PLAN (16:8 etc): the user starts a fast; we cycle fasting→eating from
 //    that start using the plan's hour split.
-//  - RAMADAN: windows are fixed by the clock — fasting from Fajr to Maghrib, eating from
-//    Maghrib to the next Fajr — so no manual start is needed.
+//  - RAMADAN: windows are fixed by the clock, fasting from Fajr to Maghrib, eating from
+//    Maghrib to the next Fajr, so no manual start is needed.
 
 import { atClock, prayerTime } from './prayer';
 
 export type FastPlan = { key: string; name: string; fastHours: number; eatHours: number; note: string };
 
 export const PLANS: FastPlan[] = [
-  { key: '14:10', name: '14:10', fastHours: 14, eatHours: 10, note: 'Gentle start — finish dinner a little earlier.' },
-  { key: '16:8', name: '16:8', fastHours: 16, eatHours: 8, note: 'The popular one — skip breakfast, eat 12–8.' },
+  { key: '14:10', name: '14:10', fastHours: 14, eatHours: 10, note: 'Gentle start, finish dinner a little earlier.' },
+  { key: '16:8', name: '16:8', fastHours: 16, eatHours: 8, note: 'The popular one, skip breakfast, eat 12-8.' },
   { key: '18:6', name: '18:6', fastHours: 18, eatHours: 6, note: 'Tighter window for a stronger effect.' },
-  { key: '20:4', name: '20:4', fastHours: 20, eatHours: 4, note: 'Warrior-style — one main eating block.' },
+  { key: '20:4', name: '20:4', fastHours: 20, eatHours: 4, note: 'Warrior-style, one main eating block.' },
 ];
 
-export const RAMADAN_PLAN: FastPlan = { key: 'ramadan', name: 'Ramadan', fastHours: 0, eatHours: 0, note: 'Suhoor to Fajr, then fast to Maghrib — windows follow prayer times.' };
+export const RAMADAN_PLAN: FastPlan = { key: 'ramadan', name: 'Ramadan', fastHours: 0, eatHours: 0, note: 'Suhoor to Fajr, then fast to Maghrib, windows follow prayer times.' };
 
 export type Phase = 'fasting' | 'eating';
 export type FastingState = {
   phase: Phase;
-  startedAt: number; // ms — when the current phase began
-  endsAt: number; // ms — when it flips
+  startedAt: number; // ms, when the current phase began
+  endsAt: number; // ms, when it flips
   progress: number; // 0..1 through the current phase
   secondsLeft: number;
 };

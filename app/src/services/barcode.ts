@@ -1,6 +1,6 @@
 // Barcode scanning via expo-camera, lazy-required (like services/location.ts) so the absent
 // native module degrades to a no-op. We deliberately do NOT ship a packaged-food macro
-// database, so a scanned code that we can't resolve is reported honestly — never with
+// database, so a scanned code that we can't resolve is reported honestly, never with
 // invented macros.
 
 let Camera: any = null;
@@ -16,7 +16,7 @@ export function barcodeAvailable(): boolean {
   return !!Camera?.CameraView;
 }
 
-/** The CameraView component (or null) — callers render it only when available. */
+/** The CameraView component (or null), callers render it only when available. */
 export function getCameraView(): any {
   return Camera?.CameraView ?? null;
 }

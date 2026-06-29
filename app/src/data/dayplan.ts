@@ -42,11 +42,11 @@ export function dayPlan(): PlanItem[] {
   items.push(block('fajr', 45, 'Light breakfast', 'Protein and a couple of dates to start', 'utensils'));
   items.push(block('dhuhr', 40, 'Lunch', 'Your bigger meal while it’s hot outside', 'utensils'));
 
-  // Main training: midway between Asr and Maghrib — the coolest stretch of daylight.
+  // Main training: midway between Asr and Maghrib, the coolest stretch of daylight.
   const asr = toMin(prayerTime('asr'));
   const maghrib = toMin(prayerTime('maghrib'));
   const trainMins = Math.round((asr + maghrib) / 2);
-  items.push({ mins: trainMins, time: clockLabel(fromMin(trainMins)), kind: 'block', label: 'Main workout', sub: 'Post-Asr — the coolest training window', icon: 'dumbbell', highlight: true });
+  items.push({ mins: trainMins, time: clockLabel(fromMin(trainMins)), kind: 'block', label: 'Main workout', sub: 'Post-Asr, the coolest training window', icon: 'dumbbell', highlight: true });
 
   items.push(block('maghrib', 30, 'Dinner', 'Refuel after the day’s effort', 'utensils'));
 

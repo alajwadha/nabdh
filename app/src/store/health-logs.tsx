@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Self-logged vitals + medications — the trackers competitor apps have that Nabdh lacked.
+// Self-logged vitals + medications, the trackers competitor apps have that Nabdh lacked.
 // All local + persisted; charts read these arrays directly.
 
 export type WeightEntry = { at: string; kg: number };

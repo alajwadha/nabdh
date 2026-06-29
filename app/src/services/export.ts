@@ -3,7 +3,7 @@
 // modules (expo-file-system / expo-sharing) are lazy-required so a missing module (web,
 // Expo Go without the plugin, this sandbox) degrades to a no-op instead of crashing.
 //
-// Nothing here fabricates data — every row comes from the stores the caller passes in.
+// Nothing here fabricates data, every row comes from the stores the caller passes in.
 
 import type { WorkoutSession } from '../store/workouts';
 import type { WeightEntry, BpEntry, GlucoseEntry, Med } from '../store/health-logs';
@@ -58,7 +58,7 @@ type Section = {
 };
 
 // CSV field escaping (RFC-4180-ish): quote when the value holds a comma, quote or newline.
-// Also guard spreadsheet formula injection — a free-text field (e.g. a medication name)
+// Also guard spreadsheet formula injection, a free-text field (e.g. a medication name)
 // starting with = + - @ tab or CR is executed as a formula by Excel/Sheets/Numbers, so we
 // prefix it with a single quote to neutralise it.
 function f(v: string | number | undefined | null): string {
@@ -160,7 +160,7 @@ export function buildJson(selected: Set<SectionKey>, data: ExportData): string {
 
 /** One readable text file with a `# Section` block per selected data type. */
 export function buildCsv(selected: Set<SectionKey>, data: ExportData): string {
-  const blocks: string[] = [`# Nabdh export — ${new Date().toISOString()}`];
+  const blocks: string[] = [`# Nabdh export, ${new Date().toISOString()}`];
   for (const s of SECTIONS) {
     if (!selected.has(s.key)) continue;
     const rows = s.csvRows(data);
@@ -194,7 +194,7 @@ export async function exportAndShare(
     return 'error';
   }
   // The file is written; handing it to the share sheet is best-effort. Dismissing the
-  // sheet rejects on iOS — that's a cancel, not a failure, so we don't surface an error.
+  // sheet rejects on iOS, that's a cancel, not a failure, so we don't surface an error.
   try {
     await Sharing.shareAsync(uri, {
       mimeType: format === 'json' ? 'application/json' : 'text/csv',
@@ -202,7 +202,7 @@ export async function exportAndShare(
       UTI: format === 'json' ? 'public.json' : 'public.comma-separated-values-text',
     });
   } catch {
-    /* user cancelled / dismissed — the file was still prepared */
+    /* user cancelled / dismissed, the file was still prepared */
   }
   return 'shared';
 }

@@ -1,4 +1,4 @@
-// Pure heat-coaching logic over a weather forecast — unit-testable, no I/O.
+// Pure heat-coaching logic over a weather forecast, unit-testable, no I/O.
 import type { WeatherHour } from '../services/weather';
 
 export type HeatKey = 'low' | 'moderate' | 'high' | 'extreme';
@@ -6,10 +6,10 @@ export type HeatLevel = { key: HeatKey; label: string; color: string; advice: st
 
 /** Heat-risk band from the "feels like" temperature (apparent temp, °C). */
 export function heatLevel(feelsC: number): HeatLevel {
-  if (feelsC >= 43) return { key: 'extreme', label: 'Extreme', color: '#B03A2A', advice: 'Train indoors today — outdoor effort in this heat isn’t worth the risk.' };
+  if (feelsC >= 43) return { key: 'extreme', label: 'Extreme', color: '#B03A2A', advice: 'Train indoors today, outdoor effort in this heat isn’t worth the risk.' };
   if (feelsC >= 38) return { key: 'high', label: 'High', color: '#BC5A24', advice: 'Keep outdoor sessions short and easy, and only in the cooler windows.' };
-  if (feelsC >= 32) return { key: 'moderate', label: 'Moderate', color: '#8C6C18', advice: 'Fine to train outside — favour shade and the cooler hours, and hydrate well.' };
-  return { key: 'low', label: 'Comfortable', color: '#2F8158', advice: 'Good conditions to be outside — enjoy the session.' };
+  if (feelsC >= 32) return { key: 'moderate', label: 'Moderate', color: '#8C6C18', advice: 'Fine to train outside, favour shade and the cooler hours, and hydrate well.' };
+  return { key: 'low', label: 'Comfortable', color: '#2F8158', advice: 'Good conditions to be outside, enjoy the session.' };
 }
 
 export type Window = { startHour: number; endHour: number; feelsC: number; afterAsr: boolean };

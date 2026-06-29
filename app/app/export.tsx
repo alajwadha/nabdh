@@ -48,7 +48,7 @@ export default function Export() {
   const [result, setResult] = useState<ExportResult | null>(null);
 
   // Stores hydrate from AsyncStorage AFTER mount, so a returning user's counts are 0 on
-  // the first render. Auto-select sections as their data arrives — but never re-add a
+  // the first render. Auto-select sections as their data arrives, but never re-add a
   // section the user explicitly unchecked.
   const touched = useRef<Set<SectionKey>>(new Set());
   useEffect(() => {
@@ -92,7 +92,7 @@ export default function Export() {
   };
 
   const resultCopy: Record<ExportResult, { text: string; ok: boolean }> = {
-    shared: { text: 'Export shared — choose where to save or send it.', ok: true },
+    shared: { text: 'Export shared, choose where to save or send it.', ok: true },
     empty: { text: 'Nothing selected to export.', ok: false },
     unavailable: { text: 'Sharing isn’t available in this build, but your file was prepared.', ok: false },
     error: { text: 'Something went wrong preparing the file. Please try again.', ok: false },
@@ -166,7 +166,7 @@ export default function Export() {
 
       {!sharingAvailable() && (
         <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-          The share sheet needs a full device build — it won’t open in this preview.
+          The share sheet needs a full device build, so it won’t open in this preview.
         </AppText>
       )}
     </Screen>

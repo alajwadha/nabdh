@@ -1,4 +1,4 @@
-// Prayer times — the single source the fasting timer (and, later, the prayer-aware planner)
+// Prayer times, the single source the fasting timer (and, later, the prayer-aware planner)
 // reads from. These are static demo times for Riyadh; TODO: compute from device location
 // with a standard algorithm or fetch from a local prayer-times service.
 

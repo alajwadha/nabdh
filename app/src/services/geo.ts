@@ -1,4 +1,4 @@
-// Pure geo math for the GPS tracker — no native imports, fully unit-testable.
+// Pure geo math for the GPS tracker, no native imports, fully unit-testable.
 // Coordinates come from expo-location (see services/location.ts).
 
 // t = epoch ms; seg groups points into continuous segments (a pause starts a new seg so
@@ -40,12 +40,12 @@ export function elevationGainM(pts: GeoPoint[]): number {
   return Math.round(g);
 }
 
-/** Seconds per kilometre (0 when distance is 0 — caller formats as “—”). */
+/** Seconds per kilometre (0 when distance is 0, caller formats as “-”). */
 export function paceSecPerKm(km: number, secs: number): number {
   return km > 0 ? secs / km : 0;
 }
 
-/** Pace over the last `windowSec` seconds of the track — the “current pace”. */
+/** Pace over the last `windowSec` seconds of the track, the “current pace”. */
 export function recentPaceSecPerKm(pts: GeoPoint[], windowSec = 25): number {
   if (pts.length < 2) return 0;
   const last = pts[pts.length - 1].t;
@@ -59,9 +59,9 @@ export function speedKmh(km: number, secs: number): number {
   return secs > 0 ? km / (secs / 3600) : 0;
 }
 
-/** "m:ss" pace, or "—" when undefined/non-finite. */
+/** "m:ss" pace, or "-" when undefined/non-finite. */
 export function fmtPace(secPerKm: number): string {
-  if (!secPerKm || !isFinite(secPerKm)) return '—';
+  if (!secPerKm || !isFinite(secPerKm)) return '-';
   const m = Math.floor(secPerKm / 60);
   const s = Math.round(secPerKm % 60);
   return `${m}:${String(s).padStart(2, '0')}`;

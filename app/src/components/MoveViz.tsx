@@ -15,13 +15,13 @@ import Animated, {
 import { useTheme } from '../design-system/theme';
 
 /**
- * MoveViz — a small looping "kinetic glyph" that animates the actual movement of an
+ * MoveViz, a small looping "kinetic glyph" that animates the actual movement of an
  * exercise/sport (a runner's stride, a press extending, …) so the Workout screen feels
  * alive and the selected movement is unmistakable. Pure motion: no data, decorative.
  *
  * Foundation conventions (so all movements share one robust, battery-aware base):
  *  • One 0→1 `phase` shared value drives every part via UI-thread worklets.
- *  • Limbs rotate around a JOINT, not their own centre — done with a 0×0 pivot wrapper
+ *  • Limbs rotate around a JOINT, not their own centre, done with a 0×0 pivot wrapper
  *    (`Limb`) rather than `transformOrigin`, which has cross-platform quirks.
  *  • The loop PAUSES when the app backgrounds, and honours the OS "reduce motion"
  *    setting (renders a static mid-pose instead of looping). The Sports card unmounts
@@ -29,7 +29,7 @@ import { useTheme } from '../design-system/theme';
  *  • CONVENTION: every movement is a SIDE-VIEW profile (facing right), authored in a
  *    116px box and scaled by `size/116`, so the library stays visually consistent.
  * Anything without a bespoke figure falls back to the sport's own emoji gently pulsing
- * — clearly "this sport, motion coming" rather than an anonymous ring.
+ *, clearly "this sport, motion coming" rather than an anonymous ring.
  */
 export type MoveKind = 'running' | string;
 
@@ -41,7 +41,7 @@ const DURATION: Record<string, number> = {
   deadlift: 1700, // pull from the floor to lockout and back
   ohp: 1400, // press from the shoulders to overhead
   rowing: 1900, // drive, swing and pull, then recover
-  seatedrow: 1900, // same erg figure — keep the cadence identical to rowing
+  seatedrow: 1900, // same erg figure, keep the cadence identical to rowing
   cycling: 900, // one pedal revolution
   pullup: 1500, // pull up to the bar and lower
   dbcurl: 1300, // curl up and lower
@@ -73,7 +73,7 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
   const { colors } = useTheme();
   const fg = color ?? colors.accent;
   const bg = tint ?? colors.navBg;
-  // Equipment (bench, erg, bike frame) needs a mid-tone — `bg` matches the banner and
+  // Equipment (bench, erg, bike frame) needs a mid-tone, `bg` matches the banner and
   // would be invisible; `fg` is too heavy. textMuted reads as "apparatus" against navBg.
   const equip = colors.textMuted;
   const reduced = useReducedMotion();
@@ -99,7 +99,7 @@ export function MoveViz({ kind, emoji, size = 116, color, tint }: { kind: MoveKi
 
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      {/* soft contact shadow grounds the figure (premium depth) — behind everything */}
+      {/* soft contact shadow grounds the figure (premium depth), behind everything */}
       <ContactShadow size={size} />
       {kind === 'running' ? (
         <Runner phase={phase} size={size} fg={fg} bg={bg} />
@@ -204,7 +204,7 @@ function Runner({ phase, size, fg, bg }: { phase: SharedValue<number>; size: num
         <Limb x={hipX + 5 * s} y={hipY} w={7 * s} h={36 * s} color={fg} rot={legFront} />
       </Animated.View>
 
-      {/* torso, head and swinging arms — also bob */}
+      {/* torso, head and swinging arms, also bob */}
       <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, bob]}>
         {/* torso connects shoulder→hip with a slight forward lean */}
         <View style={{ position: 'absolute', left: shoX - 1 * s, top: shoY, width: 9 * s, height: (hipY - shoY) + 6 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '8deg' }] }} />
@@ -237,7 +237,7 @@ function Bone({ x, y, len, w, color, rot, children }: {
   );
 }
 
-// --- Walking: the runner's swinging-limb gait, tuned DOWN — smaller leg/arm swing, an
+// --- Walking: the runner's swinging-limb gait, tuned DOWN, smaller leg/arm swing, an
 // upright posture and barely-there bob, so it reads as an unhurried walk rather than a run.
 function Walking({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
   const s = size / 116;
@@ -284,7 +284,7 @@ function LegPress({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
     const e = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2;
     return { transform: [{ rotate: `${16 - e * 14}deg` }] };
   });
-  const torso = { transform: [{ rotate: '-12deg' }] }; // static — no worklet needed
+  const torso = { transform: [{ rotate: '-12deg' }] }; // static, no worklet needed
   return (
     <View style={{ width: size, height: size }}>
       {/* ground */}
@@ -296,7 +296,7 @@ function LegPress({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
       {/* jointed leg: thigh → shin → footplate */}
       <Bone x={46 * s} y={62 * s} len={24 * s} w={9 * s} color={fg} rot={thigh}>
         <Bone x={0} y={0} len={24 * s} w={9 * s} color={fg} rot={shin}>
-          {/* footplate — wider so it reads as the machine's platform, not a stick */}
+          {/* footplate, wider so it reads as the machine's platform, not a stick */}
           <View style={{ position: 'absolute', left: -2 * s, top: -18 * s, width: 11 * s, height: 36 * s, borderRadius: 5 * s, backgroundColor: fg }} />
         </Bone>
       </Bone>
@@ -337,7 +337,7 @@ function Squat({ phase, size, fg, bg }: { phase: SharedValue<number>; size: numb
         </Bone>
         {/* torso up from the hip */}
         <Bone x={hipX} y={hipY} len={30 * s} w={10 * s} color={fg} rot={torso} />
-        {/* head + barbell across the shoulders — translate to follow the leaning shoulder */}
+        {/* head + barbell across the shoulders, translate to follow the leaning shoulder */}
         <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, headBar]}>
           <View style={{ position: 'absolute', left: 34 * s, top: 12 * s, width: 17 * s, height: 17 * s, borderRadius: 99, backgroundColor: fg }} />
           <View style={{ position: 'absolute', left: 22 * s, top: 22 * s, width: 44 * s, height: 6 * s, borderRadius: 99, backgroundColor: fg }} />
@@ -356,7 +356,7 @@ function Bench({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; siz
   const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-60 - press(phase.value) * 20}deg` }] }; });
   const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-40 + press(phase.value) * 36}deg` }] }; });
   // Convention: a "stays-horizontal" object on rotating bones must counter-rotate by the
-  // negated cumulative bone angle. Bar world-angle = uarm+farm = −100 + p·16, so cancel it.
+  // negated cumulative bone angle. Bar world-angle = uarm+farm = -100 + p·16, so cancel it.
   const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${100 - press(phase.value) * 16}deg` }] }; });
   const stat = (deg: number) => ({ transform: [{ rotate: `${deg}deg` }] });
   return (
@@ -404,7 +404,7 @@ function Deadlift({ phase, size, fg, bg }: { phase: SharedValue<number>; size: n
     const L = 27 * s;
     return { transform: [{ translateX: L * (Math.cos(a) - Math.cos(a0)) }, { translateY: L * (Math.sin(a) - Math.sin(a0)) }] };
   });
-  // legs straighten slightly as the bar rises — subtle, so the lower body isn't frozen
+  // legs straighten slightly as the bar rises, subtle, so the lower body isn't frozen
   const thighL = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${74 + lift(phase.value) * 8}deg` }] }; });
   const shinL = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${10 - lift(phase.value) * 8}deg` }] }; });
   const hipX = 48 * s, hipY = 54 * s;
@@ -436,7 +436,7 @@ function Ohp({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number
   // deeper rack at the bottom (bar at the front of the shoulders = the OHP-identifying frame)
   const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-72 - press(phase.value) * 12}deg` }] }; });
   const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-50 + press(phase.value) * 44}deg` }] }; });
-  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${122 - press(phase.value) * 32}deg` }] }; }); // = −(uarm+farm), keeps bar level
+  const bar = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${122 - press(phase.value) * 32}deg` }] }; }); // = -(uarm+farm), keeps bar level
   return (
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.08, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
@@ -481,7 +481,7 @@ function rowHand(p: number, s: number): { x: number; y: number } {
   return { x: ex + 15 * s * Math.cos(ha), y: ey + 15 * s * Math.sin(ha) };
 }
 
-// --- Rowing (erg): legs drive, torso swings back, arms pull — sequenced like a real stroke
+// --- Rowing (erg): legs drive, torso swings back, arms pull, sequenced like a real stroke
 function Rowing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
   const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${-20 + rowE(phase.value, 0, 0.3, 0.7, 1) * 22}deg` }] }; });
@@ -531,7 +531,7 @@ function Rowing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
   );
 }
 
-// ATTACHMENT CONVENTIONS — how an object (bar, plate, cable, handle) stays put on a
+// ATTACHMENT CONVENTIONS, how an object (bar, plate, cable, handle) stays put on a
 // moving limb. Three cases cover every figure:
 //   (1) object sits at the IK TARGET (the hand we solve toward) → attach DIRECTLY; its
 //       position is a known input (lat-pulldown bar/cable, pull-up bar).
@@ -558,7 +558,7 @@ function solve2Bar(hx: number, hy: number, fx: number, fy: number, L1: number, L
   return { a: (td * 180) / Math.PI, bRel: ((sd - td) * 180) / Math.PI };
 }
 
-// --- Cycling: a rider whose feet orbit the crank — legs solved by IK to follow the pedals
+// --- Cycling: a rider whose feet orbit the crank, legs solved by IK to follow the pedals
 function Cycling({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
   const cx = 58 * s, cy = 72 * s, r = 11 * s; // crank centre + radius
@@ -674,7 +674,7 @@ function LatPulldown({ phase, size, fg, equip }: { phase: SharedValue<number>; s
   const ik = useDerivedValue(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return solve2Bar(52 * s, 50 * s, (60 - p * 2) * s, (28 + p * 24) * s, 12 * s, 12 * s, 1); });
   const uarm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
   const farm = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
-  // bar + cable follow the same known hand target (bar stays level — not nested in the arm)
+  // bar + cable follow the same known hand target (bar stays level, not nested in the arm)
   const bar = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { transform: [{ translateX: -p * 2 * s }, { translateY: p * 24 * s }] }; });
   const cable = useAnimatedStyle(() => { 'worklet'; const p = (1 - Math.cos(phase.value * 2 * Math.PI)) / 2; return { height: (14 + p * 24) * s }; });
   return (
@@ -701,7 +701,7 @@ function LatPulldown({ phase, size, fg, equip }: { phase: SharedValue<number>; s
   );
 }
 
-// Triceps-pushdown forearm tip (FK): forearm starts clearly bent (−45°) and extends to
+// Triceps-pushdown forearm tip (FK): forearm starts clearly bent (-45°) and extends to
 // straight down (88°), so the read is an unmistakable bent→straight pushdown.
 function triHand(p: number, s: number): { x: number; y: number } {
   'worklet';
@@ -763,7 +763,7 @@ function HipThrust({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
   const torso = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${A0 + p(phase.value) * (A1 - A0)}deg` }] }; });
   const thigh = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.a}deg` }] }; });
   const shin = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ik.value.bRel}deg` }] }; });
-  // leg + plate both ride the moving hip (translate by hip − hip0)
+  // leg + plate both ride the moving hip (translate by hip - hip0)
   const follow = useAnimatedStyle(() => { 'worklet'; return { transform: [{ translateX: hip.value.x - hip0x }, { translateY: hip.value.y - hip0y }] }; });
   return (
     <View style={{ width: size, height: size }}>
@@ -782,7 +782,7 @@ function HipThrust({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
             <View style={{ position: 'absolute', left: -3 * s, top: -3 * s, width: 14 * s, height: 7 * s, borderRadius: 3 * s, backgroundColor: fg }} />
           </Bone>
         </Bone>
-        {/* loaded barbell on the hips — a shaft across the hips + the plate edge-on, so it
+        {/* loaded barbell on the hips, a shaft across the hips + the plate edge-on, so it
             reads as a loaded bar (not a body bulge), riding the same hip point */}
         <View style={{ position: 'absolute', left: hip0x - 19 * s, top: hip0y - 2.5 * s, width: 39 * s, height: 5 * s, borderRadius: 99, backgroundColor: fg }} />
         <View style={{ position: 'absolute', left: hip0x - 11.5 * s, top: hip0y - 11.5 * s, width: 23 * s, height: 23 * s, borderRadius: 99, backgroundColor: fg }} />
@@ -793,7 +793,7 @@ function HipThrust({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
 
 // --- Calf raise: ball of foot fixed on a step edge; heel drops below then rises onto the
 // toes while the whole body lifts. The body translates straight UP (clean, no lateral
-// slide); the foot's instep "stretches" between the fixed ball and the rising ankle —
+// slide); the foot's instep "stretches" between the fixed ball and the rising ankle -
 // foreshortened (flat foot) at the bottom, near-vertical (on toes) at the top.
 function CalfRaise({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
@@ -807,7 +807,7 @@ function CalfRaise({ phase, size, fg, bg, equip }: { phase: SharedValue<number>;
   const instepRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(ankle.value.y - ballY, ankle.value.x - ballX)}rad` }] }; });
   const instepLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.sqrt((ankle.value.x - ballX) ** 2 + (ankle.value.y - ballY) ** 2) }; });
   // heel: droops an extra bit below the step at the bottom (the deep stretch) and rises
-  // above it on the toes — its own swing, deeper than the body lift alone.
+  // above it on the toes, its own swing, deeper than the body lift alone.
   const heel = useAnimatedStyle(() => { 'worklet'; const q = p(phase.value); return { transform: [{ translateY: (4 - 16 * q) * s }, { rotate: `${20 - q * 30}deg` }] }; });
   return (
     <View style={{ width: size, height: size }}>
@@ -938,7 +938,7 @@ function LegExtension({ phase, size, fg, equip }: { phase: SharedValue<number>; 
 }
 
 // --- Leg curl (seated): the OPPOSITE of the leg extension. The thigh is fixed horizontal and
-// held by a top pad (equip — unique to this machine); the shin starts straight-forward then
+// held by a top pad (equip, unique to this machine); the shin starts straight-forward then
 // CURLS down-and-back as the knee flexes, an ankle roller (equip) behind the ankle. Reduce-
 // motion still = the curled (flexed) position.
 function LegCurl({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
@@ -961,7 +961,7 @@ function LegCurl({ phase, size, fg, equip }: { phase: SharedValue<number>; size:
           <View style={{ position: 'absolute', left: -7.5 * s, top: -7.5 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: equip }} />
         </Bone>
       </Bone>
-      {/* thigh-holding pad on top (this machine's tell — the leg extension has none) */}
+      {/* thigh-holding pad on top (this machine's tell, the leg extension has none) */}
       <View style={{ position: 'absolute', left: 50 * s, top: 49 * s, width: 20 * s, height: 6 * s, borderRadius: 99, backgroundColor: equip }} />
     </View>
   );
@@ -1063,9 +1063,9 @@ function RacketSwing({ phase, size, fg, bg, equip }: { phase: SharedValue<number
 }
 
 // --- Jump rope: the rope is an overflow-CLIPPED full ring (a reliable cross-platform arc,
-// unlike per-side border colours) that ORBITS the jumper once per cycle — sweeping under the
+// unlike per-side border colours) that ORBITS the jumper once per cycle, sweeping under the
 // feet → up the side → over the head. The figure hops, timed so it's at the top of the bob
-// when the rope is under the feet. The −0.25 phase offset lands the reduce-motion still
+// when the rope is under the feet. The -0.25 phase offset lands the reduce-motion still
 // (STATIC_PHASE=0.25) on the clearest pose: rope under the feet, jumper up.
 function JumpRope({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
@@ -1103,7 +1103,7 @@ function JumpRope({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
 function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
   const s = size / 116;
   // Each arm is BENT at the elbow (2 Bones) and the two shoulder pivots are offset, so the
-  // pull arm and the recovery arm read as two distinct limbs — not one spinning baton.
+  // pull arm and the recovery arm read as two distinct limbs, not one spinning baton.
   const uarmA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 30}deg` }] }; });
   const uarmB = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${phase.value * 360 + 210}deg` }] }; });
   const elbow = { transform: [{ rotate: '45deg' }] }; // constant elbow bend
@@ -1135,12 +1135,12 @@ function Swimming({ phase, size, fg, equip }: { phase: SharedValue<number>; size
 
 // --- Boxing: a side-view boxer in stance; the gloves (equip) drive between a guard point
 // (bent, by the face) and an extended punch, the arm solved by IK. The lead arm jabs in the
-// first half of the cycle, the rear arm crosses in the second — alternating, with a small bob.
+// first half of the cycle, the rear arm crosses in the second, alternating, with a small bob.
 function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; size: number; fg: string; bg: string; equip: string }) {
   const s = size / 116;
   const U = 15 * s, F = 15 * s;
   // punch targets land at matched reach ~29.9 (just inside U+F=30), so both arms extend the
-  // same amount with a hair of natural elbow bend — no IK clamp, no lead/rear asymmetry.
+  // same amount with a hair of natural elbow bend, no IK clamp, no lead/rear asymmetry.
   const ikA = useDerivedValue(() => { 'worklet'; const e = Math.max(0, Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(57 * s, 45 * s, (63 + e * 23.8) * s, (39 + e * 4) * s, U, F, 1); });
   const ikB = useDerivedValue(() => { 'worklet'; const e = Math.max(0, -Math.sin(phase.value * 2 * Math.PI)); return solve2Bar(53 * s, 48 * s, (60 + e * 22.8) * s, (43 + e * 3) * s, U, F, 1); });
   const uarmA = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${ikA.value.a}deg` }] }; });
@@ -1160,8 +1160,8 @@ function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
         {/* torso leaning forward + head tucked behind the guard */}
         <Bone x={48 * s} y={67 * s} len={24 * s} w={11 * s} color={fg} rot={stat(-68)} />
         <View style={{ position: 'absolute', left: 53 * s, top: 27 * s, width: 15 * s, height: 15 * s, borderRadius: 99, backgroundColor: fg }} />
-        {/* rear arm (cross) drawn first and slightly dimmed (it's the far arm — depth), lead
-            arm (jab) on top — each a bent arm to a glove */}
+        {/* rear arm (cross) drawn first and slightly dimmed (it's the far arm, depth), lead
+            arm (jab) on top, each a bent arm to a glove */}
         <View style={{ position: 'absolute', left: 0, top: 0, width: size, height: size, opacity: 0.72 }}>
           <Bone x={53 * s} y={48 * s} len={U} w={8 * s} color={fg} rot={uarmB}>
             <Bone x={0} y={0} len={F} w={7 * s} color={fg} rot={foreB}><View style={glove} /></Bone>
@@ -1177,7 +1177,7 @@ function Boxing({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; si
 
 // --- Yoga (cat-cow): on hands and knees, the spine (two segments meeting at a travelling
 // mid-point) arches UP (cat) then dips DOWN (cow) while the head nods. Calm and cyclic. The
-// −0.25 offset lands the reduce-motion still on the iconic arched cat pose.
+// -0.25 offset lands the reduce-motion still on the iconic arched cat pose.
 function Yoga({ phase, size, fg, equip }: { phase: SharedValue<number>; size: number; fg: string; equip: string }) {
   const s = size / 116;
   const hipX = 40 * s, hipY = 57 * s, shX = 76 * s, shY = 57 * s;
@@ -1188,7 +1188,7 @@ function Yoga({ phase, size, fg, equip }: { phase: SharedValue<number>; size: nu
   const spineFRot = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${Math.atan2(my.value - shY, -19 * s)}rad` }] }; });
   const spineFLen = useAnimatedStyle(() => { 'worklet'; return { width: Math.hypot(19 * s, my.value - shY) }; });
   // head nods: chin tucked steeply DOWN (~78°, dropping toward the chest just ahead of the
-  // shoulder — not flung forward) at cat, lifted to look up (−18°) at cow
+  // shoulder, not flung forward) at cat, lifted to look up (-18°) at cow
   const neck = useAnimatedStyle(() => { 'worklet'; return { transform: [{ rotate: `${30 + 48 * Math.cos((phase.value - 0.25) * 2 * Math.PI)}deg` }] }; });
   const stat = (d: number) => ({ transform: [{ rotate: `${d}deg` }] });
   return (
@@ -1229,7 +1229,7 @@ function Basketball({ phase, size, fg, bg, equip }: { phase: SharedValue<number>
   return (
     <View style={{ width: size, height: size }}>
       <View style={{ position: 'absolute', left: size * 0.08, right: size * 0.08, bottom: size * 0.16, height: 3 * s, borderRadius: 99, backgroundColor: bg }} />
-      {/* the ball — authored at its top (by the hand), bounces down to the floor */}
+      {/* the ball, authored at its top (by the hand), bounces down to the floor */}
       <Animated.View style={[{ position: 'absolute', left: 69 * s, top: 51 * s, width: 18 * s, height: 18 * s, borderRadius: 99, backgroundColor: equip }, ball]} />
       <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: size, height: size }, dip]}>
         {/* far leg (dimmed for depth) + near leg, both bent in an athletic crouch */}
@@ -1294,7 +1294,7 @@ function Football({ phase, size, fg, bg, equip }: { phase: SharedValue<number>; 
 
 // --- HIIT (high knees): running in place, knees driving up HIGH (thigh to horizontal) in
 // alternation, arms pumping hard (sprinter carry), with a springy bounce on each drive.
-// Fast cadence — clearly more intense than the walk/run.
+// Fast cadence, clearly more intense than the walk/run.
 function HighKnees({ phase, size, fg, bg }: { phase: SharedValue<number>; size: number; fg: string; bg: string }) {
   const s = size / 116;
   // driveA: leg A knee fully UP at phase 0.25 (the reduce-motion still), down at 0.75
@@ -1350,7 +1350,7 @@ function NeutralFigure({ phase, size, fg }: { phase: SharedValue<number>; size: 
         <View style={{ position: 'absolute', left: 44 * s, top: 40 * s, width: 8 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '8deg' }] }} />
         <View style={{ position: 'absolute', left: 64 * s, top: 40 * s, width: 8 * s, height: 26 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-8deg' }] }} />
       </Animated.View>
-      {/* legs (don't bob — feet stay planted) */}
+      {/* legs (don't bob, feet stay planted) */}
       <View style={{ position: 'absolute', left: 51 * s, top: 67 * s, width: 9 * s, height: 30 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '4deg' }] }} />
       <View style={{ position: 'absolute', left: 56 * s, top: 67 * s, width: 9 * s, height: 30 * s, borderRadius: 99, backgroundColor: fg, transform: [{ rotate: '-4deg' }] }} />
     </View>
@@ -1360,7 +1360,7 @@ function NeutralFigure({ phase, size, fg }: { phase: SharedValue<number>; size: 
 // --- ContactShadow: a soft, blurred ellipse on the ground beneath the figure (Skia). Adds the
 // single biggest "grounded/real" cue across every glyph. Subtle so it never competes.
 function ContactShadow({ size }: { size: number }) {
-  if (size < 60) return null; // imperceptible at chip sizes — skip the extra Canvas
+  if (size < 60) return null; // imperceptible at chip sizes, skip the extra Canvas
   const s = size / 116;
   const w = 58 * s, h = 11 * s;
   return (

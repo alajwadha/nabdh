@@ -4,7 +4,7 @@ import { useTheme } from './theme';
 
 // Apple "Liquid Glass": a translucent frosted surface. expo-blur is lazy-required so the
 // absent native module (web, Expo Go without the plugin, this sandbox) degrades to a
-// semi-opaque solid with the same shape — it NEVER breaks layout or legibility.
+// semi-opaque solid with the same shape, it NEVER breaks layout or legibility.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 let Blur: any = null;
 try {

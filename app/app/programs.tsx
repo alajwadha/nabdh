@@ -22,7 +22,7 @@ export default function Programs() {
         <AppText variant="h1">Programs</AppText>
       </View>
       <AppText variant="body" color={colors.textSecondary}>
-        Pick a routine and Nabdh walks you through it set by set — with your suggested weights, a rest timer, and everything saved to your history.
+        Pick a routine and Nabdh walks you through it set by set, with your suggested weights, a rest timer, and everything saved to your history.
       </AppText>
 
       {PROGRAMS.map((p, i) => {

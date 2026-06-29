@@ -169,7 +169,7 @@ export default function Social() {
       })}
 
       <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center', marginTop: 2 }}>
-        Friends & challenges are a preview with sample data — connecting real friends is coming soon.
+        Friends & challenges are a preview with sample data, connecting real friends is coming soon.
       </AppText>
     </Screen>
   );

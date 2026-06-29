@@ -136,7 +136,7 @@ export default function Profile() {
       </Group>
 
       <Group title="AI COACH MODEL">
-        {([['managed', 'Nabdh managed', 'Gemini · processed in-Kingdom', 'DEFAULT'], ['claude', 'Bring your own — Claude', 'Premium · cross-border, opt-in', 'PRO'], ['gpt', 'Bring your own — GPT', 'Premium · cross-border, opt-in', 'PRO']] as const).map(([key, name, sub, tag], i) => (
+        {([['managed', 'Nabdh managed', 'Gemini · processed in-Kingdom', 'DEFAULT'], ['claude', 'Bring your own, Claude', 'Premium · cross-border, opt-in', 'PRO'], ['gpt', 'Bring your own, GPT', 'Premium · cross-border, opt-in', 'PRO']] as const).map(([key, name, sub, tag], i) => (
           <Pressable key={key} onPress={() => setModel(key)} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 13, borderBottomWidth: i === 2 ? 0 : 2, borderBottomColor: colors.border }}>
             <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 2.5, borderColor: model === key ? colors.accent : colors.border, alignItems: 'center', justifyContent: 'center' }}>
               {model === key && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.accent }} />}

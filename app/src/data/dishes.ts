@@ -1,5 +1,5 @@
 // A curated reference table of common Saudi/Gulf dishes with per-serving macros. These are
-// reasonable cookbook/label estimates for a typical home serving — a real reference DB, not
+// reasonable cookbook/label estimates for a typical home serving, a real reference DB, not
 // fabricated personal data. Numbers are approximate; portions vary.
 import type { TileColor } from '../design-system';
 

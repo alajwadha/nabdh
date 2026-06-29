@@ -47,7 +47,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     sample: '58',
     detail: {
       title: 'Resting heart rate',
-      delta: '▲ 4 vs 28-day baseline — trending up',
+      delta: '▲ 4 vs 28-day baseline, trending up',
       deltaKind: 'bad',
       chartColor: '#E08A50',
       base: 54,
@@ -67,14 +67,14 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     sample: '48',
     detail: {
       title: 'Heart rate variability',
-      delta: '▼ 6 overnight — 3rd night below baseline',
+      delta: '▼ 6 overnight, 3rd night below baseline',
       deltaKind: 'bad',
       chartColor: '#8E81D6',
       base: 54,
       d7: [56, 58, 54, 57, 52, 50, 48],
       d30: [53, 55, 54, 56, 57, 55, 54, 56, 58, 57, 55, 54, 56, 55, 57, 58, 56, 55, 57, 56, 54, 55, 57, 56, 54, 52, 51, 50, 49, 48],
       tiles: [['NIGHT AVG', '48 ms'], ['28-DAY BASELINE', '54 ms']],
-      ins: 'A 3-night slide usually recovers with one disciplined day — easy movement, light dinner, early night.',
+      ins: 'A 3-night slide usually recovers with one disciplined day, easy movement, light dinner, early night.',
     },
   },
   sleep: {
@@ -82,7 +82,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     label: 'Sleep',
     color: 'mint',
     unit: 'h',
-    hint: '▲ 22 min — nice',
+    hint: '▲ 22 min, nice',
     read: (s) => (s?.sleepMinutes != null ? `${Math.floor(s.sleepMinutes / 60)}:${String(s.sleepMinutes % 60).padStart(2, '0')}` : undefined),
     sample: '7:18',
   },
@@ -95,7 +95,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     sample: '8,432',
     detail: {
       title: 'Steps',
-      delta: '84% of 10k goal — 1,568 to go',
+      delta: '84% of 10k goal, 1,568 to go',
       deltaKind: 'good',
       chartColor: '#2E7D5B',
       bars: true,
@@ -103,7 +103,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
       d7: [9200, 11400, 7800, 10500, 8900, 12100, 8432],
       d30: [8200, 9500, 7400, 10200, 11000, 9800, 8600, 7900, 10400, 9100, 8800, 11600, 10100, 9300, 8700, 9900, 10800, 9500, 8200, 9700, 10300, 11200, 8900, 9400, 10600, 9800, 7800, 10500, 12100, 8432],
       tiles: [['DISTANCE', '6.2 km'], ['ACTIVE KCAL', '412']],
-      ins: 'You move most after Asr — tonight’s easy 30-min walk (~2,400 steps) closes the ring.',
+      ins: 'You move most after Asr, tonight’s easy 30-min walk (~2,400 steps) closes the ring.',
     },
   },
   stress: {
@@ -114,7 +114,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     sample: '34',
     detail: {
       title: 'Stress',
-      delta: 'Moderate — 2 spikes (work, traffic)',
+      delta: 'Moderate, 2 spikes (work, traffic)',
       deltaKind: 'warn',
       chartColor: '#E0A24E',
       base: 30,
@@ -141,7 +141,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
       d7: [96, 97, 96, 97, 98, 97, 97],
       d30: [96, 97, 97, 96, 95, 97, 96, 97, 98, 97, 96, 97, 96, 97, 97, 96, 98, 97, 96, 97, 97, 96, 97, 98, 97, 96, 97, 97, 96, 97],
       tiles: [['NIGHT LOW', '94%'], ['AVERAGE', '97%']],
-      ins: 'Steady and healthy. Dips below 90% would be worth a mention — yours never went there.',
+      ins: 'Steady and healthy. Dips below 90% would be worth a mention, yours never went there.',
     },
   },
   resp: {
@@ -160,7 +160,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
       d7: [14, 15, 14, 14, 15, 14, 14],
       d30: [14, 14, 15, 14, 14, 13, 14, 15, 14, 14, 15, 14, 14, 14, 15, 14, 14, 13, 14, 15, 14, 14, 14, 15, 14, 14, 14, 15, 14, 14],
       tiles: [['NIGHT LOW', '13'], ['NIGHT HIGH', '15']],
-      ins: 'A flat respiratory rate is a good sign — no strain or illness creeping in.',
+      ins: 'A flat respiratory rate is a good sign, no strain or illness creeping in.',
     },
   },
   cals: {
@@ -172,7 +172,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
     sample: '412',
     detail: {
       title: 'Active calories',
-      delta: '68% of 600 goal — close the ring',
+      delta: '68% of 600 goal, close the ring',
       deltaKind: 'good',
       chartColor: '#C2562C',
       bars: true,
@@ -180,7 +180,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
       d7: [520, 610, 380, 540, 470, 650, 412],
       d30: [480, 520, 400, 560, 610, 540, 470, 420, 580, 510, 490, 640, 560, 500, 460, 540, 600, 520, 440, 520, 560, 620, 470, 500, 580, 540, 400, 560, 650, 412],
       tiles: [['EXERCISE', '38 min'], ['STAND HRS', '9 / 12']],
-      ins: 'Your walk after Asr usually adds ~180 kcal — that closes today’s ring with room to spare.',
+      ins: 'Your walk after Asr usually adds ~180 kcal, that closes today’s ring with room to spare.',
     },
   },
   water: {
@@ -201,7 +201,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
       d7: [6, 7, 5, 8, 6, 7, 3],
       d30: [6, 7, 5, 8, 6, 7, 6, 5, 8, 7, 6, 7, 5, 6, 8, 7, 6, 5, 7, 6, 8, 7, 6, 5, 7, 6, 5, 8, 7, 3],
       tiles: [['BEST DAY', '8 glasses'], ['WEEK AVG', '6 / day']],
-      ins: 'Hydration is your weak spot in the heat — front-load 3 glasses before Dhuhr and you’ll hit goal easily.',
+      ins: 'Hydration is your weak spot in the heat, front-load 3 glasses before Dhuhr and you’ll hit goal easily.',
     },
   },
   vo2: {
@@ -221,7 +221,7 @@ export const METRICS: Record<MetricKey, MetricDef> = {
       d7: [41, 41, 42, 41, 42, 42, 42],
       d30: [40, 40, 41, 41, 40, 41, 42, 41, 42, 41, 42, 42, 41, 42, 41, 42, 42, 41, 42, 42, 41, 42, 42, 42, 41, 42, 42, 42, 42, 42],
       tiles: [['FITNESS AGE', '29'], ['TREND', 'rising']],
-      ins: 'Up a point this month. Two zone-2 walks a week is exactly what nudges this — keep going.',
+      ins: 'Up a point this month. Two zone-2 walks a week is exactly what nudges this, keep going.',
     },
   },
   resil: {
@@ -244,14 +244,14 @@ export const METRICS: Record<MetricKey, MetricDef> = {
   },
 };
 
-// Only metrics with a real data source are offered as addable tiles — stress,
+// Only metrics with a real data source are offered as addable tiles, stress,
 // resp and resilience have no signal yet, so we don't surface a tile that could
 // only ever show an invented number.
 export const ALL_METRICS: MetricKey[] = [
   'rhr', 'hrv', 'sleep', 'steps', 'spo2', 'cals', 'water', 'vo2',
 ];
 
-// Line-icon name (lucide) per metric — rendered via the Skia <Icon>. (Was emoji.)
+// Line-icon name (lucide) per metric, rendered via the Skia <Icon>. (Was emoji.)
 export const METRIC_ICON: Record<MetricKey, string> = {
   rhr: 'heart', hrv: 'activity', sleep: 'moon', steps: 'footprints', stress: 'brain', spo2: 'heart-pulse',
   resp: 'wind', cals: 'flame', water: 'droplet', vo2: 'gauge', resil: 'shield',

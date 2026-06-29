@@ -1,6 +1,6 @@
 // Thin wrapper over expo-location. Lazy-required (like services/export.ts and
-// notifications.ts) so a missing native module — web, Expo Go without the plugin, this
-// sandbox — degrades to a no-op instead of crashing.
+// notifications.ts) so a missing native module, web, Expo Go without the plugin, this
+// sandbox, degrades to a no-op instead of crashing.
 
 import type { GeoPoint } from './geo';
 
@@ -42,7 +42,7 @@ export async function watchPosition(onPoint: (p: GeoPoint) => void): Promise<Sub
         timeInterval: 1500, // ms
       },
       (loc: any) => {
-        // Drop low-accuracy fixes — they're mostly drift and would inflate distance.
+        // Drop low-accuracy fixes, they're mostly drift and would inflate distance.
         const acc = loc.coords.accuracy;
         if (acc != null && acc > 25) return;
         onPoint({

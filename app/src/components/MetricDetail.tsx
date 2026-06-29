@@ -80,7 +80,7 @@ function FullDetail({ def }: { def: MetricDef }) {
         )}
       </View>
 
-      {/* Trend section — an explicitly-labelled preview, not the user's real history */}
+      {/* Trend section, an explicitly-labelled preview, not the user's real history */}
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <RangeToggle range={range} onChange={setRange} />
         <View style={{ backgroundColor: colors.navBg, borderRadius: 99, paddingVertical: 4, paddingHorizontal: 10 }}>
@@ -89,7 +89,7 @@ function FullDetail({ def }: { def: MetricDef }) {
       </View>
       <View style={{ backgroundColor: colors.card, borderWidth: 2, borderColor: colors.border, borderRadius: radii.xl, padding: spacing.md, gap: spacing.sm }}>
         <AppText variant="caption" color={colors.textMuted} style={{ fontSize: 11, lineHeight: 15 }}>
-          Example {range === '7D' ? '7-day' : '30-day'} shape — a preview of the chart you’ll get here.
+          Example {range === '7D' ? '7-day' : '30-day'} shape, a preview of the chart you’ll get here.
         </AppText>
         {d.bars ? (
           <BarChart data={data} goal={d.goal} color={d.chartColor} />
@@ -110,7 +110,7 @@ function FullDetail({ def }: { def: MetricDef }) {
 
 const READINESS_STATUS: Record<'good' | 'warn' | 'bad' | 'none', { kind: DeltaKind; tag: string }> = {
   good: { kind: 'good', tag: 'Strong ▲' },
-  warn: { kind: 'warn', tag: 'Fair —' },
+  warn: { kind: 'warn', tag: 'Fair' },
   bad: { kind: 'bad', tag: 'Low ▼' },
   none: { kind: 'warn', tag: 'No data' },
 };
@@ -129,11 +129,11 @@ function ReadinessBody() {
     ? 'Connect a device with sleep, resting-HR and HRV to see what’s driving your readiness.'
     : top && low && top.key !== low.key && (low.pct ?? 0) < 60
       ? `${top.label} is carrying the score; ${low.label.toLowerCase()} is the drag. Lift the weakest signal and the number follows.`
-      : `${top?.label ?? 'Sleep'} is leading and nothing’s dragging hard — keep the rhythm steady.`;
+      : `${top?.label ?? 'Sleep'} is leading and nothing’s dragging hard, keep the rhythm steady.`;
   return (
     <View style={{ gap: spacing.md }}>
       <View>
-        <AppText variant="h2">Readiness {score} — why?</AppText>
+        <AppText variant="h2">Readiness {score}, why?</AppText>
         <AppText variant="caption" color={colors.textMuted}>
           The exact signals behind your score · sleep 40% · resting HR 30% · HRV 30%
         </AppText>

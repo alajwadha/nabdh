@@ -72,7 +72,7 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
-  // Plus Jakarta Sans for Latin, Tajawal for Arabic — AppText picks per script.
+  // Plus Jakarta Sans for Latin, Tajawal for Arabic, AppText picks per script.
   const [fontsLoaded, fontError] = useFonts({
     'Jakarta-Medium': require('../assets/fonts/Jakarta-Medium.ttf'),
     'Jakarta-Bold': require('../assets/fonts/Jakarta-Bold.ttf'),
@@ -83,7 +83,7 @@ export default function RootLayout() {
     'Tajawal-ExtraBold': require('../assets/fonts/Tajawal-ExtraBold.ttf'),
   });
 
-  // Wait for fonts, but if loading FAILS, proceed anyway — RN falls back to the system
+  // Wait for fonts, but if loading FAILS, proceed anyway, RN falls back to the system
   // font (the prior behaviour) rather than hanging forever on the splash.
   if (!fontsLoaded && !fontError) {
     return <View style={{ flex: 1, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator color={colors.accent} /></View>;

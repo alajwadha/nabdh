@@ -57,7 +57,7 @@ export function InsightHero({
           </AppText>
           <View style={{ flex: 1 }}>
             {L('READINESS')}
-            {B('HRV dipped a third night — recovery beats grind today.')}
+            {B('HRV dipped a third night, recovery beats grind today.')}
             <View style={{ flexDirection: 'row', gap: 6, marginTop: 11 }}>
               {[0, 1, 2, 3, 4].map((i) => (
                 <View key={i} style={{ width: 26, height: 8, borderRadius: 99, backgroundColor: i < 3 ? colors.yellow : 'rgba(255,255,255,0.25)' }} />
@@ -74,7 +74,7 @@ export function InsightHero({
         <View>
           {tag('HEADS-UP', 'triangle-alert')}
           {L('PREDICTIVE')}
-          {B("3rd night of low HRV. Tomorrow's energy will dip — go light today and it rebounds by Saturday.")}
+          {B("3rd night of low HRV. Tomorrow's energy will dip, go light today and it rebounds by Saturday.")}
           <AppText variant="caption" color="#fff" style={{ marginTop: 10 }}>
             See HRV trend ›
           </AppText>
@@ -89,7 +89,7 @@ export function InsightHero({
           {L("TODAY'S FOCUS · RECOVER")}
           <View style={{ marginTop: 9, gap: 7 }}>
             {([
-              ['utensils', 'Protein lunch — done'],
+              ['utensils', 'Protein lunch, done'],
               ['footprints', 'Easy 30-min walk after Asr'],
               ['moon', 'Lights out by 11:15'],
             ] as [IconName, string][]).map(([icon, s]) => (
@@ -109,7 +109,7 @@ export function InsightHero({
         <View>
           {tag('RIYADH · 43°C', 'thermometer')}
           {L('PLAN AROUND THE HEAT')}
-          {B('Peak heat 1–4 PM. Move your walk to after Asr (3:18) — cooler, and your steps land best then anyway.')}
+          {B('Peak heat 1-4 PM. Move your walk to after Asr (3:18), cooler, and your steps land best then anyway.')}
         </View>
       ),
     },

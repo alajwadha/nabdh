@@ -24,7 +24,7 @@ export type Challenge = {
   participants: number;
 };
 
-// Seeded friends (you included) — ranked client-side by weekly minutes.
+// Seeded friends (you included), ranked client-side by weekly minutes.
 export const FRIENDS: Friend[] = [
   { id: 'you', name: 'You', minutes: 248, streak: 6, you: true },
   { id: 'f1', name: 'Layla Haddad', minutes: 312, streak: 11 },

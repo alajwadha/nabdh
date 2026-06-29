@@ -40,7 +40,7 @@ export default function Coach() {
     {
       id: 1,
       from: 'c',
-      text: `صباح الخير ${identity.firstName} ☀️\nمعدل تقلب ضربات القلب اليوم ${s?.hrvSdnn ?? '—'} ms — يوم تعافٍ، لا يوم إجهاد.`,
+      text: `صباح الخير ${identity.firstName} ☀️\nمعدل تقلب ضربات القلب اليوم ${s?.hrvSdnn ?? '-'} ms, يوم تعافٍ، لا يوم إجهاد.`,
     },
   ]);
   const [input, setInput] = useState('');
@@ -49,7 +49,7 @@ export default function Coach() {
   const idRef = useRef(2);
   const scrollRef = useRef<ScrollView>(null);
 
-  // The app never holds a model key or the system prompt — it posts the
+  // The app never holds a model key or the system prompt, it posts the
   // conversation + today's minimized metrics to our in-region backend, which
   // attaches the Saudi-context prompt and calls the model (Vertex Gemini).
   const send = async (text: string) => {

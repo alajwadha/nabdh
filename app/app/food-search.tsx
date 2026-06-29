@@ -53,7 +53,7 @@ export default function FoodSearch() {
   };
 
   const onScanned = (code: string) => {
-    // We don't ship a packaged-food database — be honest, never invent macros.
+    // We don't ship a packaged-food database, be honest, never invent macros.
     setScanMsg(`No match for ${code}. Search the dish above or add it manually.`);
   };
 
@@ -74,7 +74,7 @@ export default function FoodSearch() {
         <TextInput
           value={q}
           onChangeText={(t) => { setQ(t); setAdded(null); }}
-          placeholder="Search dishes — kabsa, foul, dates…"
+          placeholder="Search dishes, kabsa, foul, dates…"
           placeholderTextColor={colors.textMuted}
           autoCorrect={false}
           autoCapitalize="none"
@@ -153,7 +153,7 @@ export default function FoodSearch() {
           </View>
         ) : (
           <AppText variant="caption" color={colors.textMuted} style={{ lineHeight: 18 }}>
-            Barcode scanning needs the full app build with the camera — it won’t open in this preview. You can still search dishes above.
+            Barcode scanning needs the full app build with the camera, so it won’t open in this preview. You can still search dishes above.
           </AppText>
         )}
         {scanMsg && (

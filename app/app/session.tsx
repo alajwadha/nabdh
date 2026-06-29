@@ -28,14 +28,14 @@ function Stepper({ label, value, unit, onStep, dim }: { label: string; value: nu
   const { colors } = useTheme();
   const Btn = ({ t, d }: { t: string; d: number }) => (
     <Pressable onPress={() => onStep(d)} hitSlop={6} style={{ width: 42, height: 42, borderRadius: 13, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-      <AppText variant="h2" color={colors.textSecondary}>{t}</AppText>
+      <Icon name={t === '+' ? 'plus' : 'minus'} size={18} color={colors.textSecondary} />
     </Pressable>
   );
   return (
     <View style={{ flex: 1, gap: 6, opacity: dim ? 0.5 : 1 }}>
       <AppText variant="caption" color={colors.textMuted} style={{ letterSpacing: 1.2 }}>{label}</AppText>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <Btn t="−" d={-1} />
+        <Btn t="-" d={-1} />
         <View style={{ flex: 1, alignItems: 'center' }}>
           <AppText variant="h1">{value}</AppText>
           <AppText variant="caption" color={colors.textMuted}>{unit}</AppText>
@@ -81,7 +81,7 @@ export default function Session() {
     return { weight: w, reps: tgt?.reps ?? (isTimed ? 45 : rr.floor) };
   }, [ex, lastFor, incr, isBodyweight, isTimed]);
 
-  // Reset the draft to the target on a new exercise — and re-sync if the target itself
+  // Reset the draft to the target on a new exercise, and re-sync if the target itself
   // changes (e.g. history finishes loading from storage just after mount).
   useEffect(() => {
     setWeight(target.weight);

@@ -30,7 +30,7 @@ export default function HealthConnect() {
       if (summary) {
         setSummary(summary);
         setStatus('connected');
-        setNote('Connected — today’s data is now on your dashboard.');
+        setNote('Connected, today’s data is now on your dashboard.');
       } else {
         setStatus('connected');
         setNote('Connected, but Health Connect has no data logged for today yet.');
@@ -51,7 +51,7 @@ export default function HealthConnect() {
       case 'ios':
         return { tint: tiles.lav, title: 'Android only', body: 'Health Connect is Google’s health hub for Android. On iPhone, connect Apple Health instead.' };
       case 'unsupported':
-        return { tint: tiles.gold, title: 'Needs a device build', body: 'Health Connect needs the full app build — it can’t run in this preview.' };
+        return { tint: tiles.gold, title: 'Needs a device build', body: 'Health Connect needs the full app build, so it can’t run in this preview.' };
       case 'not_installed':
         return { tint: tiles.gold, title: 'Health Connect not found', body: 'Install Health Connect from the Play Store, then come back to link your data.' };
       case 'ready':
@@ -70,7 +70,7 @@ export default function HealthConnect() {
         <AppText variant="h1">Health Connect</AppText>
       </View>
       <AppText variant="body" color={colors.textSecondary}>
-        Health Connect is Android’s shared health store. Linking it lets Nabdh read the data your other apps and watch already record — in one place, on your terms.
+        Health Connect is Android’s shared health store. Linking it lets Nabdh read the data your other apps and watch already record, in one place, on your terms.
       </AppText>
 
       {/* status */}
@@ -111,7 +111,7 @@ export default function HealthConnect() {
       )}
 
       <AppText variant="caption" color={colors.textMuted} style={{ textAlign: 'center' }}>
-        Nabdh only reads — it never writes to or shares your Health Connect data.
+        Nabdh only reads, it never writes to or shares your Health Connect data.
       </AppText>
     </Screen>
   );

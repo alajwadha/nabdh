@@ -1,5 +1,5 @@
 // Android Health Connect integration. Lazy-required (like services/location.ts and
-// export.ts) so the absent native module — iOS, Expo Go without the plugin, this sandbox —
+// export.ts) so the absent native module, iOS, Expo Go without the plugin, this sandbox -
 // degrades to a no-op instead of crashing. Nothing here fabricates data: readToday returns
 // null unless Health Connect actually hands back records.
 
@@ -27,7 +27,7 @@ export const HC_DATA_TYPES: { key: string; label: string; icon: IconName }[] = [
 
 const PERMS = [
   ...HC_DATA_TYPES.map((d) => ({ accessType: 'read', recordType: d.key })),
-  // RestingHeartRate is its own record type (no separate UI row — "Heart rate" covers it).
+  // RestingHeartRate is its own record type (no separate UI row, "Heart rate" covers it).
   { accessType: 'read', recordType: 'RestingHeartRate' },
 ];
 
@@ -92,7 +92,7 @@ export async function readToday(): Promise<HealthDaily | null> {
       return e > s ? (e - s) / 60000 : 0;
     });
 
-    // Use Health Connect's dedicated RestingHeartRate record — not a min-of-day proxy,
+    // Use Health Connect's dedicated RestingHeartRate record, not a min-of-day proxy,
     // which would mislabel a sleeping/artefact low as the resting rate.
     let restingHeartRate: number | undefined;
     try {

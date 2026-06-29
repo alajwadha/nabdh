@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText, Card, Screen, SectionHeader } from '../src/design-system/components';
+import { Icon } from '../src/components/Icon';
 import { radii, spacing } from '../src/design-system';
 import { useTheme } from '../src/design-system/theme';
 import { useAppState } from '../src/store/app';
@@ -27,21 +28,21 @@ export default function Body() {
   const energyBmr = bmr(body.weightKg, body.heightCm, body.age, body.sex);
   const activity = ACTIVITY_LEVELS.find((a) => a.key === body.activity) ?? ACTIVITY_LEVELS[2];
   const energyTdee = tdee(energyBmr, activity.factor);
-  // The Daily target IS the store's Food budget — one number, never two that drift.
+  // The Daily target IS the store's Food budget, one number, never two that drift.
   const deficitCapped = body.goal === 'cut' && energyTdee - 500 < budget;
   const bmiBandColor = b.band === 'Healthy' ? tiles.mint : b.band === 'Underweight' ? tiles.blue : b.band === 'Overweight' ? tiles.gold : tiles.pink;
-  // Waist-to-height ratio — only when the user has actually measured their waist.
+  // Waist-to-height ratio, only when the user has actually measured their waist.
   const w = (body.waistCm ?? 0) > 0 ? whtr(body.waistCm!, body.heightCm) : null;
   const wColor = w == null ? tiles.blue : w.band === 'Healthy' ? tiles.mint : w.band === 'Increased risk' ? tiles.gold : tiles.pink;
-  // WHtR gauge on a 0.35–0.70 scale: healthy <0.5 (0–43%), increased 0.5–0.6 (43–71%), high ≥0.6 (71–100%)
+  // WHtR gauge on a 0.35-0.70 scale: healthy <0.5 (0-43%), increased 0.5-0.6 (43-71%), high ≥0.6 (71-100%)
   const wPos = w == null ? 0 : Math.max(0, Math.min(98, ((w.value - 0.35) / 0.35) * 100));
-  // US Navy body-fat % — needs neck + waist (+ hip for women).
+  // US Navy body-fat %, needs neck + waist (+ hip for women).
   const bf = navyBodyFat(body.sex, body.heightCm, body.neckCm ?? 0, body.waistCm ?? 0, body.hipCm ?? 0);
   const bfBand = bf != null ? bodyFatBand(bf, body.sex) : null;
-  // Whole kg — the ±3–4% BF estimate carries ±2–3 kg, so 0.1-kg precision would overstate it.
+  // Whole kg, the ±3-4% BF estimate carries ±2-3 kg, so 0.1-kg precision would overstate it.
   const leanKg = bf != null ? Math.round(body.weightKg * (1 - bf / 100)) : null;
   const bfColor = bf == null ? tiles.blue : bfBand === 'Fitness' || bfBand === 'Athletic' ? tiles.mint : bfBand === 'Average' ? tiles.gold : bfBand === 'Essential' ? tiles.blue : tiles.pink;
-  // Goal timeline — projected weeks to the target weight at the plan's energy delta.
+  // Goal timeline, projected weeks to the target weight at the plan's energy delta.
   const energyDelta = budget - energyTdee; // <0 deficit, >0 surplus
   const target = body.targetWeightKg ?? 0;
   const proj = body.goal !== 'maintain' && target > 0 ? goalProjection(body.weightKg, target, energyDelta) : null;
@@ -58,7 +59,7 @@ export default function Body() {
         return `by ${day <= 10 ? 'early' : day <= 20 ? 'mid' : 'late'} ${monthYear}`;
       })()
     : null;
-  // BMI gauge on a 15–40 scale (severe obesity is common in-market — don't cap at 35)
+  // BMI gauge on a 15-40 scale (severe obesity is common in-market, don't cap at 35)
   const bmiPos = Math.max(0, Math.min(100, ((b.value - 15) / 25) * 100));
 
   return (
@@ -80,7 +81,7 @@ export default function Body() {
         </Pressable>
       </View>
 
-      {/* resting vitals — never fabricate; show a connect prompt without real data */}
+      {/* resting vitals, never fabricate; show a connect prompt without real data */}
       {hasVitals ? (
         <View>
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
@@ -96,7 +97,7 @@ export default function Body() {
                 <AppText variant="h2" color={tiles.mint.ink}>{vo2} <AppText variant="caption" color={tiles.mint.ink}>ml/kg/min</AppText></AppText>
               </View>
               <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', marginTop: 4 }}>
-                {vo2Band(vo2, body.age, body.sex)} for your age &amp; sex.{detailed ? ` 15.3 × age-estimated max HR ${mhr} ÷ resting ${s?.restingHeartRate} (Uth 2004) — a ballpark.` : ''}
+                {vo2Band(vo2, body.age, body.sex)} for your age &amp; sex.{detailed ? ` 15.3 × age-estimated max HR ${mhr} ÷ resting ${s?.restingHeartRate} (Uth 2004), a ballpark.` : ''}
               </AppText>
             </View>
           )}
@@ -116,23 +117,23 @@ export default function Body() {
           <AppText variant="h2" color={bmiBandColor.ink}>{b.value} · {b.band}</AppText>
         </View>
         <View style={{ height: 14, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 10, position: 'relative', overflow: 'hidden' }}>
-          {/* 15–40 scale: healthy 18.5–25 (14–40%), overweight 25–30 (40–60%), obese 30–40 (60–100%) */}
+          {/* 15-40 scale: healthy 18.5-25 (14-40%), overweight 25-30 (40-60%), obese 30-40 (60-100%) */}
           <View style={{ position: 'absolute', left: '14%', width: '26%', top: 0, bottom: 0, backgroundColor: colors.accent, opacity: 0.4 }} />
           <View style={{ position: 'absolute', left: '40%', width: '20%', top: 0, bottom: 0, backgroundColor: '#E0A24E', opacity: 0.45 }} />
           <View style={{ position: 'absolute', left: '60%', width: '40%', top: 0, bottom: 0, backgroundColor: colors.danger, opacity: 0.4 }} />
           <View style={{ position: 'absolute', left: `${Math.min(98, bmiPos)}%`, width: 3, top: 0, bottom: 0, backgroundColor: colors.ink }} />
         </View>
         <AppText variant="caption" color={bmiBandColor.ink} style={{ marginTop: 6, opacity: 0.8 }}>
-          BMI doesn’t account for muscle — a lean lifter can read high.
+          BMI doesn’t account for muscle, a lean lifter can read high.
         </AppText>
         {detailed && (
           <AppText variant="caption" color={bmiBandColor.ink} style={{ marginTop: 4, opacity: 0.85 }}>
-            BMI = weight ÷ height² = {body.weightKg} ÷ ({(body.heightCm / 100).toFixed(2)})² · healthy 18.5–25
+            BMI = weight ÷ height² = {body.weightKg} ÷ ({(body.heightCm / 100).toFixed(2)})² · healthy 18.5-25
           </AppText>
         )}
       </View>
 
-      {/* Waist-to-height ratio — captures the fat distribution BMI misses */}
+      {/* Waist-to-height ratio, captures the fat distribution BMI misses */}
       {w ? (
         <View style={{ backgroundColor: wColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -156,12 +157,12 @@ export default function Body() {
         <View style={{ backgroundColor: tiles.blue.bg, borderRadius: radii.xl, padding: spacing.lg }}>
           <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>WAIST-TO-HEIGHT</AppText>
           <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 6, opacity: 0.85 }}>
-            Add your waist measurement under “Your body” below to see your waist-to-height ratio — a better risk marker than BMI for most adults.
+            Add your waist measurement under “Your body” below to see your waist-to-height ratio, a better risk marker than BMI for most adults.
           </AppText>
         </View>
       ) : null}
 
-      {/* US Navy body-fat % — separates fat from lean mass */}
+      {/* US Navy body-fat %, separates fat from lean mass */}
       {bf != null ? (
         <View style={{ backgroundColor: bfColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -169,7 +170,7 @@ export default function Body() {
             <AppText variant="h2" color={bfColor.ink}>{bf}% · {bfBand}</AppText>
           </View>
           <AppText variant="caption" color={bfColor.ink} style={{ marginTop: 6, opacity: 0.9, lineHeight: 17 }}>
-            ≈ {leanKg} kg lean, {Math.round(body.weightKg - (leanKg ?? 0))} kg fat. A tape estimate (±3–4%) that can read high for muscular builds — track the trend, not the decimal.
+            ≈ {leanKg} kg lean, {Math.round(body.weightKg - (leanKg ?? 0))} kg fat. A tape estimate (±3-4%) that can read high for muscular builds, track the trend, not the decimal.
           </AppText>
           {detailed && (
             <AppText variant="caption" color={bfColor.ink} style={{ marginTop: 4, opacity: 0.8, lineHeight: 16 }}>
@@ -181,12 +182,12 @@ export default function Body() {
         <View style={{ backgroundColor: tiles.blue.bg, borderRadius: radii.xl, padding: spacing.lg }}>
           <AppText variant="caption" color={tiles.blue.ink} style={{ letterSpacing: 1.2 }}>BODY FAT · NAVY METHOD</AppText>
           <AppText variant="caption" color={tiles.blue.ink} style={{ marginTop: 6, opacity: 0.85 }}>
-            Add your neck{body.sex === 'female' ? ', waist & hip' : ' & waist'} measurements under “Your body” to estimate body-fat % and lean mass — what BMI can’t tell you apart.
+            Add your neck{body.sex === 'female' ? ', waist & hip' : ' & waist'} measurements under “Your body” to estimate body-fat % and lean mass, what BMI can’t tell you apart.
           </AppText>
         </View>
       ) : null}
 
-      {/* energy needs — BMR / TDEE */}
+      {/* energy needs, BMR / TDEE */}
       <SectionHeader title="Energy needs" />
       <View style={{ backgroundColor: tiles.gold.bg, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -218,17 +219,17 @@ export default function Body() {
           <AppText variant="h2" color={tiles.gold.ink}>{budget.toLocaleString()} <AppText variant="caption" color={tiles.gold.ink}>kcal</AppText></AppText>
         </View>
         <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 4, opacity: 0.8 }}>
-          An estimate (±10%) — trust your 2–3 week weight trend. This drives your Food budget.
+          An estimate (±10%), trust your 2-3 week weight trend. This drives your Food budget.
           {deficitCapped ? ' Your deficit is capped at a safe minimum.' : ''}
         </AppText>
         {detailed && (
           <AppText variant="caption" color={tiles.gold.ink} style={{ marginTop: 4, opacity: 0.85 }}>
-            BMR {energyBmr.toLocaleString()} (Mifflin–St Jeor) × {activity.factor} = {energyTdee.toLocaleString()}{body.goal === 'cut' ? ' − 500' : body.goal === 'gain' ? ' + 300' : ''} → {budget.toLocaleString()} kcal, floored at a safe minimum
+            BMR {energyBmr.toLocaleString()} (Mifflin-St Jeor) × {activity.factor} = {energyTdee.toLocaleString()}{body.goal === 'cut' ? ' - 500' : body.goal === 'gain' ? ' + 300' : ''} → {budget.toLocaleString()} kcal, floored at a safe minimum
           </AppText>
         )}
       </View>
 
-      {/* goal timeline — projected ETA to the target weight */}
+      {/* goal timeline, projected ETA to the target weight */}
       {body.goal !== 'maintain' && (
         <>
           <SectionHeader title="Goal timeline" />
@@ -249,7 +250,7 @@ export default function Body() {
               </AppText>
             ) : proj.atTarget ? (
               <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.9, lineHeight: 17 }}>
-                You’re at your target — switch your goal to Maintain to hold it.
+                You’re at your target, switch your goal to Maintain to hold it.
               </AppText>
             ) : !proj.reachable ? (
               <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 8, opacity: 0.9, lineHeight: 17 }}>
@@ -265,7 +266,7 @@ export default function Body() {
                   ~{target} kg {etaLabel}, at ~{Math.abs(proj.weeklyRateKg)} kg/week.
                 </AppText>
                 <AppText variant="caption" color={tiles.lav.ink} style={{ marginTop: 4, opacity: 0.8, lineHeight: 16 }}>
-                  At this rate — real change isn’t linear{longHorizon ? ', and it slows as you lighten' : ''}, so trust your 2–3 week trend over the date.{detailed ? ` Based on a ${Math.abs(energyDelta)} kcal/day ${energyDelta < 0 ? 'deficit' : 'surplus'} (~7,700 kcal ≈ 1 kg).` : ''}
+                  At this rate, real change isn’t linear{longHorizon ? ', and it slows as you lighten' : ''}, so trust your 2-3 week trend over the date.{detailed ? ` Based on a ${Math.abs(energyDelta)} kcal/day ${energyDelta < 0 ? 'deficit' : 'surplus'} (~7,700 kcal ≈ 1 kg).` : ''}
                 </AppText>
               </>
             )}
@@ -284,13 +285,13 @@ export default function Body() {
                 <AppText variant="caption" color={c.ink} style={{ fontSize: 11 }}>Z{z.z}</AppText>
               </View>
               <AppText variant="title" style={{ flex: 1, fontSize: 14 }}>{z.name}</AppText>
-              <AppText variant="caption" color={colors.textMuted}>{z.lo}–{z.hi} bpm</AppText>
+              <AppText variant="caption" color={colors.textMuted}>{z.lo}-{z.hi} bpm</AppText>
             </View>
           );
         })}
         {detailed && (
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8 }}>
-            Max HR via Tanaka (208 − 0.7 × age). Zones are % of max — train Z2 for base, Z4–5 sparingly.
+            Max HR via Tanaka (208 - 0.7 × age). Zones are % of max, train Z2 for base, Z4-5 sparingly.
           </AppText>
         )}
       </Card>
@@ -335,7 +336,7 @@ function Vital({ label, value, unit, color }: { label: string; value?: number; u
     <View style={{ flex: 1, backgroundColor: color.bg, borderRadius: radii.xl, padding: spacing.md }}>
       <AppText variant="caption" color={color.ink} style={{ fontSize: 9, letterSpacing: 1 }}>{label}</AppText>
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 2, marginTop: 4 }}>
-        <AppText variant="h2" style={{ fontSize: 20 }}>{value != null ? value : '—'}</AppText>
+        <AppText variant="h2" style={{ fontSize: 20 }}>{value != null ? value : '-'}</AppText>
         {value != null && <AppText variant="caption" color={color.ink} style={{ marginBottom: 3, fontSize: 10 }}>{unit}</AppText>}
       </View>
     </View>
@@ -348,13 +349,13 @@ function Stepper({ label, value, unit, onMinus, onPlus, colors, last, placeholde
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, borderBottomWidth: last ? 0 : 2, borderBottomColor: colors.border }}>
       <AppText variant="title" style={{ fontSize: 14 }}>{label}</AppText>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <Pressable onPress={onMinus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><AppText style={{ fontSize: 16 }}>−</AppText></Pressable>
+        <Pressable onPress={onMinus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="minus" size={15} color={colors.textSecondary} /></Pressable>
         <View style={{ minWidth: 64, alignItems: 'center' }}>
           {showPlaceholder
             ? <AppText variant="caption" color={colors.textMuted}>{placeholder}</AppText>
             : <AppText variant="title">{value} <AppText variant="caption" color={colors.textMuted}>{unit}</AppText></AppText>}
         </View>
-        <Pressable onPress={onPlus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><AppText style={{ fontSize: 16 }}>＋</AppText></Pressable>
+        <Pressable onPress={onPlus} style={{ width: 30, height: 30, borderRadius: 10, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}><Icon name="plus" size={15} color={colors.textSecondary} /></Pressable>
       </View>
     </View>
   );

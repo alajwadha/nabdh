@@ -11,7 +11,7 @@ import { computeAcwr, dotsScore, relativeStrength, strengthStandard, STRENGTH_LE
 import { useAppState } from '../src/store/app';
 
 const DAY = 86400000;
-// × bodyweight only means something on free-weight compounds — not machines or
+// × bodyweight only means something on free-weight compounds, not machines or
 // bodyweight lifts (where logged weight is added/assisted load, not total).
 const freeWeight = (eq?: string) => eq === 'barbell' || eq === 'dumbbell';
 
@@ -23,7 +23,7 @@ export default function WorkoutHistory() {
   const now = Date.now();
   const [detailed, setDetailed] = useState(false);
 
-  // Seed is demo-only (it powers the Workout screen's example) — never count it
+  // Seed is demo-only (it powers the Workout screen's example), never count it
   // in real progress stats, or the user sees fabricated "this week" numbers.
   const real = sessions.filter((s) => !s.id.startsWith('seed-'));
   const gym = real.filter((s) => s.kind === 'gym');
@@ -60,7 +60,7 @@ export default function WorkoutHistory() {
   const muscleRows = (Object.entries(muscleVol) as [Muscle, number][]).sort((a, b) => b[1] - a[1]);
   const maxMuscle = muscleRows.reduce((m, [, v]) => Math.max(m, v), 1);
   // Balance is computed from working-SET counts (not tonnage) so heavier leg/back
-  // loads don't structurally bias the split — a set is effort-comparable across muscles.
+  // loads don't structurally bias the split, a set is effort-comparable across muscles.
   const muscleSets: Partial<Record<Muscle, number>> = {};
   for (const s of gym.filter((g) => inWindow(g.at, 30))) {
     const m = EXERCISES.find((e) => e.key === s.exKey)?.muscle;
@@ -75,15 +75,15 @@ export default function WorkoutHistory() {
     .sort((a, b) => b.best - a.best);
 
   // DOTS strength score from the big-3 e1RM total, normalized for bodyweight + sex.
-  // Only shown once ALL THREE lifts are logged — a partial total would mislead.
+  // Only shown once ALL THREE lifts are logged, a partial total would mislead.
   const big3Keys = ['squat', 'bench', 'deadlift'] as const;
   const big3Vals = big3Keys.map((k) => prs.find((p) => p.k === k)?.best ?? 0);
   const big3 = big3Vals.reduce((a, b) => a + b, 0);
   // Bodyweight-ratio metrics (DOTS, strength standards) must not score against the
-  // placeholder default weight — a wrong bodyweight shifts the verdict by a full tier.
+  // placeholder default weight, a wrong bodyweight shifts the verdict by a full tier.
   const dots = body.weightEntered && big3Vals.every((v) => v > 0) ? dotsScore(big3, body.weightKg, body.sex) : 0;
 
-  // Strength standards — classify the four lifts with established norms against
+  // Strength standards, classify the four lifts with established norms against
   // population levels (untrained→elite) by bodyweight ratio. Only logged lifts show.
   const standings = (body.weightEntered ? (['squat', 'bench', 'deadlift', 'ohp'] as const) : [])
     .map((k) => ({ k, best: prs.find((p) => p.k === k)?.best ?? 0 }))
@@ -97,12 +97,12 @@ export default function WorkoutHistory() {
   };
   const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-  // Running training paces — derived from the best recent run (fastest 5 K-equivalent
+  // Running training paces, derived from the best recent run (fastest 5 K-equivalent
   // over the last 60 days). One real effort drives the whole zone table.
   const recentRuns = sport.filter((s) => s.sportKey === 'running' && (s.distanceKm ?? 0) >= 1.5 && (s.minutes ?? 0) > 0 && inWindow(s.at, 60));
   const bestRun = recentRuns.reduce<{ d: number; m: number; five: number } | null>((best, s) => {
     const d = s.distanceKm!, m = s.minutes!;
-    const five = riegelTime(m, d, 5); // 5 K-equivalent minutes (lower = fitter) — one Riegel source
+    const five = riegelTime(m, d, 5); // 5 K-equivalent minutes (lower = fitter), one Riegel source
     return !best || five < best.five ? { d, m, five } : best;
   }, null);
   const paces = bestRun ? trainingPaces(bestRun.d, bestRun.m) : null;
@@ -132,13 +132,13 @@ export default function WorkoutHistory() {
         <Stat label="SPORT" value={`${weekKcal}`} unit="kcal" hint="this week" color={tiles.pink} />
       </View>
 
-      {/* Training load — acute:chronic workload ratio (injury sweet-spot) */}
+      {/* Training load, acute:chronic workload ratio (injury sweet-spot) */}
       <View style={{ backgroundColor: loadColor.bg, borderRadius: radii.xl, padding: spacing.lg }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <AppText variant="caption" color={loadColor.ink} style={{ letterSpacing: 1.2 }}>TRAINING LOAD · ACUTE:CHRONIC</AppText>
-          <AppText variant="h2" color={loadColor.ink}>{acwr.hasRatio ? acwr.ratio : '—'}</AppText>
+          <AppText variant="h2" color={loadColor.ink}>{acwr.hasRatio ? acwr.ratio : '-'}</AppText>
         </View>
-        {/* full risk spectrum on a 0–2 scale: optimal 0.8–1.3 (40–65%), caution 1.3–1.5 (65–75%), high >1.5 (75–100%) */}
+        {/* full risk spectrum on a 0-2 scale: optimal 0.8-1.3 (40-65%), caution 1.3-1.5 (65-75%), high >1.5 (75-100%) */}
         <View style={{ height: 14, borderRadius: 99, backgroundColor: colors.navBg, marginTop: 10, position: 'relative', overflow: 'hidden' }}>
           <View style={{ position: 'absolute', left: '40%', width: '25%', top: 0, bottom: 0, backgroundColor: colors.accent, opacity: 0.4 }} />
           <View style={{ position: 'absolute', left: '65%', width: '10%', top: 0, bottom: 0, backgroundColor: '#E0A24E', opacity: 0.55 }} />
@@ -151,7 +151,7 @@ export default function WorkoutHistory() {
         <AppText variant="caption" color={loadColor.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 17 }}>{acwr.note}</AppText>
         {detailed && (
           <AppText variant="caption" color={loadColor.ink} style={{ marginTop: 6, opacity: 0.85 }}>
-            acute {acwr.acute} (7d) · chronic {acwr.chronic}/wk (28d avg) · ratio = acute ÷ chronic · sweet spot 0.8–1.3
+            acute {acwr.acute} (7d) · chronic {acwr.chronic}/wk (28d avg) · ratio = acute ÷ chronic · sweet spot 0.8-1.3
           </AppText>
         )}
       </View>
@@ -183,7 +183,7 @@ export default function WorkoutHistory() {
             ) : (
               <AppText variant="caption" color={colors.textMuted}>Log another session to see the trend.</AppText>
             )}
-            {/* ≥2 sessions, same bar the trend chart uses — never prescribe loads off a one-set estimate */}
+            {/* ≥2 sessions, same bar the trend chart uses, never prescribe loads off a one-set estimate */}
             {detailed && e1rmTrend.length > 1 && best > 0 && selEx?.equipment !== 'bodyweight' && (
               <View style={{ marginTop: 12, borderTopWidth: 2, borderTopColor: colors.border, paddingTop: 10 }}>
                 <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 6 }}>TRAINING LOADS · %1RM</AppText>
@@ -196,7 +196,7 @@ export default function WorkoutHistory() {
                   ))}
                 </View>
                 <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 7, lineHeight: 15 }}>
-                  Working weight at each intensity, with the reps it typically allows — from your estimated 1RM.
+                  Working weight at each intensity, with the reps it typically allows, from your estimated 1RM.
                 </AppText>
               </View>
             )}
@@ -204,7 +204,7 @@ export default function WorkoutHistory() {
         </>
       ) : (
         <Card>
-          <AppText variant="caption" color={colors.textMuted}>No gym sessions yet — log one from the Workout screen and your progression shows up here.</AppText>
+          <AppText variant="caption" color={colors.textMuted}>No gym sessions yet, log one from the Workout screen and your progression shows up here.</AppText>
         </Card>
       )}
 
@@ -263,7 +263,7 @@ export default function WorkoutHistory() {
               <AppText variant="h2" color={tiles.peach.ink}>{dots}</AppText>
             </View>
             <AppText variant="caption" color={tiles.peach.ink} style={{ fontWeight: '600', marginTop: 4, lineHeight: 17 }}>
-              From your best squat·bench·deadlift estimated 1RM ({Math.round(big3)} kg) at {body.weightKg} kg — a rough DOTS.{detailed ? ` Squat ${Math.round(big3Vals[0])} · bench ${Math.round(big3Vals[1])} · deadlift ${Math.round(big3Vals[2])} kg. Normalized for bodyweight & sex — ~300 solid, 500+ elite.` : ''}
+              From your best squat·bench·deadlift estimated 1RM ({Math.round(big3)} kg) at {body.weightKg} kg, a rough DOTS.{detailed ? ` Squat ${Math.round(big3Vals[0])} · bench ${Math.round(big3Vals[1])} · deadlift ${Math.round(big3Vals[2])} kg. Normalized for bodyweight & sex, ~300 solid, 500+ elite.` : ''}
             </AppText>
           </View>
         </>
@@ -293,14 +293,14 @@ export default function WorkoutHistory() {
                   </View>
                   {detailed && (
                     <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 6 }}>
-                      {s.next ? `+${Math.max(0, s.next.kg - Math.round(best))} kg to ${cap(s.next.level)}` : 'Top tier — elite'}
+                      {s.next ? `+${Math.max(0, s.next.kg - Math.round(best))} kg to ${cap(s.next.level)}` : 'Top tier, elite'}
                     </AppText>
                   )}
                 </View>
               );
             })}
             <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
-              From your best estimated 1RM vs population norms by bodyweight. Approximate — a guide, not a verdict.
+              From your best estimated 1RM vs population norms by bodyweight. Approximate, a guide, not a verdict.
             </AppText>
           </Card>
         </>
@@ -328,7 +328,7 @@ export default function WorkoutHistory() {
           <SectionHeader title="Running paces" />
           <Card>
             <AppText variant="caption" color={colors.textMuted} style={{ marginBottom: 8 }}>
-              From your fastest recent run ({Math.round(bestRun.d * 10) / 10} km · {Math.round(bestRun.m)} min) — training zones per km.
+              From your fastest recent run ({Math.round(bestRun.d * 10) / 10} km · {Math.round(bestRun.m)} min), training zones per km.
             </AppText>
             {paces.map((p, i) => (
               <View key={p.key} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderTopWidth: i === 0 ? 0 : 2, borderTopColor: colors.border }}>
@@ -340,7 +340,7 @@ export default function WorkoutHistory() {
               </View>
             ))}
             <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
-              Assumes that run was a hard effort — log a fast or race-pace run for sharper zones. A guide, not a lab test.
+              Assumes that run was a hard effort, log a fast or race-pace run for sharper zones. A guide, not a lab test.
             </AppText>
           </Card>
         </>

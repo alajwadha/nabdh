@@ -45,7 +45,7 @@ export default function Sleep() {
         <AppText variant="h1" style={{ marginTop: spacing.sm }}>Sleep</AppText>
         <Card>
           <AppText variant="caption" color={colors.textMuted} style={{ lineHeight: 18 }}>
-            Connect Apple Health or a device to see last night’s sleep — stages, a score, debt, and your ideal bedtime.
+            Connect Apple Health or a device to see last night’s sleep, stages, a score, debt, and your ideal bedtime.
           </AppText>
         </Card>
       </Screen>
@@ -62,10 +62,10 @@ export default function Sleep() {
 
   const headline =
     score >= 85
-      ? 'Strong night — deep and REM both above baseline.'
+      ? 'Strong night, deep and REM both above baseline.'
       : score >= 70
-        ? 'Solid structure, but a touch short — recovery beats grind today.'
-        : 'Short and broken — go easy and protect tonight.';
+        ? 'Solid structure, but a touch short. Recovery beats grind today.'
+        : 'Short and broken, go easy and protect tonight.';
 
   return (
     <Screen>
@@ -124,7 +124,7 @@ export default function Sleep() {
           <AppText variant="title" color={tiles.mint.ink}>Tonight’s window</AppText>
         </View>
         <AppText variant="caption" color={tiles.mint.ink} style={{ fontWeight: '600', marginTop: 3, lineHeight: 18 }}>
-          Lights out by {idealBed} to get {hoursMinutes(needMin)} before a ~7:00 wake — {debtMin > 0 ? `clears the ${hoursMinutes(debtMin)} debt and pushes HRV back up.` : 'you’re on track; keep the rhythm steady.'}
+          Lights out by {idealBed} to get {hoursMinutes(needMin)} before a ~7:00 wake, {debtMin > 0 ? `clears the ${hoursMinutes(debtMin)} debt and pushes HRV back up.` : 'you’re on track; keep the rhythm steady.'}
         </AppText>
       </View>
 
@@ -135,7 +135,7 @@ export default function Sleep() {
         <WindRow icon="smartphone" label="Dim screens" value={windDown.screens} colors={colors} last />
         {detailed && (
           <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
-            Caffeine’s ~5–6 h half-life means an afternoon coffee is still ~25% active at bedtime. 6 h before is the followable floor; 8 h is ideal. Meals ~3 h, screens ~1 h.
+            Caffeine’s ~5-6 h half-life means an afternoon coffee is still ~25% active at bedtime. 6 h before is the followable floor; 8 h is ideal. Meals ~3 h, screens ~1 h.
           </AppText>
         )}
       </Card>
@@ -154,7 +154,7 @@ export default function Sleep() {
           })}
         </View>
         <AppText variant="caption" color={colors.textMuted} style={{ marginTop: 8, lineHeight: 16 }}>
-          Wake between ~90-min cycles, not mid-deep-sleep — why 7½ h can beat 8. Highlighted is closest to your {hoursMinutes(needMin)} need. Cycles are an average (70–120 min), so treat these as a guide.{detailed ? ' Includes ~15 min to drift off.' : ''}
+          Wake between ~90-min cycles, not mid-deep-sleep. That’s why 7½ h can beat 8. Highlighted is closest to your {hoursMinutes(needMin)} need. Cycles are an average (70-120 min), so treat these as a guide.{detailed ? ' Includes ~15 min to drift off.' : ''}
         </AppText>
       </Card>
 
@@ -169,8 +169,8 @@ export default function Sleep() {
 
       <CoachCard>
         {score >= 80
-          ? 'Structure’s great — keep bedtime steady and mind the wind-down cut-offs to hold this.'
-          : 'Structure’s fine, recovery isn’t. Lights out early — the wind-down card above has tonight’s cut-offs.'}
+          ? 'Structure’s great, keep bedtime steady and mind the wind-down cut-offs to hold this.'
+          : 'Structure’s fine, recovery isn’t. Lights out early. The wind-down card above has tonight’s cut-offs.'}
       </CoachCard>
     </Screen>
   );

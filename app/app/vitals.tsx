@@ -17,7 +17,7 @@ function Stepper({ value, unit, step, onStep, accent }: { value: number; unit: s
   );
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-      <Btn t="−" d={-step} />
+      <Btn t="-" d={-step} />
       <View style={{ minWidth: 78, alignItems: 'center' }}>
         <AppText variant="metric" style={{ fontSize: 30, lineHeight: 34 }} color={accent}>{value}</AppText>
       </View>
@@ -79,14 +79,14 @@ export default function Vitals() {
         <AppText variant="h1">Vitals & meds</AppText>
       </View>
 
-      {/* WEIGHT — line chart */}
+      {/* WEIGHT, line chart */}
       <VitalCard icon="scale" tint={tiles.mint.bg} title="Weight" latest={`${lastW} kg`} sub={`${wDelta <= 0 ? '↓' : '↑'} ${Math.abs(wDelta)} kg since start`}>
         <LineChart data={weight.map((w) => w.kg)} color={colors.accent} width={CHART_W} height={120} />
         <Button label="Log weight" variant="line" onPress={() => { setWDraft(Math.round(lastW * 10) / 10); setOpenLog('weight'); }} />
       </VitalCard>
 
       {/* BLOOD PRESSURE */}
-      <VitalCard icon="heart-pulse" tint={tiles.pink.bg} title="Blood pressure" latest={lastBp ? `${lastBp.sys}/${lastBp.dia}` : '—'} sub="mmHg">
+      <VitalCard icon="heart-pulse" tint={tiles.pink.bg} title="Blood pressure" latest={lastBp ? `${lastBp.sys}/${lastBp.dia}` : '-'} sub="mmHg">
         <LineChart data={bp.map((b) => b.sys)} baseline={120} color="#C2562C" width={CHART_W} height={90} />
         <Button label="Log blood pressure" variant="line" onPress={() => { setSys(lastBp?.sys ?? 120); setDia(lastBp?.dia ?? 80); setOpenLog('bp'); }} />
       </VitalCard>
@@ -106,7 +106,7 @@ export default function Vitals() {
             <AppText variant="caption" color={colors.accentText}>Add</AppText>
           </Pressable>
         </View>
-        {meds.length === 0 && <AppText variant="caption" color={colors.textMuted}>No medications yet — add one to track it daily.</AppText>}
+        {meds.length === 0 && <AppText variant="caption" color={colors.textMuted}>No medications yet, add one to track it daily.</AppText>}
         {meds.map((m, i) => {
           const taken = m.takenDates.includes(today);
           const streak = medStreak(m);

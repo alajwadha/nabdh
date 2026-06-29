@@ -80,7 +80,7 @@ export default function Onboarding() {
         ) : (
           <Card key={type}>
             <AppText variant="caption" color={consents[type] ? colors.accent : colors.textMuted}>
-              {t(CONSENT_I18N[type].titleKey)} {consents[type] ? 'âœ“' : 'Ã—'}
+              {t(CONSENT_I18N[type].titleKey)} {consents[type] ? 'âœ“' : 'Ã-'}
             </AppText>
           </Card>
         ),

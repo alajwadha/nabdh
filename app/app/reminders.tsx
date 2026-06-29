@@ -28,12 +28,12 @@ function TimeStepper({ time, onChange, dim }: { time: string; onChange: (t: stri
   const { colors } = useTheme();
   const Btn = ({ label, d }: { label: string; d: number }) => (
     <Pressable onPress={() => onChange(bump(time, d))} hitSlop={8} style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: colors.navBg, alignItems: 'center', justifyContent: 'center' }}>
-      <AppText variant="title" color={colors.textSecondary}>{label}</AppText>
+      <Icon name={label === '+' ? 'plus' : 'minus'} size={15} color={colors.textSecondary} />
     </Pressable>
   );
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, opacity: dim ? 0.4 : 1 }}>
-      <Btn label="−" d={-30} />
+      <Btn label="-" d={-30} />
       <AppText variant="caption" style={{ width: 64, textAlign: 'center' }}>{fmt(time)}</AppText>
       <Btn label="+" d={30} />
     </View>
@@ -78,7 +78,7 @@ export default function Reminders() {
       </View>
 
       <AppText variant="body" color={colors.textSecondary}>
-        Gentle nudges, on your schedule. These are local to your phone — no account, no server. Toggle any off anytime.
+        Gentle nudges, on your schedule. These are local to your phone, no account, no server. Toggle any off anytime.
       </AppText>
 
       {!notificationsAvailable() && (
@@ -125,7 +125,7 @@ export default function Reminders() {
           <View style={{ flex: 1, gap: 2 }}>
             <AppText variant="title">Drink water</AppText>
             <AppText variant="caption" color={colors.textMuted}>
-              {hydration.enabled ? `Every ${hydration.everyHours}h · ${fmt(`${hydration.startHour}:00`)}–${fmt(`${hydration.endHour}:00`)}` : 'Repeating reminders across the day'}
+              {hydration.enabled ? `Every ${hydration.everyHours}h · ${fmt(`${hydration.startHour}:00`)}-${fmt(`${hydration.endHour}:00`)}` : 'Repeating reminders across the day'}
             </AppText>
           </View>
           <Pressable onPress={() => setHydration({ enabled: !hydration.enabled })}>
